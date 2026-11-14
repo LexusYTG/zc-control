@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Centro de control</string>
+    <string name="svc_desc">Muestra el centro de control al deslizar desde el borde superior derecho. Saca una captura solo para difuminar el fondo del panel; no se guarda ni se envía. No lee el contenido de la pantalla.</string>
+</resources>
