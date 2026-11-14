@@ -1,4 +1,4 @@
-# Centro de control (estilo Pixel)
+# ZC Control (estilo Pixel)
 
 Panel de ajustes rápidos como overlay. Se arrastra hacia abajo desde el borde superior derecho y sigue al dedo: la primera bajada muestra notificaciones y 4 accesos; bajando de nuevo se abre la vista completa. El fondo se difumina con una captura reducida (accesibilidad `canTakeScreenshot`); si no está disponible usa el desenfoque del compositor (Android 12+).
 
@@ -6,7 +6,7 @@ Panel de ajustes rápidos como overlay. Se arrastra hacia abajo desde el borde s
 1. Creá un repo vacío en GitHub.
 2. En Termux: `pkg install git`, entrá a esta carpeta y corré:
    `git init && git add . && git commit -m init && git branch -M main`
-   `git remote add origin https://github.com/LexusYTG/CentroDeControl.git && git push -u origin main`
+   `git remote add origin https://github.com/LexusYTG/zc-control.git && git push -u origin main`
 3. En GitHub > Actions > "Build APK", esperá que termine y bajá el artefacto `centro-de-control-apk`.
 
 ## Compilar en PC
@@ -17,7 +17,7 @@ Abrí la app con Shizuku corriendo: pide un solo permiso y configura accesibilid
 
 ## Licencia
 
-Copyright (C) 2025 LexusYTG
+Copyright (C) 2025-2026 LexusYTG
 
 Este programa es software libre: puedes redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU, publicada por la Free Software Foundation, ya sea la versión 3 de la Licencia, o (a tu elección) cualquier versión posterior.
 
@@ -35,10 +35,10 @@ De conformidad con la Sección 7 de la GPLv3, se aplican los siguientes término
 
 2. **Preservación de avisos legales**: cualquier redistribuidor debe preservar los avisos de copyright y las atribuciones de autoría presentes en los archivos originales.
 
-3. **Prohibición de tergiversar el origen**: las versiones modificadas deben estar claramente identificadas como distintas del software original Centro de control, y no deben presentarse como la versión original.
+3. **Prohibición de tergiversar el origen**: las versiones modificadas deben estar claramente identificadas como distintas del software original ZC Control (antes «Centro de control»), y no deben presentarse como la versión original.
 
-4. **Limitación de uso del nombre con fines publicitarios**: los nombres "LexusYTG" y "Centro de control" no pueden usarse para respaldar o promocionar versiones modificadas sin permiso previo por escrito.
+4. **Limitación de uso del nombre con fines publicitarios**: los nombres "LexusYTG" y "ZC Control (antes «Centro de control»)" no pueden usarse para respaldar o promocionar versiones modificadas sin permiso previo por escrito.
 
-5. **Renuncia a derechos de marca**: no se concede ningún derecho de marca sobre "Centro de control" ni sobre los logotipos asociados.
+5. **Renuncia a derechos de marca**: no se concede ningún derecho de marca sobre "ZC Control (antes «Centro de control»)" ni sobre los logotipos asociados.
 
 6. **Indemnización**: quien distribuya el software (o versiones modificadas) asumiendo responsabilidades contractuales frente al receptor debe indemnizar a los licenciantes y autores por cualquier responsabilidad derivada de dichas asunciones.
