@@ -1,0 +1,35 @@
+# --- Android / Gradle ---
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+build/
+/captures
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+
+# --- Keystores y secretos (CRÍTICO) ---
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+*.pem
+*.p12
+.env
+.env.*
+
+# --- Termux / varios ---
+*.log
+*.tmp
+*.swp
+*~
