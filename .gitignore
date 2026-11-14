@@ -1,35 +1,36 @@
-# --- Android / Gradle ---
-*.iml
+
+# ==========================================
+# ZC Control - Git Ignore
+# ==========================================
+
+# Gradle: caché y archivos temporales
 .gradle/
-/local.properties
-/.idea/
-.DS_Store
+**/.gradle/
+
+# Archivos generados por Gradle
 build/
-/captures
-.externalNativeBuild/
-.cxx/
+**/build/
+
+# APK y paquetes Android
 *.apk
 *.aab
 *.ap_
 *.dex
+
+# Archivos compilados
 *.class
-bin/
-gen/
-out/
-release/
 
-# --- Keystores y secretos (CRÍTICO) ---
-*.jks
-*.keystore
-keystore.properties
-signing.properties
-*.pem
-*.p12
-.env
-.env.*
+# Archivos temporales de Android
+local.properties
 
-# --- Termux / varios ---
+# Informes y registros de compilación
 *.log
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales de editores
 *.tmp
 *.swp
-*~
+*.bak
