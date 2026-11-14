@@ -1,9 +1,9 @@
 plugins { id("com.android.application"); id("org.jetbrains.kotlin.android") }
 android {
-    namespace = "dev.cc.panel"
+    namespace = "com.lexus2026.cdc"
     compileSdk = 34
     defaultConfig {
-        applicationId = "dev.cc.panel"
+        applicationId = "com.lexus2026.cdc"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

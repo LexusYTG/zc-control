@@ -1,4 +1,4 @@
-package dev.cc.panel
+package com.lexus2026.cdc
 
 import android.content.pm.PackageManager
 import android.os.Handler
@@ -29,7 +29,7 @@ object Privileged {
 /** Concede por shell todos los permisos que la app necesitaba pedir a mano. */
 fun Privileged.grantAll(ctx: android.content.Context, done: (() -> Unit)? = null) {
     val pkg = ctx.packageName
-    val svc = "$pkg/dev.cc.panel.ControlService"
+    val svc = "$pkg/com.lexus2026.cdc.ControlService"
     val cur = android.provider.Settings.Secure.getString(
         ctx.contentResolver, android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: ""
     val list = if (cur.contains(svc)) cur else if (cur.isEmpty()) svc else "$cur:$svc"
@@ -38,7 +38,7 @@ fun Privileged.grantAll(ctx: android.content.Context, done: (() -> Unit)? = null
         "appops set $pkg ACCESS_RESTRICTED_SETTINGS allow",
         "appops set $pkg WRITE_SETTINGS allow",
         "cmd notification allow_dnd $pkg",
-        "cmd notification allow_listener $pkg/dev.cc.panel.MediaListener",
+        "cmd notification allow_listener $pkg/com.lexus2026.cdc.MediaListener",
         "dumpsys deviceidle whitelist +$pkg",
         "settings put secure enabled_accessibility_services '$list'",
         "settings put secure accessibility_enabled 1"

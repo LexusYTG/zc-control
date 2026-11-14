@@ -1,4 +1,4 @@
-package dev.cc.panel
+package com.lexus2026.cdc
 
 import android.app.Notification
 import android.app.PendingIntent

@@ -1,4 +1,4 @@
-package dev.cc.panel
+package com.lexus2026.cdc
 
 import android.app.Activity
 import android.content.Intent

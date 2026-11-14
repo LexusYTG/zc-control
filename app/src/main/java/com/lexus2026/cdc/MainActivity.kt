@@ -1,4 +1,4 @@
-package dev.cc.panel
+package com.lexus2026.cdc
 
 import android.app.Activity
 import android.app.NotificationManager
@@ -105,7 +105,7 @@ class MainActivity : Activity() {
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val listeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners") ?: ""
         return ControlService.instance != null && Settings.System.canWrite(this) &&
-            nm.isNotificationPolicyAccessGranted && listeners.contains("$packageName/dev.cc.panel.MediaListener")
+            nm.isNotificationPolicyAccessGranted && listeners.contains("$packageName/com.lexus2026.cdc.MediaListener")
     }
 
     override fun onResume() {
