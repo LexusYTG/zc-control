@@ -1,4 +1,4 @@
-dev.cc.panel
+com.lexus2026.cdc
 drawable ic_airplane
 drawable ic_battery
 drawable ic_brightness

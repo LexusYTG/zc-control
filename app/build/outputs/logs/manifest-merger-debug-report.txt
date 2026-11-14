@@ -80,7 +80,7 @@ MERGED from [dev.rikka.shizuku:provider:13.1.5] /data/data/com.termux/files/home
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:16:51-87
 	android:theme
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:16:88-145
-activity#dev.cc.panel.MainActivity
+activity#com.lexus2026.cdc.MainActivity
 ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:17:9-22:20
 	android:exported
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:17:48-71
@@ -96,13 +96,13 @@ category#android.intent.category.LAUNCHER
 ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:20:17-77
 	android:name
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:20:27-74
-activity#dev.cc.panel.BuilderActivity
+activity#com.lexus2026.cdc.BuilderActivity
 ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:24:9-78
 	android:exported
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:24:51-75
 	android:name
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:24:19-50
-service#dev.cc.panel.ControlService
+service#com.lexus2026.cdc.ControlService
 ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:26:9-30:19
 	android:label
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:26:73-105
@@ -124,7 +124,7 @@ ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/Android
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:29:68-112
 	android:name
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:29:24-67
-service#dev.cc.panel.MediaListener
+service#com.lexus2026.cdc.MediaListener
 ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:32:9-35:19
 	android:label
 		ADDED from /data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:32:72-104

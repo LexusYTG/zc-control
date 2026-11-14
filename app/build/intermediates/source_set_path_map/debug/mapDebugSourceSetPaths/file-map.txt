@@ -1,7 +1,7 @@
-dev.cc.panel.app-pngs-0 /data/data/com.termux/files/home/CentroDeControl/app/build/generated/res/pngs/debug
-dev.cc.panel.app-resValues-1 /data/data/com.termux/files/home/CentroDeControl/app/build/generated/res/resValues/debug
-dev.cc.panel.app-packageDebugResources-2 /data/data/com.termux/files/home/CentroDeControl/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
-dev.cc.panel.app-packageDebugResources-3 /data/data/com.termux/files/home/CentroDeControl/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
-dev.cc.panel.app-debug-4 /data/data/com.termux/files/home/CentroDeControl/app/build/intermediates/merged_res/debug/mergeDebugResources
-dev.cc.panel.app-debug-5 /data/data/com.termux/files/home/CentroDeControl/app/src/debug/res
-dev.cc.panel.app-main-6 /data/data/com.termux/files/home/CentroDeControl/app/src/main/res
+com.lexus2026.cdc.app-pngs-0 /data/data/com.termux/files/home/CentroDeControl/app/build/generated/res/pngs/debug
+com.lexus2026.cdc.app-resValues-1 /data/data/com.termux/files/home/CentroDeControl/app/build/generated/res/resValues/debug
+com.lexus2026.cdc.app-packageDebugResources-2 /data/data/com.termux/files/home/CentroDeControl/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.lexus2026.cdc.app-packageDebugResources-3 /data/data/com.termux/files/home/CentroDeControl/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.lexus2026.cdc.app-debug-4 /data/data/com.termux/files/home/CentroDeControl/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.lexus2026.cdc.app-debug-5 /data/data/com.termux/files/home/CentroDeControl/app/src/debug/res
+com.lexus2026.cdc.app-main-6 /data/data/com.termux/files/home/CentroDeControl/app/src/main/res

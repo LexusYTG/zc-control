@@ -1,23 +1,23 @@
 {
     "logs": [
         {
-            "outputFile": "dev.cc.panel.app-mergeDebugResources-2:/values/values.xml",
+            "outputFile": "com.lexus2026.cdc.app-mergeDebugResources-2:/values/values.xml",
             "map": [
                 {
                     "source": "/data/data/com.termux/files/home/CentroDeControl/app/src/main/res/values/strings.xml",
                     "from": {
                         "startLines": "1,2",
                         "startColumns": "4,4",
-                        "startOffsets": "16,71",
-                        "endColumns": "54,229",
-                        "endOffsets": "66,296"
+                        "startOffsets": "16,64",
+                        "endColumns": "47,229",
+                        "endOffsets": "59,289"
                     },
                     "to": {
                         "startLines": "2,3",
                         "startColumns": "4,4",
-                        "startOffsets": "55,110",
-                        "endColumns": "54,229",
-                        "endOffsets": "105,335"
+                        "startOffsets": "55,103",
+                        "endColumns": "47,229",
+                        "endOffsets": "98,328"
                     }
                 }
             ]

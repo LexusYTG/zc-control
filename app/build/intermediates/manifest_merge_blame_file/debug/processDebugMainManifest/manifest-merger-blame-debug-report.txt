@@ -1,6 +1,6 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="dev.cc.panel"
+3    package="com.lexus2026.cdc"
 4    android:versionCode="1"
 5    android:versionName="1.0" >
 6
@@ -49,7 +49,7 @@
 29-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:16:88-145
 30        <activity
 30-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:17:9-22:20
-31            android:name="dev.cc.panel.MainActivity"
+31            android:name="com.lexus2026.cdc.MainActivity"
 31-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:17:19-47
 32            android:exported="true" >
 32-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:17:48-71
@@ -66,14 +66,14 @@
 38        </activity>
 39        <activity
 39-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:24:9-78
-40            android:name="dev.cc.panel.BuilderActivity"
+40            android:name="com.lexus2026.cdc.BuilderActivity"
 40-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:24:19-50
 41            android:exported="false" />
 41-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:24:51-75
 42
 43        <service
 43-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:26:9-30:19
-44            android:name="dev.cc.panel.ControlService"
+44            android:name="com.lexus2026.cdc.ControlService"
 44-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:26:18-48
 45            android:exported="true"
 45-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:26:49-72
@@ -97,7 +97,7 @@
 55        </service>
 56        <service
 56-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:32:9-35:19
-57            android:name="dev.cc.panel.MediaListener"
+57            android:name="com.lexus2026.cdc.MediaListener"
 57-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:32:18-47
 58            android:exported="true"
 58-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:32:48-71
@@ -116,7 +116,7 @@
 66        <provider
 67            android:name="rikka.shizuku.ShizukuProvider"
 67-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:37:19-63
-68            android:authorities="dev.cc.panel.shizuku"
+68            android:authorities="com.lexus2026.cdc.shizuku"
 68-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:37:64-110
 69            android:enabled="true"
 69-->/data/data/com.termux/files/home/CentroDeControl/app/src/main/AndroidManifest.xml:38:13-35
