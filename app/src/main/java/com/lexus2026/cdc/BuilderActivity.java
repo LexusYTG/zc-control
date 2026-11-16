@@ -1,6 +1,7 @@
 package com.lexus2026.cdc;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,6 +61,16 @@ public class BuilderActivity extends Activity {
     private int tab = 0;
     private boolean pendingHandle = false;
     private int selTile = 0;
+    private int curPage = 0;
+    private boolean keepZero = false;
+    private boolean dry = false;
+    private int gCur = 0;
+    private int gCountPage = 0;
+    private String curSection = "";
+    private final List<String> pageTitles = new ArrayList<>();
+    private Button navPrev;
+    private Button navNext;
+    private TextView navTitle;
 
     private final int txt = 0xFFEDE7F6;
     private final int sub = 0xFFB0A9B5;
@@ -132,7 +143,7 @@ public class BuilderActivity extends Activity {
         View shield = new View(this);
         shield.setClickable(true);
         previewBox.addView(shield, new FrameLayout.LayoutParams(MPB, MPB));
-        root.addView(previewBox, new LinearLayout.LayoutParams(MPB, (int) (getResources().getDisplayMetrics().heightPixels * 0.40f)));
+        root.addView(previewBox, new LinearLayout.LayoutParams(MPB, (int) (getResources().getDisplayMetrics().heightPixels * 0.30f)));
 
         LinearLayout bar = new LinearLayout(this);
         bar.setGravity(Gravity.CENTER);
@@ -149,7 +160,30 @@ public class BuilderActivity extends Activity {
             else Toast.makeText(BuilderActivity.this, "El servicio todavía no está activo", Toast.LENGTH_LONG).show();
         });
         bar.addView(real, new LinearLayout.LayoutParams(0, WCB, 1f));
+        Button eye = new Button(this);
+        eye.setText("👁");
+        eye.setAllCaps(false);
+        eye.setTextSize(12f);
+        eye.setPadding(0, 0, 0, 0);
+        eye.setOnClickListener(v -> previewBox.setVisibility(previewBox.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE));
+        bar.addView(eye, new LinearLayout.LayoutParams(0, WCB, 0.6f));
         root.addView(bar);
+
+        LinearLayout nav = new LinearLayout(this);
+        nav.setGravity(Gravity.CENTER_VERTICAL);
+        nav.setPadding(dp(8), 0, dp(8), dp(4));
+        navPrev = navBtn("‹", () -> goPage(curPage - 1));
+        navNext = navBtn("›", () -> goPage(curPage + 1));
+        navTitle = new TextView(this);
+        navTitle.setTextColor(txt);
+        navTitle.setTextSize(14f);
+        navTitle.setGravity(Gravity.CENTER);
+        navTitle.setTypeface(null, Typeface.BOLD);
+        navTitle.setOnClickListener(v -> showPages());
+        nav.addView(navPrev, new LinearLayout.LayoutParams(dp(56), WCB));
+        nav.addView(navTitle, new LinearLayout.LayoutParams(0, WCB, 1f));
+        nav.addView(navNext, new LinearLayout.LayoutParams(dp(56), WCB));
+        root.addView(nav);
 
         controls = new LinearLayout(this);
         controls.setOrientation(LinearLayout.VERTICAL);
@@ -157,10 +191,19 @@ public class BuilderActivity extends Activity {
         scroll = new ScrollView(this);
         scroll.addView(controls);
         root.addView(scroll, new LinearLayout.LayoutParams(MPB, 0, 1f));
+        Insets.apply(root);
         setContentView(root);
 
         buildControls();
         doRebuildPreview();
+
+        // Si se abrió desde el panel lateral o desde la pantalla principal, salta directo a esa sección.
+        String jump = getIntent() != null ? getIntent().getStringExtra("page_title") : null;
+        if (jump != null) {
+            for (int i = 0; i < pageTitles.size(); i++) {
+                if (pageTitles.get(i).startsWith(jump)) { goPage(i); break; }
+            }
+        }
     }
 
     @Override
@@ -222,18 +265,69 @@ public class BuilderActivity extends Activity {
         return t;
     }
 
+    private Button navBtn(String text, final Runnable action) {
+        Button bt = new Button(this);
+        bt.setText(text);
+        bt.setAllCaps(false);
+        bt.setTextSize(18f);
+        bt.setOnClickListener(v -> action.run());
+        return bt;
+    }
+
+    private void goPage(int p) {
+        if (p < 0 || p >= pageTitles.size()) return;
+        curPage = p;
+        keepZero = true;
+        buildControls();
+    }
+
+    private void showPages() {
+        CharSequence[] names = new CharSequence[pageTitles.size()];
+        for (int i = 0; i < names.length; i++) names[i] = (i + 1) + ". " + pageTitles.get(i);
+        new AlertDialog.Builder(this).setTitle("Ir a la pantalla").setItems(names, (d, w) -> goPage(w)).show();
+    }
+
+    private void updateNav() {
+        navTitle.setText((curPage + 1) + " / " + pageTitles.size() + "  ·  " + pageTitles.get(curPage));
+        navPrev.setAlpha(curPage > 0 ? 1f : 0.3f);
+        navNext.setAlpha(curPage < pageTitles.size() - 1 ? 1f : 0.3f);
+    }
+
+    private void newPage() {
+        gCur++;
+        gCountPage = 0;
+    }
+
+    private boolean item(int w) {
+        if (w > 0) {
+            if (gCountPage + w > 12) {
+                newPage();
+                if (dry && pageTitles.size() <= gCur) pageTitles.add(curSection + " …");
+            }
+            gCountPage += w;
+        }
+        return !dry && gCur == curPage;
+    }
+
     private void section(String title) {
+        curSection = title;
+        if (gCountPage >= 5) newPage();
+        if (dry && pageTitles.size() <= gCur) pageTitles.add(title);
+        if (dry || gCur != curPage) return;
         TextView t = new TextView(this);
         t.setText(title);
         t.setTextSize(12f);
         t.setTextColor(acc);
         t.setTypeface(null, Typeface.BOLD);
         t.setLetterSpacing(0.08f);
-        t.setPadding(0, dp(26), 0, dp(4));
+        t.setPadding(0, dp(18), 0, dp(4));
         controls.addView(t);
     }
 
-    private void note(String text) { controls.addView(label(text, 12f, sub, 4)); }
+    private void note(String text) {
+        if (!item(0)) return;
+        controls.addView(label(text, 12f, sub, 4));
+    }
 
     private void slider(String name, int lo, int hi, String unit, boolean handle, IntSupplier getV, IntConsumer setV) {
         slider(name, lo, hi, unit, handle, getV, setV, null);
@@ -241,6 +335,7 @@ public class BuilderActivity extends Activity {
 
     private void slider(final String name, final int lo, int hi, final String unit, final boolean handle,
                         IntSupplier getV, final IntConsumer setV, final IntFunction<String> show) {
+        if (!item(1)) return;
         final TextView tv = label("", 14f);
         final IntFunction<String> fmt = v -> name + ": " + (show != null ? show.apply(v) : v + unit);
         int cur = Math.max(lo, Math.min(hi, getV.getAsInt()));
@@ -270,7 +365,18 @@ public class BuilderActivity extends Activity {
         slider(name, lo, hi, unit, handle, () -> Skin.get(this, key), v -> Skin.set(this, key, v));
     }
 
-    private void chips(List<String> options, int selected, final IntConsumer onPick) {
+    private void chips(List<String> options, int selected, IntConsumer onPick) {
+        if (!item(1)) return;
+        chipsRaw(options, selected, onPick);
+    }
+
+    private void chipsRow(String name, List<String> options, int selected, IntConsumer onPick) {
+        if (!item(1)) return;
+        controls.addView(label(name));
+        chipsRaw(options, selected, onPick);
+    }
+
+    private void chipsRaw(List<String> options, int selected, final IntConsumer onPick) {
         LinearLayout row = new LinearLayout(this);
         row.setPadding(0, dp(6), 0, dp(2));
         final List<TextView> views = new ArrayList<>();
@@ -309,8 +415,9 @@ public class BuilderActivity extends Activity {
 
     /** Opciones de un valor entero del Skin. Si [rebuild], se rearma la lista (hay controles que dependen de esta opción). */
     private void choice(String name, String key, List<String> options, final boolean rebuild, final IntConsumer extra) {
+        if (!item(1)) return;
         controls.addView(label(name));
-        chips(options, Skin.get(this, key), i -> {
+        chipsRaw(options, Skin.get(this, key), i -> {
             Skin.set(this, key, i);
             if (extra != null) extra.accept(i);
             if (rebuild) buildControls();
@@ -319,6 +426,7 @@ public class BuilderActivity extends Activity {
     }
 
     private void textInput(String name, final String key, String def) {
+        if (!item(1)) return;
         controls.addView(label(name));
         EditText et = new EditText(this);
         et.setText(Skin.getStr(this, key, def));
@@ -342,6 +450,7 @@ public class BuilderActivity extends Activity {
     }
 
     private void textEdit(String name, String initial, final Consumer<String> onChange) {
+        if (!item(1)) return;
         controls.addView(label(name));
         EditText et = new EditText(this);
         et.setText(initial);
@@ -365,6 +474,7 @@ public class BuilderActivity extends Activity {
     }
 
     private void toolBtn(String text, final Runnable action) {
+        if (!item(1)) return;
         Button bt = new Button(this);
         bt.setText(text);
         bt.setAllCaps(false);
@@ -375,6 +485,7 @@ public class BuilderActivity extends Activity {
     }
 
     private void toggle(String name, final String key) {
+        if (!item(1)) return;
         Switch sw = new Switch(this);
         sw.setText(name);
         sw.setTextSize(14f);
@@ -429,6 +540,7 @@ public class BuilderActivity extends Activity {
     }
 
     private void colorRow(String name, final String key, boolean allowAuto) {
+        if (!item(2)) return;
         controls.addView(label(name));
         final LinearLayout sw = new LinearLayout(this);
         sw.setPadding(0, dp(6), 0, dp(4));
@@ -475,6 +587,7 @@ public class BuilderActivity extends Activity {
 
     // ---- imagen de fondo ----
     private void imageRow() {
+        if (!item(2)) return;
         boolean has = Skin.imageFile(this).exists();
         controls.addView(label(has ? "Imagen elegida ✓" : "Todavía no elegiste ninguna imagen", 13f, has ? txt : sub, 8));
         LinearLayout row = new LinearLayout(this);
@@ -555,16 +668,192 @@ public class BuilderActivity extends Activity {
         } catch (Throwable e) { return false; }
     }
 
+    // ======================= interfaz lateral (burbuja / gestos) =======================
+
+    private SideHub sideHub() {
+        ControlService cs = ControlService.instance;
+        return cs != null ? cs.side() : null;
+    }
+
+    private void sideSlider(final String name, final String key, final int lo, int hi, final String unit) {
+        if (!item(1)) return;
+        final TextView tv = label("", 14f);
+        int cur = Math.max(lo, Math.min(hi, SideConfig.get(this, key)));
+        tv.setText(name + ": " + cur + unit);
+        controls.addView(tv);
+        SeekBar sb = new SeekBar(this);
+        sb.setMax(hi - lo);
+        sb.setProgress(cur - lo);
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar s, int p, boolean fromUser) {
+                tv.setText(name + ": " + (p + lo) + unit);
+                if (fromUser) SideConfig.set(BuilderActivity.this, key, p + lo);
+            }
+            @Override public void onStartTrackingTouch(SeekBar s) {}
+            @Override public void onStopTrackingTouch(SeekBar s) {}
+        });
+        controls.addView(sb);
+    }
+
+    private void sideToggle(String name, final String key) {
+        if (!item(1)) return;
+        Switch sw = new Switch(this);
+        sw.setText(name);
+        sw.setTextSize(14f);
+        sw.setTextColor(txt);
+        sw.setPadding(0, dp(10), 0, dp(2));
+        sw.setChecked(SideConfig.get(this, key) != 0);
+        sw.setOnCheckedChangeListener((v, c) -> SideConfig.set(BuilderActivity.this, key, c ? 1 : 0));
+        controls.addView(sw);
+    }
+
+    private TextView sideMini(String text, boolean enabled, final Runnable action) {
+        TextView t = new TextView(this);
+        t.setText(text);
+        t.setTextSize(18f);
+        t.setTextColor(txt);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(dp(12), dp(8), dp(12), dp(8));
+        t.setAlpha(enabled ? 1f : 0.25f);
+        if (enabled) t.setOnClickListener(v -> action.run());
+        return t;
+    }
+
+    /** Un renglón de la lista de accesos laterales: ícono, nombre y ▲ ▼ ✕. */
+    private void sideShortcutRow(final int idx, final String pkg, final int count) {
+        if (!item(1)) return;
+        LinearLayout row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(0, dp(4), 0, dp(4));
+        ImageView iv = new ImageView(this);
+        iv.setImageDrawable(SideLauncher.icon(this, pkg));
+        row.addView(iv, new LinearLayout.LayoutParams(dp(36), dp(36)));
+        boolean ok = SideLauncher.installedPkg(this, pkg);
+        TextView name = label(ok ? SideLauncher.label(this, pkg) : pkg + " (no instalada)", 14f, ok ? txt : sub, 0);
+        name.setSingleLine(true);
+        LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0, WCB, 1f);
+        nlp.leftMargin = dp(12);
+        row.addView(name, nlp);
+        row.addView(sideMini("▲", idx > 0, () -> { SideConfig.moveShortcut(this, idx, idx - 1); buildControls(); }));
+        row.addView(sideMini("▼", idx < count - 1, () -> { SideConfig.moveShortcut(this, idx, idx + 1); buildControls(); }));
+        row.addView(sideMini("✕", true, () -> { SideConfig.removeShortcut(this, pkg); buildControls(); }));
+        controls.addView(row);
+    }
+
+    /** Diálogo para marcar qué apps aparecen en el panel. Las ya elegidas conservan su orden. */
+    private void pickSideApps() {
+        Toast.makeText(this, "Cargando apps…", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            final List<SideLauncher.App> all = SideLauncher.installed(this);
+            ui.post(() -> {
+                if (isFinishing()) return;
+                final List<String> cur = SideConfig.shortcuts(this);
+                final CharSequence[] names = new CharSequence[all.size()];
+                final boolean[] on = new boolean[all.size()];
+                for (int i = 0; i < names.length; i++) {
+                    names[i] = all.get(i).label;
+                    on[i] = cur.contains(all.get(i).pkg);
+                }
+                new AlertDialog.Builder(this)
+                    .setTitle("Apps del panel lateral")
+                    .setMultiChoiceItems(names, on, (dlg, which, checked) -> on[which] = checked)
+                    .setPositiveButton("Guardar", (dlg, w) -> {
+                        List<String> out = new ArrayList<>();
+                        for (String pkg : cur) {
+                            boolean keep = true;
+                            for (int i = 0; i < names.length; i++) if (all.get(i).pkg.equals(pkg) && !on[i]) keep = false;
+                            if (keep) out.add(pkg);
+                        }
+                        for (int i = 0; i < names.length; i++) if (on[i] && !out.contains(all.get(i).pkg)) out.add(all.get(i).pkg);
+                        SideConfig.saveShortcuts(this, out);
+                        buildControls();
+                    })
+                    .setNegativeButton("Cancelar", null)
+                    .show();
+            });
+        }).start();
+    }
+
+    private void buildSide() {
+        // ---- modo y burbuja ----
+        section("INTERFAZ LATERAL");
+        final boolean threeBtn = SideConfig.threeButtonNav(this);
+        chipsRow("Modo de la interfaz", Arrays.asList("Apagada", "Burbuja", "Gestos (3 botones)"), SideConfig.getMode(this), i -> {
+            if (i == SideConfig.MODE_GESTURE && !threeBtn) {
+                Toast.makeText(this, "El modo gestos solo funciona con la navegación de tres botones", Toast.LENGTH_LONG).show();
+            } else {
+                SideConfig.setMode(this, i);
+            }
+            buildControls();
+        });
+        note("Los dos modos usan los mismos accesos, ventanas y notificaciones; solo cambia cómo se abre el panel: tocando la burbuja o deslizando desde el borde derecho.");
+        note("Servicio: " + (ControlService.instance != null ? "activo" : "inactivo")
+            + "  ·  Acceso a notificaciones: " + (MediaListener.instance != null ? "activo" : "pendiente")
+            + "  ·  Navegación: " + (threeBtn ? "tres botones" : "gestos o dos botones"));
+        sideSlider("Tamaño de la burbuja", "bubbleSize", 32, 72, " dp");
+        sideSlider("Opacidad de la burbuja", "bubbleAlpha", 30, 100, "%");
+        sideSlider("Mantener apretada para moverla", "holdSecs", 3, 15, " s");
+        toolBtn("Mover la burbuja ahora (modo lienzo)", () -> {
+            SideHub h = sideHub();
+            if (h != null && SideConfig.getMode(this) == SideConfig.MODE_BUBBLE) { h.enterCanvas(); moveTaskToBack(true); }
+            else Toast.makeText(this, "Activá el modo burbuja primero", Toast.LENGTH_SHORT).show();
+        });
+        toolBtn("Devolver la burbuja al borde derecho", () -> { SideConfig.resetPos(this); });
+        toolBtn("Abrir el panel ahora", () -> {
+            SideHub h = sideHub();
+            if (h != null && SideConfig.getMode(this) != SideConfig.MODE_OFF) { h.open(); moveTaskToBack(true); }
+            else Toast.makeText(this, "Activá la burbuja o los gestos primero", Toast.LENGTH_SHORT).show();
+        });
+        note("Si te estorba: mantené apretada la burbuja unos segundos (por defecto 10). Se abre el modo lienzo y la arrastrás adonde quieras.");
+
+        // ---- notificaciones ----
+        section("INTERFAZ LATERAL · NOTIFICACIONES");
+        sideToggle("Mostrar notificaciones nuevas con animación", "noteOn");
+        sideSlider("Tiempo visible", "noteSecs", 2, 15, " s");
+        toolBtn("Probar una notificación", () -> {
+            SideHub h = sideHub();
+            if (h == null || !h.test()) Toast.makeText(this, "Activá la burbuja o los gestos primero", Toast.LENGTH_SHORT).show();
+            else moveTaskToBack(true);
+        });
+        note("Solo avisa de notificaciones normales: no muestra las silenciosas, las fijas, las de progreso ni las de la propia app. Tocá la tarjeta para abrir la app; deslizala hacia arriba para descartarla.");
+
+        // ---- accesos ----
+        section("INTERFAZ LATERAL · ACCESOS DEL PANEL");
+        final List<String> apps = SideConfig.shortcuts(this);
+        if (apps.isEmpty()) note("Todavía no hay apps en el panel.");
+        for (int i = 0; i < apps.size(); i++) sideShortcutRow(i, apps.get(i), apps.size());
+        toolBtn("＋ Agregar o quitar apps", this::pickSideApps);
+        note("También podés editar los accesos desde el propio panel: tocá ✎ o mantené apretada una app.");
+
+        // ---- ventanas ----
+        section("INTERFAZ LATERAL · VENTANAS");
+        sideToggle("Abrir las apps en ventana flotante", "floatWin");
+        sideSlider("Tamaño de la ventana (ancho de pantalla)", "winSize", 50, 95, "%");
+        toolBtn("Preparar ventanas flotantes (Shizuku)", () -> {
+            if (Privileged.available()) {
+                SideLauncher.prepareFreeform();
+                Toast.makeText(this, "Listo. En algunos equipos hay que reiniciar para que tome efecto", Toast.LENGTH_LONG).show();
+            } else Toast.makeText(this, "Necesita Shizuku activo", Toast.LENGTH_LONG).show();
+        });
+        note("Funciona si el sistema y la app lo permiten. Si no, la app se abre normalmente en pantalla completa.");
+
+        // ---- gestos ----
+        section("INTERFAZ LATERAL · GESTOS");
+        note(threeBtn ? "Tu equipo usa navegación de tres botones: el modo gestos está disponible."
+            : "Tu equipo usa navegación por gestos (o dos botones): el modo gestos queda desactivado para no chocar con los gestos de Android.");
+        sideSlider("Ancho de la zona del borde", "edgeW", 12, 40, " dp");
+        sideSlider("Alto de la zona del borde", "edgeH", 30, 100, "%");
+    }
+
     // ======================= la lista de opciones =======================
 
-    private void buildControls() {
-        final int keep = scroll != null ? scroll.getScrollY() : 0;
-        controls.removeAllViews();
+    private void buildAll() {
         Skin sk = new Skin(this);
         final String[] zoneKeys = {"left", "center", "right", "full"};
         List<String> zoneLabels = Arrays.asList("Izquierda", "Centro", "Derecha", "Todo arriba");
 
-        controls.addView(label("Los cambios se ven al instante en la vista previa de arriba (es la barra de verdad). Probá todo.", 12f, sub, 6));
+        if (item(0)) controls.addView(label("Los cambios se ven al instante en la vista previa de arriba (es la barra de verdad). Probá todo.", 12f, sub, 6));
 
         section("FONDO DETRÁS DEL PANEL");
         List<String> bgLabels = new ArrayList<>();
@@ -716,10 +1005,9 @@ public class BuilderActivity extends Activity {
         skSlider("Grosor de la barrita de abajo", "grabH", 2, 16, " dp");
 
         section("BARRITA DE ACCESO");
-        controls.addView(label("Zona de apertura"));
         String cz = Skin.prefs(this).getString("zone", "full");
         int zi = Math.max(0, Arrays.asList(zoneKeys).indexOf(cz));
-        chips(zoneLabels, zi, i -> {
+        chipsRow("Zona de apertura", zoneLabels, zi, i -> {
             Skin.prefs(this).edit().putString("zone", zoneKeys[i]).apply();
             ControlService s = ControlService.instance;
             if (s != null) s.rebuildHandle();
@@ -787,7 +1075,7 @@ public class BuilderActivity extends Activity {
         section("ACCESOS PROPIOS");
         final List<String[]> cts = Skin.customTiles(this);
         for (final String[] f : cts) {
-            controls.addView(label("★ " + (f[2].isEmpty() ? "Acceso" : f[2]), 14f, acc, 14));
+            if (item(1)) controls.addView(label("★ " + (f[2].isEmpty() ? "Acceso" : f[2]), 14f, acc, 14));
             chips(Arrays.asList("Abrir app", "Abrir enlace", "Comando", "Interruptor"), parseInt0(f[1]), i -> {
                 f[1] = String.valueOf(i);
                 Skin.saveCustomTiles(this, cts);
@@ -838,6 +1126,8 @@ public class BuilderActivity extends Activity {
         section("NOMBRES DE LOS ACCESOS");
         for (String tk : PanelView.TILE_KEYS) textInput(tk, "lbl_" + tk, tk);
 
+        buildSide();
+
         section("HERRAMIENTAS");
         toolBtn("Copiar configuración", () -> {
             ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -860,8 +1150,27 @@ public class BuilderActivity extends Activity {
         reset.setOnClickListener(v -> { Skin.reset(BuilderActivity.this); buildControls(); changed(true); });
         LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(MPB, WCB);
         rlp.topMargin = dp(28);
-        controls.addView(reset, rlp);
+        if (item(1)) controls.addView(reset, rlp);
 
-        if (scroll != null) scroll.post(() -> scroll.scrollTo(0, keep));
+    }
+
+    private void buildControls() {
+        final int keep = keepZero ? 0 : (scroll != null ? scroll.getScrollY() : 0);
+        keepZero = false;
+        controls.removeAllViews();
+        pageTitles.clear();
+        dry = true;
+        gCur = 0;
+        gCountPage = 0;
+        buildAll();
+        if (pageTitles.isEmpty()) pageTitles.add("Ajustes");
+        if (curPage >= pageTitles.size()) curPage = pageTitles.size() - 1;
+        if (curPage < 0) curPage = 0;
+        dry = false;
+        gCur = 0;
+        gCountPage = 0;
+        buildAll();
+        updateNav();
+        scroll.post(() -> scroll.scrollTo(0, keep));
     }
 }

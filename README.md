@@ -51,6 +51,17 @@ El mecanismo contempla dos alternativas:
 
 De esta manera, se contempla una alternativa para mantener el efecto visual incluso cuando el mecanismo principal no está disponible.
 
+### 4. Interfaz lateral (burbuja o gestos)
+
+ZC Control incluye un subsistema opcional de acceso rápido que se configura en **Make your action bar → INTERFAZ LATERAL** (también hay un botón en la pantalla principal). Tiene dos modos que comparten exactamente los mismos accesos, ventanas y notificaciones; solo cambia cómo se abre el panel:
+
+- **Modo burbuja:** una burbuja pequeña anclada al borde derecho. Al tocarla se abre un panel con accesos directos configurables (agregar, quitar, reordenar). Si te estorba, **mantenela apretada 10 segundos** (configurable de 3 a 15): se abre un *modo lienzo* y la arrastrás adonde quieras. «Borde derecho» la devuelve a su sitio.
+- **Modo gestos:** sin ningún elemento visible. Deslizá desde el borde derecho hacia la izquierda y el panel sale siguiendo tu dedo. **Solo se habilita con la navegación de tres botones** de Android, para no chocar con los gestos del sistema.
+- **Notificaciones dinámicas:** al llegar una notificación, la burbuja se desprende, sube por una trayectoria vertical hasta arriba, se despliega en una tarjeta (app + contenido), se queda unos 5 segundos (configurable) y vuelve a su lugar. Tocá la tarjeta para abrir la app o deslizala hacia arriba para descartarla. En modo gestos aparece una burbuja temporal que sale del borde derecho y se vuelve a esconder.
+- **Ventanas flotantes:** las apps se abren en modo ventana cuando el sistema y la app lo permiten (con Shizuku se usa el modo freeform por shell; hay un botón para preparar los ajustes necesarios). Si no, se abren normalmente.
+
+Requiere el servicio de accesibilidad de ZC Control y, para las notificaciones, el acceso a notificaciones que ya se concede junto con el resto de permisos.
+
 ---
 
 ## Requisitos

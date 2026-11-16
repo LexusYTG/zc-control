@@ -47,6 +47,11 @@ public class ControlService extends AccessibilityService {
 
     public static volatile ControlService instance = null;
 
+    /** Interfaz lateral (burbuja / gestos): un único subsistema que vive dentro de este servicio. */
+    private SideHub side = null;
+
+    public SideHub side() { return side; }
+
     public void global(int action) { performGlobalAction(action); }
 
     /** Zona de apertura elegida en la app: left, center, right o full. */
@@ -85,11 +90,11 @@ public class ControlService extends AccessibilityService {
             if (act == null) return;
             switch (act) {
                 // Al bloquear: se saca TODO (panel, ventanas en cierre y la zona táctil). Nada queda vivo sobre el bloqueo.
-                case Intent.ACTION_SCREEN_OFF: forceCloseAll(); removeHandle(); break;
+                case Intent.ACTION_SCREEN_OFF: forceCloseAll(); removeHandle(); if (side != null) side.suspend(); break;
                 // Al desbloquear: se vuelve a poner la zona táctil, limpia.
-                case Intent.ACTION_USER_PRESENT: forceCloseAll(); rebuildHandle(); break;
+                case Intent.ACTION_USER_PRESENT: forceCloseAll(); rebuildHandle(); if (side != null) side.resume(); break;
                 // Pantalla encendida sin bloqueo (sin PIN, por ejemplo): también se restaura.
-                case Intent.ACTION_SCREEN_ON: forceCloseAll(); if (!locked()) rebuildHandle(); break;
+                case Intent.ACTION_SCREEN_ON: forceCloseAll(); if (!locked()) { rebuildHandle(); if (side != null) side.resume(); } break;
                 default: break;
             }
         }
@@ -163,7 +168,7 @@ public class ControlService extends AccessibilityService {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (wm != null) { warm = null; rebuildHandle(); prewarm(); }
+        if (wm != null) { warm = null; rebuildHandle(); prewarm(); if (side != null) side.refresh(); GameWatchdog.configChanged(); }
     }
 
     /** Abre el panel en la vista acotada (lo usa también el botón "Probar" de la app). */
@@ -182,6 +187,13 @@ public class ControlService extends AccessibilityService {
         reapplyLock(0);
         Skin.prefs(this).registerOnSharedPreferenceChangeListener(prefListener);
         prewarm();
+        // Interfaz lateral: se inicia sola (si está bloqueada la pantalla queda en pausa hasta desbloquear)
+        side = new SideHub(this, wm);
+        if (!locked() && !screenOff()) side.start();
+        else { side.suspend(); side.start(); }
+        MediaListener.onPosted = n -> ui.post(() -> { if (side != null) side.onNotification(n); });
+        GameWatchdog.attach(this);
+        if (MediaListener.instance == null) MediaListener.rebind(this);
     }
 
     /** Si el bloqueo del panel del sistema estaba activo, lo reaplica (Shizuku puede tardar en arrancar). */
@@ -406,6 +418,7 @@ public class ControlService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.getPackageName() != null) GameWatchdog.onForeground(this, event.getPackageName().toString(), event.getClassName() != null ? event.getClassName().toString() : "");
         // Autocuración: si por algún motivo la zona táctil no está y el dispositivo está en uso, se repone.
         if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
             wm != null && handle == null && !locked() && !screenOff()) addHandle();
@@ -417,6 +430,9 @@ public class ControlService extends AccessibilityService {
     @Override
     public void onDestroy() {
         instance = null;
+        GameWatchdog.detach();
+        MediaListener.onPosted = null;
+        if (side != null) { side.stop(); side = null; }
         warm = null;
         ui.removeCallbacks(prewarmR);
         Skin.prefs(this).unregisterOnSharedPreferenceChangeListener(prefListener);

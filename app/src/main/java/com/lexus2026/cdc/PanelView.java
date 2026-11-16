@@ -697,6 +697,8 @@ public class PanelView extends FrameLayout {
             case "image":
             case "video":
                 return mediaView(e);
+            case "app":
+                return appView(e, wPx, hPx);
             case "widget":
                 return widgetView(e, wPx, hPx);
             case "text": {
@@ -817,6 +819,7 @@ public class PanelView extends FrameLayout {
     private void runCustom(String id, int type, String target) {
         switch (type) {
             case 0: {
+                if (GameWatchdog.route(ctx, target.trim())) break;
                 Intent li = ctx.getPackageManager().getLaunchIntentForPackage(target.trim());
                 if (li != null) launch(li);
                 else Toast.makeText(ctx, "No se encontró la app", Toast.LENGTH_SHORT).show();
@@ -864,6 +867,10 @@ public class PanelView extends FrameLayout {
         if (sk.entryAnim == 0) return;
         for (int i = 0; i < holders.size(); i++) {
             View bx = holders.get(i).box;
+            bx.animate().cancel();
+            bx.setTranslationX(0f);
+            bx.setTranslationY(0f);
+            paintTile(holders.get(i));
             bx.setAlpha(0f);
             android.view.ViewPropertyAnimator a = bx.animate().alpha(1f).setStartDelay(i * 25L).setDuration(260);
             if (sk.entryAnim == 1) { bx.setTranslationY((float) dp(24)); a.translationY(0f); }
@@ -1525,17 +1532,17 @@ public class PanelView extends FrameLayout {
     private static long tpTime = 0L;
     private static final java.util.Map<String, Drawable.ConstantState> tpIcons = new java.util.HashMap<>();
 
-    private List<Tile> thirdParty() {
-        final android.content.pm.PackageManager pm = ctx.getPackageManager();
+    public static List<String[]> thirdPartyInfo(Context c) {
         long now = SystemClock.uptimeMillis();
         if (tpInfo == null || now - tpTime > 120000L) {
+            android.content.pm.PackageManager pm = c.getPackageManager();
             List<String[]> info = new ArrayList<>();
             tpIcons.clear();
             List<android.content.pm.ResolveInfo> list;
             try { list = pm.queryIntentServices(new Intent("android.service.quicksettings.action.QS_TILE"), 0); }
             catch (Exception e) { list = new ArrayList<>(); }
             for (android.content.pm.ResolveInfo ri : list) {
-                if (ri.serviceInfo.packageName.equals(ctx.getPackageName())) continue;
+                if (ri.serviceInfo.packageName.equals(c.getPackageName())) continue;
                 android.content.pm.ServiceInfo si = ri.serviceInfo;
                 String comp = si.packageName + "/" + si.name;
                 String label;
@@ -1550,8 +1557,18 @@ public class PanelView extends FrameLayout {
             tpInfo = info;
             tpTime = now;
         }
+        return tpInfo;
+    }
+
+    public static Drawable thirdPartyIcon(Context c, String comp) {
+        thirdPartyInfo(c);
+        Drawable.ConstantState cs = tpIcons.get(comp);
+        return cs != null ? cs.newDrawable() : null;
+    }
+
+    private List<Tile> thirdParty() {
         List<Tile> out = new ArrayList<>();
-        for (String[] f : tpInfo) {
+        for (String[] f : thirdPartyInfo(ctx)) {
             final String comp = f[0];
             Tile t = new Tile(f[1], 0, () -> false, "", "App", null, () -> {
                 if (Privileged.available()) {
@@ -1560,11 +1577,49 @@ public class PanelView extends FrameLayout {
                 } else Toast.makeText(ctx, "Los accesos de apps necesitan Shizuku", Toast.LENGTH_SHORT).show();
             });
             t.key = "tp:" + comp;
-            Drawable.ConstantState cs = tpIcons.get(comp);
-            t.iconDrawable = cs != null ? cs.newDrawable() : null;
+            t.iconDrawable = thirdPartyIcon(ctx, comp);
             out.add(t);
         }
         return out;
+    }
+
+    private View appView(final Elem e, int wPx, int hPx) {
+        final android.content.pm.PackageManager pm = ctx.getPackageManager();
+        Drawable ic;
+        String label;
+        try {
+            ic = pm.getApplicationIcon(e.a);
+            label = pm.getApplicationLabel(pm.getApplicationInfo(e.a, 0)).toString();
+        } catch (Exception x) {
+            return placeholder("App no encontrada");
+        }
+        LinearLayout box = vcol();
+        box.setGravity(Gravity.CENTER);
+        box.setClickable(true);
+        ImageView iv = new ImageView(ctx);
+        iv.setImageDrawable(ic);
+        int d = Math.min(wPx, hPx - (sk.layout == TileLayout.ICON ? 0 : dp(sk.labelSize + 8)));
+        box.addView(iv, new LinearLayout.LayoutParams(Math.max(1, d), Math.max(1, d)));
+        if (sk.layout != TileLayout.ICON) {
+            TextView tv = new TextView(ctx);
+            tv.setText(label);
+            tv.setTextSize((float) sk.labelSize);
+            tv.setTextColor(sk.labelColor != 0 ? sk.labelColor : cText);
+            tv.setMaxLines(1);
+            tv.setEllipsize(android.text.TextUtils.TruncateAt.END);
+            tv.setGravity(Gravity.CENTER);
+            box.addView(tv, new LinearLayout.LayoutParams(MP, WC));
+        }
+        box.setOnClickListener(v -> {
+            if (GameWatchdog.route(ctx, e.a)) return;
+            Intent li = pm.getLaunchIntentForPackage(e.a);
+            if (li != null) launch(li);
+        });
+        box.setOnLongClickListener(v -> {
+            launch(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + e.a)));
+            return true;
+        });
+        return box;
     }
 
     private TextView pillButton(String label, int tc, int bg, final Runnable action) {
@@ -2036,7 +2091,7 @@ public class PanelView extends FrameLayout {
                             if (v.getParent() != null) v.getParent().requestDisallowInterceptTouchEvent(true);
                         }
                         if (moved) {
-                            v.setTranslationX(n.clearable ? dx : dx * 0.25f);
+                            v.setTranslationX(dx);
                             v.setAlpha(1f - Math.min(Math.abs(v.getTranslationX()) / v.getWidth(), 1f) * 0.7f);
                         }
                         return true;
@@ -2044,11 +2099,12 @@ public class PanelView extends FrameLayout {
                     case MotionEvent.ACTION_UP: {
                         float dx = e.getRawX() - x0;
                         if (moved) {
-                            if (n.clearable && Math.abs(dx) > v.getWidth() * 0.4f) {
+                            if (Math.abs(dx) > v.getWidth() * 0.4f) {
                                 float out = dx > 0 ? (float) v.getWidth() : -(float) v.getWidth();
                                 v.animate().translationX(out).alpha(0f).setDuration(120).withEndAction(() -> {
                                     MediaListener ml = MediaListener.instance;
-                                    if (ml != null) ml.cancelNotification(n.key);
+                                    if (!n.clearable) MediaListener.hidden.add(n.key);
+                                    try { if (ml != null) ml.cancelNotification(n.key); } catch (Throwable t) {}
                                     post(() -> refreshNotes());
                                 }).start();
                             } else v.animate().translationX(0f).alpha(1f).setDuration(120).start();
@@ -2080,6 +2136,7 @@ public class PanelView extends FrameLayout {
     private void refreshNotes() {
         if (notifScroll == null) return;
         MediaListener l = MediaListener.instance;
+        if (l == null) MediaListener.rebind(ctx);
         List<MediaListener.Note> notes = l != null ? l.notes() : new ArrayList<MediaListener.Note>();
         notifList.removeAllViews();
         if (notes.isEmpty()) {

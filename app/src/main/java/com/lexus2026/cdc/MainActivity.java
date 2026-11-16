@@ -6,22 +6,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.view.Gravity;
-import android.widget.Button;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import rikka.shizuku.Shizuku;
 
 public class MainActivity extends Activity {
-    private TextView status;
+    private static final int BG = 0xFF0B0F1A, CARD = 0xFF151B2C, CARD_HI = 0xFF1D2540, TXT = 0xFFF1F5F9,
+        SUB = 0xFF94A3B8, OK = 0xFF34D399, WARN = 0xFFFBBF24, ACC = 0xFF6C8CFF;
+
     private final Handler ui = new Handler(Looper.getMainLooper());
     private boolean asked = false;
     private boolean granting = false;
@@ -31,20 +38,111 @@ public class MainActivity extends Activity {
 
     private LinearLayout root;
     private float d;
+    private final Map<String, TextView> chips = new LinkedHashMap<>();
+    private TextView heroTitle;
+    private TextView heroSub;
+    private TextView activate;
 
-    private void btn(String label, Runnable onClick) {
-        Button b = new Button(this);
-        b.setText(label);
-        b.setAllCaps(false);
-        b.setOnClickListener(v -> onClick.run());
-        root.addView(b);
+    private int dp(float v) {
+        return (int) (v * d + 0.5f);
     }
 
-    private TextView label(String text, float size, int top) {
+    private GradientDrawable shape(int color, float radius) {
+        GradientDrawable g = new GradientDrawable();
+        g.setColor(color);
+        g.setCornerRadius(dp(radius));
+        return g;
+    }
+
+    private TextView text(String s, float size, int color, boolean bold) {
         TextView t = new TextView(this);
-        t.setText(text);
+        t.setText(s);
         t.setTextSize(size);
-        t.setPadding(0, top, 0, 0);
+        t.setTextColor(color);
+        if (bold) t.setTypeface(Typeface.DEFAULT_BOLD);
+        return t;
+    }
+
+    private LinearLayout box(int orientation) {
+        LinearLayout l = new LinearLayout(this);
+        l.setOrientation(orientation);
+        return l;
+    }
+
+    private LinearLayout.LayoutParams lp(int w, int h, float weight, int l, int t, int r, int b) {
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(w, h, weight);
+        p.setMargins(dp(l), dp(t), dp(r), dp(b));
+        return p;
+    }
+
+    private void section(String title) {
+        TextView t = text(title.toUpperCase(), 11f, SUB, true);
+        t.setLetterSpacing(0.12f);
+        t.setPadding(dp(4), dp(26), 0, dp(10));
+        root.addView(t);
+    }
+
+    private View tile(String icon, String title, String sub, Runnable onClick, int weightMargin) {
+        LinearLayout c = box(LinearLayout.VERTICAL);
+        c.setPadding(dp(16), dp(16), dp(16), dp(16));
+        c.setBackground(shape(CARD, 20));
+        c.setClickable(true);
+        c.setOnClickListener(v -> onClick.run());
+        TextView ic = text(icon, 24f, TXT, false);
+        ic.setGravity(Gravity.CENTER);
+        ic.setBackground(shape(CARD_HI, 14));
+        c.addView(ic, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        TextView t = text(title, 15f, TXT, true);
+        t.setPadding(0, dp(12), 0, 0);
+        c.addView(t);
+        TextView s = text(sub, 12f, SUB, false);
+        s.setPadding(0, dp(2), 0, 0);
+        c.addView(s);
+        return c;
+    }
+
+    private void tileRow(View a, View b) {
+        LinearLayout r = box(LinearLayout.HORIZONTAL);
+        r.addView(a, lp(0, -2, 1f, 0, 0, 6, 0));
+        r.addView(b, lp(0, -2, 1f, 6, 0, 0, 0));
+        root.addView(r, lp(-1, -2, 0f, 0, 0, 0, 12));
+    }
+
+    private View listRow(String title, String sub, Runnable onClick) {
+        LinearLayout r = box(LinearLayout.HORIZONTAL);
+        r.setGravity(Gravity.CENTER_VERTICAL);
+        r.setPadding(dp(18), dp(14), dp(18), dp(14));
+        r.setClickable(true);
+        r.setOnClickListener(v -> onClick.run());
+        LinearLayout col = box(LinearLayout.VERTICAL);
+        col.addView(text(title, 15f, TXT, false));
+        if (sub != null) col.addView(text(sub, 12f, SUB, false));
+        r.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
+        r.addView(text("›", 22f, SUB, false));
+        return r;
+    }
+
+    private View divider() {
+        View v = new View(this);
+        v.setBackgroundColor(0x1AFFFFFF);
+        return v;
+    }
+
+    private TextView pill(String label, int fill, int color, Runnable onClick) {
+        TextView t = text(label, 14f, color, true);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(dp(12), dp(14), dp(12), dp(14));
+        t.setBackground(shape(fill, 16));
+        t.setClickable(true);
+        t.setOnClickListener(v -> onClick.run());
+        return t;
+    }
+
+    private TextView chip(String key, String label) {
+        TextView t = text(label, 12f, SUB, true);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(dp(8), dp(8), dp(8), dp(8));
+        chips.put(key, t);
         return t;
     }
 
@@ -52,44 +150,90 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         d = getResources().getDisplayMetrics().density;
-        root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding((int) (24 * d), (int) (48 * d), (int) (24 * d), (int) (24 * d));
-        TextView title = new TextView(this);
-        title.setText("Centro de control");
-        title.setTextSize(28f);
-        root.addView(title);
-        status = new TextView(this);
-        status.setTextSize(15f);
-        status.setPadding(0, (int) (16 * d), 0, (int) (16 * d));
-        root.addView(status);
-        btn("🎨 Make your action bar", () -> startActivity(new Intent(this, BuilderActivity.class)));
-        btn("⚡ Activar todo con Shizuku", () -> {
+        root = box(LinearLayout.VERTICAL);
+        root.setPadding(dp(20), dp(28), dp(20), dp(32));
+
+        root.addView(text("Centro de control", 30f, TXT, true));
+        TextView subtitle = text("Panel, interfaz lateral, launcher y juegos", 14f, SUB, false);
+        subtitle.setPadding(0, dp(4), 0, dp(20));
+        root.addView(subtitle);
+
+        LinearLayout hero = box(LinearLayout.VERTICAL);
+        hero.setPadding(dp(18), dp(18), dp(18), dp(14));
+        hero.setBackground(shape(CARD, 24));
+        heroTitle = text("", 20f, TXT, true);
+        hero.addView(heroTitle);
+        heroSub = text("", 13f, SUB, false);
+        heroSub.setPadding(0, dp(4), 0, dp(14));
+        hero.addView(heroSub);
+        LinearLayout r1 = box(LinearLayout.HORIZONTAL);
+        r1.addView(chip("svc", "Servicio"), lp(0, -2, 1f, 0, 0, 4, 8));
+        r1.addView(chip("acc", "Accesibilidad"), lp(0, -2, 1f, 4, 0, 4, 8));
+        r1.addView(chip("wr", "Ajustes"), lp(0, -2, 1f, 4, 0, 0, 8));
+        hero.addView(r1);
+        LinearLayout r2 = box(LinearLayout.HORIZONTAL);
+        r2.addView(chip("dnd", "No molestar"), lp(0, -2, 1f, 0, 0, 4, 0));
+        r2.addView(chip("shz", "Shizuku"), lp(0, -2, 1f, 4, 0, 0, 0));
+        hero.addView(r2);
+        root.addView(hero);
+
+        activate = pill("⚡  Activar todo con Shizuku", ACC, 0xFF0B0F1A, () -> {
             if (Privileged.available()) autoGrant();
             else try { Shizuku.requestPermission(1); } catch (Throwable e) {
                 Toast.makeText(this, "Abrí Shizuku e iniciá el servicio primero", Toast.LENGTH_LONG).show();
             }
         });
-        btn("▶ Probar centro de control ahora", () -> {
-            ControlService svc = ControlService.instance;
-            if (svc != null) svc.open();
-            else Toast.makeText(this, "El servicio todavía no está activo", Toast.LENGTH_LONG).show();
-        });
-        root.addView(label("Sin Shizuku, permisos manuales:", 13f, (int) (20 * d)));
-        btn("Accesibilidad", () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)));
-        btn("Modificar ajustes (brillo, giro)", () ->
-            startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName()))));
-        btn("Acceso a No molestar", () -> startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)));
-        TextView help = label("Uso: arrastrá hacia abajo desde la barrita blanca del borde superior. Primera bajada: notificaciones; bajá de nuevo para expandir los accesos. Deslizá a los costados para cambiar de pestaña. Mantené apretado un acceso para abrir sus ajustes; para agregar, quitar u ordenar accesos usá el botón ✎ o el botón de la pestaña de controles.",
-            14f, (int) (16 * d));
-        help.setGravity(Gravity.START);
+        root.addView(activate, lp(-1, -2, 0f, 0, 12, 0, 0));
+
+        section("Personalización");
+        tileRow(
+            tile("🎨", "Barra de acciones", "Accesos y estilo del panel", () -> startActivity(new Intent(this, BuilderActivity.class)), 0),
+            tile("🫧", "Interfaz lateral", "Burbuja y gestos", () ->
+                startActivity(new Intent(this, BuilderActivity.class).putExtra("page_title", "INTERFAZ LATERAL")), 0));
+        tileRow(
+            tile("🚀", "Launcher radial", "Arcos, tamaño y forma", () -> startActivity(new Intent(this, LauncherSettingsActivity.class)), 0),
+            tile("🎮", "Games", "Modo juego y perfiles", () -> startActivity(new Intent(this, GamesActivity.class)), 0));
+
+        section("Acciones");
+        tileRow(
+            tile("▶", "Probar panel", "Abrirlo ahora", () -> {
+                ControlService svc = ControlService.instance;
+                if (svc != null) svc.open();
+                else Toast.makeText(this, "El servicio todavía no está activo", Toast.LENGTH_LONG).show();
+            }, 0),
+            tile("🏠", "Launcher de inicio", "Elegir cuál usar", () -> startActivity(new Intent(Settings.ACTION_HOME_SETTINGS)), 0));
+
+        section("Permisos manuales");
+        LinearLayout perms = box(LinearLayout.VERTICAL);
+        perms.setBackground(shape(CARD, 20));
+        perms.addView(listRow("Accesibilidad", "Necesario para el panel", () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
+        perms.addView(divider(), new LinearLayout.LayoutParams(-1, 1));
+        perms.addView(listRow("Modificar ajustes", "Brillo y giro", () ->
+            startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName())))));
+        perms.addView(divider(), new LinearLayout.LayoutParams(-1, 1));
+        perms.addView(listRow("No molestar", "Acceso a la política", () -> startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))));
+        root.addView(perms);
+
+        section("Panel del sistema");
+        LinearLayout lockRow = box(LinearLayout.HORIZONTAL);
+        lockRow.addView(pill("Suplantar", CARD_HI, TXT, () -> lock(true)), lp(0, -2, 1f, 0, 0, 6, 0));
+        lockRow.addView(pill("Restablecer", CARD_HI, TXT, () -> lock(false)), lp(0, -2, 1f, 6, 0, 0, 0));
+        root.addView(lockRow);
+
+        section("Cómo se usa");
+        TextView help = text("Uso: arrastrá hacia abajo desde la barrita blanca del borde superior. Primera bajada: notificaciones; bajá de nuevo para expandir los accesos. Deslizá a los costados para cambiar de pestaña. Mantené apretado un acceso para abrir sus ajustes; para agregar, quitar u ordenar accesos usá el botón ✎ o el botón de la pestaña de controles.", 13f, SUB, false);
+        help.setLineSpacing(0f, 1.2f);
+        help.setPadding(dp(18), dp(16), dp(18), dp(16));
+        help.setBackground(shape(CARD, 20));
         root.addView(help);
-        root.addView(label("Panel del sistema:", 13f, (int) (20 * d)));
-        btn("Suplantar sistema", () -> lock(true));
-        btn("Restablecer sistema", () -> lock(false));
+
         ScrollView sv = new ScrollView(this);
+        sv.setBackgroundColor(BG);
         sv.addView(root);
+        sv.setClipToPadding(false);
+        Insets.apply(sv);
         setContentView(sv);
+        if (!Privileged.available()) ShizukuNotice.showOnce(this);
         try { Shizuku.addRequestPermissionResultListener(shizukuListener); } catch (Throwable e) {}
     }
 
@@ -143,15 +287,32 @@ public class MainActivity extends Activity {
         } catch (Throwable e) {}
     }
 
-    private static String m(boolean ok) { return ok ? "listo" : "pendiente"; }
+    private void mark(String key, boolean ok) {
+        TextView t = chips.get(key);
+        if (t == null) return;
+        t.setTextColor(ok ? OK : WARN);
+        t.setBackground(shape(ok ? 0x2234D399 : 0x22FBBF24, 12));
+        t.setText((ok ? "✓ " : "• ") + t.getText().toString().replaceFirst("^[✓•] ", ""));
+    }
 
     private void showStatus() {
         String enabled = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
         boolean acc = enabled != null && enabled.contains(getPackageName());
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        status.setText("Servicio corriendo: " + (ControlService.instance != null ? "sí" : "no") + "\n" +
-            "Accesibilidad: " + m(acc) + "\nAjustes: " + m(Settings.System.canWrite(this)) + "\n" +
-            "No molestar: " + m(nm.isNotificationPolicyAccessGranted()) + "\nShizuku: " + m(Privileged.available()));
+        boolean svc = ControlService.instance != null;
+        boolean wr = Settings.System.canWrite(this);
+        boolean dnd = nm.isNotificationPolicyAccessGranted();
+        boolean shz = Privileged.available();
+        mark("svc", svc);
+        mark("acc", acc);
+        mark("wr", wr);
+        mark("dnd", dnd);
+        mark("shz", shz);
+        boolean all = svc && acc && wr && dnd;
+        heroTitle.setText(all ? "Todo listo" : "Faltan permisos");
+        heroTitle.setTextColor(all ? OK : WARN);
+        heroSub.setText(all ? "El centro de control está activo" : shz ? "Tocá activar y se concede solo" : "Activá Shizuku o concedé los permisos a mano");
+        activate.setVisibility(all ? View.GONE : View.VISIBLE);
     }
 
     @Override

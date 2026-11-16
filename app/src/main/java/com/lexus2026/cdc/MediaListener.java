@@ -63,9 +63,59 @@ public class MediaListener extends NotificationListenerService {
     }
 
     @Override public void onListenerConnected() { instance = this; fire(); }
-    @Override public void onListenerDisconnected() { if (instance == this) instance = null; }
-    @Override public void onNotificationPosted(StatusBarNotification sbn) { fire(); }
-    @Override public void onNotificationRemoved(StatusBarNotification sbn) { fire(); }
+    @Override public void onListenerDisconnected() {
+        if (instance == this) instance = null;
+        rebind(this);
+    }
+
+    public static final java.util.Set<String> hidden = java.util.Collections.synchronizedSet(new java.util.HashSet<String>());
+
+    public static void rebind(android.content.Context c) {
+        try { NotificationListenerService.requestRebind(new android.content.ComponentName(c, MediaListener.class)); } catch (Throwable ignored) {}
+    }
+    /** Aviso de notificación nueva para la interfaz lateral (la burbuja animada). Ya viene filtrada. */
+    public static volatile java.util.function.Consumer<Note> onPosted = null;
+
+    private final java.util.Map<String, String> lastShown = new java.util.HashMap<>();
+
+    @Override
+    public void onNotificationPosted(StatusBarNotification sbn) {
+        fire();
+        java.util.function.Consumer<Note> hook = onPosted;
+        if (hook == null || sbn == null) return;
+        try {
+            Note n = forPopup(sbn);
+            if (n != null) hook.accept(n);
+        } catch (Throwable ignored) { /* nunca romper el listener por esto */ }
+    }
+
+    /** Solo lo que merece una tarjeta emergente: nada propio, ni fijas, ni resúmenes, ni silenciosas, ni repetidas. */
+    private Note forPopup(StatusBarNotification sbn) {
+        if (sbn.getPackageName().equals(getPackageName())) return null;
+        Notification n = sbn.getNotification();
+        int f = n.flags;
+        if ((f & (Notification.FLAG_GROUP_SUMMARY | Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE)) != 0) return null;
+        if (Notification.CATEGORY_PROGRESS.equals(n.category) || Notification.CATEGORY_TRANSPORT.equals(n.category)) return null;
+        try {
+            RankingMap rm = getCurrentRanking();
+            Ranking rk = new Ranking();
+            if (rm != null && rm.getRanking(sbn.getKey(), rk)) {
+                if (rk.getImportance() < android.app.NotificationManager.IMPORTANCE_DEFAULT) return null;
+                if (!rk.matchesInterruptionFilter()) return null;
+            }
+        } catch (Throwable ignored) { /* sin ranking: se muestra igual */ }
+        Note note = convert(getPackageManager(), sbn);
+        if (note == null) return null;
+        String sig = note.title + "\u0001" + note.text;
+        String prev = lastShown.put(sbn.getKey(), sig);
+        if (sig.equals(prev)) return null;   // actualización sin cambios (por ejemplo, una barra de progreso)
+        if (lastShown.size() > 200) lastShown.clear();
+        return note;
+    }
+    @Override public void onNotificationRemoved(StatusBarNotification sbn) {
+        if (sbn != null) hidden.remove(sbn.getKey());
+        fire();
+    }
 
     private final java.util.Map<String, String> labelCache = new java.util.HashMap<>();
     private final java.util.Map<String, Drawable.ConstantState> iconCache = new java.util.HashMap<>();
@@ -89,6 +139,33 @@ public class MediaListener extends NotificationListenerService {
         } catch (Exception e) { return null; }
     }
 
+    /** Convierte una notificación del sistema en una {@link Note}; null si no tiene título ni texto. */
+    private Note convert(PackageManager pm, StatusBarNotification sbn) {
+        Notification n = sbn.getNotification();
+        Bundle ex = n.extras;
+        String app = appLabel(pm, sbn.getPackageName());
+        CharSequence t0 = ex.getCharSequence(Notification.EXTRA_TITLE);
+        String title = t0 != null ? t0.toString() : "";
+        CharSequence x0 = ex.getCharSequence(Notification.EXTRA_BIG_TEXT);
+        if (x0 == null) x0 = ex.getCharSequence(Notification.EXTRA_TEXT);
+        String text = x0 != null ? x0.toString() : "";
+        Drawable ic = null;
+        try { if (n.getSmallIcon() != null) ic = n.getSmallIcon().loadDrawable(this); } catch (Exception e) { ic = null; }
+        List<Act> acts = new ArrayList<>();
+        if (n.actions != null) {
+            for (Notification.Action a : n.actions) {
+                if (a.getRemoteInputs() == null) {
+                    acts.add(new Act(a.title != null ? a.title.toString() : "", a.actionIntent));
+                }
+            }
+        }
+        Drawable appIc = appIcon(pm, sbn.getPackageName());
+        if (title.isEmpty() && text.isEmpty()) return null;
+        return new Note(sbn.getKey(), sbn.getPackageName(), app, title, text, n.color, ic, appIc,
+                n.contentIntent, sbn.isClearable(), (n.flags & Notification.FLAG_AUTO_CANCEL) != 0,
+                sbn.getPostTime(), acts);
+    }
+
     public List<Note> notes() {
         try {
             PackageManager pm = getPackageManager();
@@ -96,7 +173,7 @@ public class MediaListener extends NotificationListenerService {
             List<StatusBarNotification> src = new ArrayList<>();
             if (all != null) {
                 for (StatusBarNotification s : all) {
-                    if (!s.getPackageName().equals(getPackageName())
+                    if (!s.getPackageName().equals(getPackageName()) && !hidden.contains(s.getKey())
                             && (s.getNotification().flags & Notification.FLAG_GROUP_SUMMARY) == 0) {
                         src.add(s);
                     }
@@ -105,30 +182,8 @@ public class MediaListener extends NotificationListenerService {
             Collections.sort(src, (x, y) -> Long.compare(y.getPostTime(), x.getPostTime()));
             List<Note> out = new ArrayList<>();
             for (StatusBarNotification sbn : src) {
-                Notification n = sbn.getNotification();
-                Bundle ex = n.extras;
-                String app = appLabel(pm, sbn.getPackageName());
-                CharSequence t0 = ex.getCharSequence(Notification.EXTRA_TITLE);
-                String title = t0 != null ? t0.toString() : "";
-                CharSequence x0 = ex.getCharSequence(Notification.EXTRA_BIG_TEXT);
-                if (x0 == null) x0 = ex.getCharSequence(Notification.EXTRA_TEXT);
-                String text = x0 != null ? x0.toString() : "";
-                Drawable ic = null;
-                try { if (n.getSmallIcon() != null) ic = n.getSmallIcon().loadDrawable(this); } catch (Exception e) { ic = null; }
-                List<Act> acts = new ArrayList<>();
-                if (n.actions != null) {
-                    for (Notification.Action a : n.actions) {
-                        if (a.getRemoteInputs() == null) {
-                            acts.add(new Act(a.title != null ? a.title.toString() : "", a.actionIntent));
-                        }
-                    }
-                }
-                Drawable appIc = appIcon(pm, sbn.getPackageName());
-                if (!title.isEmpty() || !text.isEmpty()) {
-                    out.add(new Note(sbn.getKey(), sbn.getPackageName(), app, title, text, n.color, ic, appIc,
-                            n.contentIntent, sbn.isClearable(), (n.flags & Notification.FLAG_AUTO_CANCEL) != 0,
-                            sbn.getPostTime(), acts));
-                }
+                Note note = convert(pm, sbn);
+                if (note != null) out.add(note);
             }
             return out;
         } catch (Throwable e) {
