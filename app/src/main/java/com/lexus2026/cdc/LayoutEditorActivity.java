@@ -197,6 +197,7 @@ public class LayoutEditorActivity extends Activity {
         pal.addView(small("＋ Volumen", () -> addElem("volume", Math.min(cols, 4), 1, 0, "")));
         pal.addView(small("＋ Imagen o GIF", () -> pickMedia(false, false)));
         pal.addView(small("＋ Video", () -> pickMedia(true, false)));
+        pal.addView(small("＋ App", () -> pickApp(pkg -> addElem("app", 1, 1, 0, pkg))));
         pal.addView(small("＋ Widget", () -> pickWidget()));
         pal.addView(small("＋ Texto", () -> promptText("", t -> addElem("text", Math.min(cols, 3), 1, 0, t))));
         HorizontalScrollView ps = new HorizontalScrollView(this);
@@ -204,6 +205,7 @@ public class LayoutEditorActivity extends Activity {
         ps.addView(pal);
         root.addView(ps);
 
+        Insets.apply(root);
         setContentView(root);
 
         canvas.setOnTouchListener(new View.OnTouchListener() {
@@ -357,7 +359,18 @@ public class LayoutEditorActivity extends Activity {
                 if (("ct:" + f[0]).equals(key)) return f[2];
             }
         }
+        if (key.startsWith("tp:")) {
+            for (String[] f : PanelView.thirdPartyInfo(this)) {
+                if (("tp:" + f[0]).equals(key)) return f[1];
+            }
+        }
         return key;
+    }
+
+    private String appName(String pkg) {
+        try {
+            return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg, 0)).toString();
+        } catch (Exception x) { return pkg; }
     }
 
     private String describe(Elem e) {
@@ -372,6 +385,7 @@ public class LayoutEditorActivity extends Activity {
             case "video": return "Video";
             case "widget": return "Widget: " + widgetLabel(e);
             case "text": return "Texto: " + e.a;
+            case "app": return "App: " + appName(e.a);
             default: return e.type;
         }
     }
@@ -399,7 +413,16 @@ public class LayoutEditorActivity extends Activity {
                 for (int i = 0; i < PanelView.TILE_KEYS.length; i++) {
                     if (PanelView.TILE_KEYS[i].equals(e.a)) idx = i;
                 }
-                if ((glyph != null && !glyph.isEmpty()) || idx < 0) {
+                if (idx < 0 && e.a.startsWith("tp:") && (glyph == null || glyph.isEmpty())) {
+                    ImageView tv2 = new ImageView(this);
+                    android.graphics.drawable.Drawable td = PanelView.thirdPartyIcon(this, e.a.substring(3));
+                    if (td != null) {
+                        tv2.setImageDrawable(td);
+                        tv2.setImageTintList(android.content.res.ColorStateList.valueOf(txt));
+                    }
+                    tv2.setPadding(dp(8), dp(8), dp(8), dp(8));
+                    f.addView(tv2, new FrameLayout.LayoutParams(MPB, MPB));
+                } else if ((glyph != null && !glyph.isEmpty()) || idx < 0) {
                     TextView g = centered(glyph != null && !glyph.isEmpty() ? glyph : "★");
                     g.setTextSize(22f);
                     f.addView(g, new FrameLayout.LayoutParams(MPB, MPB));
@@ -414,6 +437,18 @@ public class LayoutEditorActivity extends Activity {
                     TextView n = centered(tileName(e.a));
                     n.setTextSize(10f);
                     f.addView(n, new FrameLayout.LayoutParams(MPB, WCB, Gravity.BOTTOM));
+                }
+                break;
+            }
+            case "app": {
+                ImageView av = new ImageView(this);
+                try { av.setImageDrawable(getPackageManager().getApplicationIcon(e.a)); } catch (Exception x) {}
+                av.setPadding(dp(4), dp(4), dp(4), dp(4));
+                f.addView(av, new FrameLayout.LayoutParams(MPB, MPB));
+                if (e.w >= 2) {
+                    TextView an = centered(appName(e.a));
+                    an.setTextSize(10f);
+                    f.addView(an, new FrameLayout.LayoutParams(MPB, WCB, Gravity.BOTTOM));
                 }
                 break;
             }
@@ -491,6 +526,9 @@ public class LayoutEditorActivity extends Activity {
         if (e.type.equals("tile")) {
             btnRow.addView(small("Cambiar acceso", () -> pickTile(key -> { e.a = key; Elem.save(this, elems); rebuild(); })));
         }
+        if (e.type.equals("app")) {
+            btnRow.addView(small("Cambiar app", () -> pickApp(pkg -> { e.a = pkg; Elem.save(this, elems); rebuild(); })));
+        }
         if (e.type.equals("text")) {
             btnRow.addView(small("Editar texto", () -> promptText(e.a, t -> { e.a = t; Elem.save(this, elems); rebuild(); })));
             btnRow.addView(small("Color", () -> {
@@ -562,6 +600,10 @@ public class LayoutEditorActivity extends Activity {
             keys.add("ct:" + f[0]);
             names.add("★ " + (f[2].isEmpty() ? "Acceso" : f[2]));
         }
+        for (String[] f : PanelView.thirdPartyInfo(this)) {
+            keys.add("tp:" + f[0]);
+            names.add(f[1] + "  (app)");
+        }
         new AlertDialog.Builder(this).setTitle("Elegí un acceso")
             .setItems(names.toArray(new CharSequence[0]), (d, which) -> cb.accept(keys.get(which))).show();
     }
@@ -581,6 +623,19 @@ public class LayoutEditorActivity extends Activity {
         i.setType(video ? "video/*" : "image/*");
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         startActivityForResult(i, video ? REQ_VID : REQ_IMG);
+    }
+
+    private void pickApp(final Consumer<String> cb) {
+        final android.content.pm.PackageManager pm = getPackageManager();
+        Intent main = new Intent(Intent.ACTION_MAIN);
+        main.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<android.content.pm.ResolveInfo> list = pm.queryIntentActivities(main, 0);
+        final List<String[]> apps = new ArrayList<>();
+        for (android.content.pm.ResolveInfo ri : list) apps.add(new String[]{ri.loadLabel(pm).toString(), ri.activityInfo.packageName});
+        java.util.Collections.sort(apps, (x, y) -> x[0].toLowerCase().compareTo(y[0].toLowerCase()));
+        CharSequence[] names = new CharSequence[apps.size()];
+        for (int i = 0; i < names.length; i++) names[i] = apps.get(i)[0];
+        new AlertDialog.Builder(this).setTitle("Elegí una app").setItems(names, (d, which) -> cb.accept(apps.get(which)[1])).show();
     }
 
     private void pickWidget() {

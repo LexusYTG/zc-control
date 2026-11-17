@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Configuración de la barra, creada por el usuario en "Make your action bar".
+ * Configuración del panel, editada desde el árbol de ajustes (SettingsTree).
  * Se guarda en SharedPreferences con prefijo "sk_". Los valores por defecto viven solo acá.
  */
 public class Skin {
