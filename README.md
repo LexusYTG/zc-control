@@ -1,66 +1,53 @@
 
 # ZC Control
 
-### Un centro de control completamente personalizable para Android
+### Una capa de personalización extremadamente modificable para Android, pensada para reemplazar por completo la del sistema
 
-**ZC Control** es una herramienta de personalización avanzada para Android diseñada para reemplazar la experiencia del panel de control tradicional por una interfaz completamente configurable.
+## ¿Qué es?
 
-A diferencia de una aplicación convencional que simplemente dibuja una superposición (*overlay*) sobre la pantalla, ZC Control busca ofrecer un nivel mucho más profundo de integración con el sistema operativo, permitiendo modificar la experiencia de uso del centro de control y deshabilitar el panel original de Android.
+**ZC Control** es una capa de personalización para Android. Su objetivo es que **cada parte de la interfaz con la que interactúas a diario** (panel de ajustes rápidos, notificaciones, pantalla de inicio, accesos, ventanas, ajustes) **sea tuya y completamente modificable**: cómo se ve, cómo se comporta, qué muestra, dónde está y cómo se abre.
 
-El objetivo es proporcionar un entorno de control alternativo, flexible y altamente personalizable, con una experiencia de interacción inspirada en los paneles de ajustes rápidos de los dispositivos Google Pixel.
+No pretende ser un tema ni un widget más. La idea es que, con el tiempo, la capa del fabricante deje de ser necesaria y toda la experiencia diaria pase por ZC Control, con un nivel de personalización mucho mayor que el que ofrece cualquier sistema de serie.
 
----
+## ¿Qué hace hoy?
 
-## Características principales
+Estas son las piezas que **ya existen y funcionan**:
 
-### 1. Centro de control personalizado
+- **Panel de control propio.** Reemplaza al panel de ajustes rápidos y a la barra de notificaciones, y puede deshabilitar el original. Funciona en dos niveles: una primera bajada compacta (notificaciones y cuatro accesos) y una segunda con el centro de control completo. Casi todo es configurable: fondo y desenfoque, hoja, botones, colores, reloj, tipografía, tarjetas, brillo y volumen, reproductor, accesos propios, textos, diseño manual, zona de apertura, temas, animaciones y automatización.
+- **Notificaciones.** El panel muestra y gestiona las notificaciones de todas las apps (para eso lee las notificaciones del sistema).
+- **Launcher propio.** Pantalla de inicio con dock de 5 posiciones, botón Home central, cajones por categoría y navegación radial de dos etapas. Es opcional: solo actúa como pantalla de inicio si lo eliges como launcher.
+- **Interfaz lateral.** Modo burbuja o modo gestos, con accesos configurables, notificaciones animadas y apertura de apps en ventanas flotantes cuando el sistema lo permite.
+- **App de Ajustes propia.** Con buscador, desde donde se configura todo lo anterior. También ofrece un botón para abrir los ajustes del sistema.
+- **Game Control.** Perfiles por juego. Al abrir un juego, ZC Control guarda el estado del sistema, cierra otras apps, ajusta resolución y DPI, cambia opciones de batería y actividades, puede forzar la compilación del juego y lo inicia; al salir, restaura todo. Mientras juegas puede mostrar CPU, RAM, GPU, FPS y temperatura.
 
-ZC Control incorpora un panel de control alternativo que permite sustituir la experiencia del panel de ajustes rápidos original.
+## ¿Qué busca ser?
 
-Su funcionamiento está organizado en dos niveles:
+Hacia dónde va el proyecto, y lo que **todavía no está hecho**:
 
-- **Primera apertura:** al deslizar hacia abajo desde el borde superior derecho, se muestra una interfaz compacta con las notificaciones y cuatro accesos rápidos.
-- **Segunda apertura:** al continuar deslizando hacia abajo, se despliega la vista completa del centro de control.
+- Que **cada pantalla y cada elemento** de la capa reemplazada tenga sus propias opciones de apariencia y comportamiento, sin límites impuestos por el fabricante.
+- Cubrir más superficies del sistema con la misma filosofía (hoy cubre panel, notificaciones, inicio, accesos laterales y ajustes propios).
+- Que la configuración sea la **única fuente de verdad**: lo que se ve en pantalla sale de los ajustes, y agregar un ajuste es agregar una línea.
+- Varios ajustes del árbol de configuración aún aparecen como «Pronto»: están planificados, no terminados.
 
-La transición entre ambos niveles está diseñada para mantener una interacción natural, fluida y sincronizada con el movimiento del dedo.
+## Límites (sé realista)
 
-### 2. Integración profunda con Android
+ZC Control **no es una ROM, no usa root y no modifica los archivos del sistema**. Android no permite que una app de terceros sustituya de verdad la interfaz del sistema, así que ZC Control lo consigue combinando cuatro cosas:
 
-ZC Control no se limita a representar visualmente un panel alternativo.
+1. un **servicio de accesibilidad**, que dibuja sus propias ventanas por encima del sistema;
+2. el **acceso a notificaciones**, para mostrarlas y descartarlas;
+3. **ajustes seguros y comandos de shell** concedidos a través de **Shizuku**, por ejemplo para bloquear la expansión del panel original;
+4. su propio **launcher**, para la pantalla de inicio.
 
-La herramienta interviene en la configuración del sistema Android para conseguir que la experiencia personalizada sustituya al panel de control original.
+Consecuencias: depende de Shizuku, de la versión de Android y del fabricante; algunas funciones pueden fallar o comportarse distinto según el dispositivo; y el sistema original sigue ahí debajo (por eso existe la función de restaurar).
 
-Entre sus funciones de integración se encuentran:
+## Permisos y privacidad
 
-- Deshabilitación del panel de control original.
-- Configuración de los servicios de accesibilidad necesarios.
-- Modificación de los ajustes del sistema compatibles.
-- Configuración de No molestar.
-- Integración con los mecanismos de administración del sistema mediante Shizuku.
+Para hacer lo anterior, ZC Control pide permisos **muy poderosos**: puede leer tus notificaciones, saber qué app está en primer plano, listar las apps instaladas y cambiar ajustes del sistema. Léelo antes de instalar.
 
-Estas operaciones se realizan mediante la integración con Shizuku, evitando que el usuario tenga que configurar manualmente cada ajuste.
-
-### 3. Fondo dinámico y efecto de desenfoque
-
-Para conseguir una apariencia visual más integrada con Android, el panel utiliza un fondo difuminado.
-
-El mecanismo contempla dos alternativas:
-
-- **Captura de pantalla:** utiliza la capacidad de accesibilidad `canTakeScreenshot` para obtener una captura reducida de la pantalla y emplearla como fondo.
-- **Desenfoque del compositor:** cuando la captura no está disponible, recurre al desenfoque proporcionado por el compositor del sistema en Android 12 o versiones posteriores.
-
-De esta manera, se contempla una alternativa para mantener el efecto visual incluso cuando el mecanismo principal no está disponible.
-
-### 4. Interfaz lateral (burbuja o gestos)
-
-ZC Control incluye un subsistema opcional de acceso rápido que se configura en **Ajustes → Personalización → Interfaz lateral** (también hay un botón en la pantalla principal). Tiene dos modos que comparten exactamente los mismos accesos, ventanas y notificaciones; solo cambia cómo se abre el panel:
-
-- **Modo burbuja:** una burbuja pequeña anclada al borde derecho. Al tocarla se abre un panel con accesos directos configurables (agregar, quitar, reordenar). Si te estorba, **mantenela apretada 10 segundos** (configurable de 3 a 15): se abre un *modo lienzo* y la arrastrás adonde quieras. «Borde derecho» la devuelve a su sitio.
-- **Modo gestos:** sin ningún elemento visible. Deslizá desde el borde derecho hacia la izquierda y el panel sale siguiendo tu dedo. **Solo se habilita con la navegación de tres botones** de Android, para no chocar con los gestos del sistema.
-- **Notificaciones dinámicas:** al llegar una notificación, la burbuja se desprende, sube por una trayectoria vertical hasta arriba, se despliega en una tarjeta (app + contenido), se queda unos 5 segundos (configurable) y vuelve a su lugar. Tocá la tarjeta para abrir la app o deslizala hacia arriba para descartarla. En modo gestos aparece una burbuja temporal que sale del borde derecho y se vuelve a esconder.
-- **Ventanas flotantes:** las apps se abren en modo ventana cuando el sistema y la app lo permiten (con Shizuku se usa el modo freeform por shell; hay un botón para preparar los ajustes necesarios). Si no, se abren normalmente.
-
-Requiere el servicio de accesibilidad de ZC Control y, para las notificaciones, el acceso a notificaciones que ya se concede junto con el resto de permisos.
+- Al abrir la app por primera vez se muestra una **pantalla de consentimiento**. **Hasta que aceptes, ningún componente lee, pide ni modifica nada:** el servicio de accesibilidad y el de notificaciones quedan inertes, el receptor de arranque no hace nada y no se solicita ningún permiso ni acceso a Shizuku.
+- Si rechazas, se te agradece, la app se cierra por completo y **borra sus propios datos**.
+- El `AndroidManifest.xml` **no declara el permiso `INTERNET`**: la herramienta no solicita ni dispone de acceso a Internet y no transmite datos a terceros. Puedes comprobarlo tú mismo; la pantalla de consentimiento explica cómo.
+- Todo se procesa de forma local en el dispositivo.
 
 ---
 
@@ -80,8 +67,8 @@ Antes de utilizar ZC Control, es necesario disponer de:
 
 1. Descarga e instala ZC Control.
 2. Inicia Shizuku y comprueba que se encuentre funcionando correctamente.
-3. Abre ZC Control.
-4. Autoriza el permiso solicitado por la aplicación.
+3. Abre ZC Control y lee la pantalla de consentimiento: si no aceptas, la aplicación se cierra y no hace nada.
+4. Tras aceptar, autoriza el permiso de Shizuku que solicita la aplicación.
 5. La herramienta realizará automáticamente las configuraciones necesarias para establecer su funcionamiento.
 
 Durante este proceso se configuran los servicios de accesibilidad, los ajustes correspondientes y No molestar.
