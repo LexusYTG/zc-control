@@ -51,6 +51,93 @@ Para hacer lo anterior, ZC Control pide permisos **muy poderosos**: puede leer t
 
 ---
 
+## Distribución oficial, soporte y reclamos
+
+### Único origen oficial
+
+**El único lugar oficial de ZC Control es este repositorio:**
+
+👉 **https://www.github.com/LexusYTG/zc-control/**
+
+Todo lo que no provenga de ahí **no es ZC Control oficial**, aunque tenga el mismo nombre, el mismo ícono o diga serlo.
+
+### ZC Control no está en ninguna tienda
+
+Esta aplicación **no está publicada** y **no pretende estarlo** en ninguna tienda de aplicaciones ni sitio de descargas. En particular, **no está** en:
+
+- Google Play Store
+- APKVision
+- APKPure
+- APKMirror
+- Aptoide
+- Uptodown
+- APKCombo
+- Samsung Galaxy Store
+- Huawei AppGallery
+- Amazon Appstore
+- Xiaomi GetApps / Mi Store
+- Tiendas de otros fabricantes (OPPO, vivo, realme, Honor, etc.)
+- Canales de Telegram, grupos de WhatsApp, servidores de Discord
+- Enlaces de Mega, MediaFire, Google Drive, Dropbox o similares
+- Videos de YouTube con enlaces de descarga
+- Cualquier otra tienda, repositorio, foro o sitio no mencionado aquí
+
+**La única tienda en la que aspira a estar es [F-Droid](https://f-droid.org/)**, por ser de código abierto y por compilar las aplicaciones desde su código fuente. **Hoy todavía no está en F-Droid.** Si algún día se publica, se anunciará en este mismo README, en el repositorio oficial, y solo contará como oficial el paquete que F-Droid compile y distribuya desde este código.
+
+### Si lo instalaste desde cualquier otro sitio
+
+Si obtuviste esta herramienta de cualquier sitio o repositorio que **no sea el oficial**:
+
+- **No la avalamos.** No sabemos qué contiene ese archivo: puede estar modificado, desactualizado, empaquetado con publicidad, con rastreadores o con código malicioso.
+- **No damos soporte.** No atendemos reportes, dudas ni reclamos sobre copias de origen distinto al repositorio oficial.
+- **No respondemos por esa copia.** Las declaraciones de privacidad y consentimiento de este proyecto describen únicamente el código de este repositorio. No podemos cumplirlas ni garantizarlas sobre un paquete que no distribuimos nosotros, porque físicamente no tenemos forma de saber qué se instaló en tu dispositivo.
+- **No estamos de acuerdo** con que se distribuya como si fuera una versión oficial.
+
+La licencia (GPLv3) permite que otras personas redistribuyan y modifiquen el código, pero exige que las versiones modificadas se identifiquen como tales (ver «Términos adicionales» al final de este documento). Que algo sea legalmente redistribuible no lo convierte en oficial ni nos hace responsables de ello.
+
+### Cómo comprobar lo que instalaste
+
+Las compilaciones de este proyecto son de tipo `debug` y cada persona que compila las firma con su propia clave, así que **no existe una firma oficial con la que verificar un APK ya hecho**. La forma más segura de obtener ZC Control es **compilarlo tú mismo desde el repositorio oficial** (ver la sección «Compilación»).
+
+Además, puedes comprobar cualquier copia:
+
+- Abre su `AndroidManifest.xml` y verifica que **no** exista el permiso `INTERNET`.
+- Revisa en «Información de la aplicación → Uso de datos» que no haya tráfico de red.
+- Si encuentras `INTERNET` o cualquier comportamiento que no esté descrito en este README, desinstala, no vuelvas a ejecutarla y revisa tu dispositivo.
+
+### Qué soporte se ofrece y qué no
+
+ZC Control es un proyecto mantenido de forma voluntaria. **No hay garantías de plazo, de respuesta ni de corrección**, y la herramienta se ofrece «tal cual», según la licencia.
+
+**Se atienden** reportes que cumplan todo lo siguiente:
+
+1. La app fue compilada desde el **código del repositorio oficial**, sin modificaciones.
+2. Es la versión más reciente del repositorio, o una cercana a ella.
+3. Cumples los requisitos de este README (Shizuku instalado, iniciado y con permiso concedido).
+4. El reporte se hace en **[GitHub Issues](https://github.com/LexusYTG/zc-control/issues)** e incluye: modelo del dispositivo, versión de Android, descripción del problema, pasos para reproducirlo y, si puedes, capturas o registros.
+5. Un problema por reporte.
+
+**No se atienden:**
+
+- Copias obtenidas de cualquier origen distinto al repositorio oficial.
+- Versiones modificadas, con partes cambiadas o recompiladas por terceros.
+- Compilaciones antiguas cuando el problema ya está corregido en la versión actual.
+- Instalaciones sin Shizuku, o con los permisos del sistema sin conceder.
+- Comportamientos causados por restricciones del fabricante o de la versión de Android (ahorro de batería agresivo, bloqueo de servicios en segundo plano, capas del fabricante, etc.). Se pueden reportar como incompatibilidad, pero no está garantizado que tengan solución.
+- Daños o pérdidas de datos derivados de usar la herramienta sin haber leído las advertencias de este documento.
+- Reportes, reseñas, comentarios o mensajes publicados en tiendas, foros, redes o sitios de terceros: **no se revisan**.
+- Solicitudes de soporte por mensajes privados, correo o cualquier otro canal fuera del repositorio.
+
+### Fallos, daños y reclamos
+
+- Si algo falla en una copia compilada desde el repositorio oficial, repórtalo en GitHub Issues como se indica arriba. Se revisará durante el desarrollo, sin plazo garantizado.
+- Si algo falla en una copia de otro origen, **el reclamo corresponde a quien te la entregó o la publicó**, no a este proyecto.
+- Si perdiste el panel original o el sistema quedó en un estado raro, sigue **primero** el procedimiento de la sección «ADVERTENCIA IMPORTANTE: recuperación del panel original». Es la vía de recuperación prevista.
+- El autor **no asume responsabilidad por daños** derivados del uso, la modificación o la redistribución del software (GPLv3, secciones 15 y 16, y términos adicionales).
+- Si sospechas que una copia es maliciosa, desinstálala y denuncia el sitio que la distribuye. No la envíes a este proyecto como si fuera un error de ZC Control.
+
+---
+
 ## Requisitos
 
 Antes de utilizar ZC Control, es necesario disponer de:
