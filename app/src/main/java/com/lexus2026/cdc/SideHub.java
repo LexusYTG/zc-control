@@ -457,7 +457,7 @@ public final class SideHub implements SidePanel.Host {
     @Override
     public void launch(String pkg) {
         boolean ok = SideLauncher.launch(svc, pkg);
-        if (!ok) Toast.makeText(svc, "No se pudo abrir la app", Toast.LENGTH_SHORT).show();
+        if (!ok) Toast.makeText(svc, Lang.t(354), Toast.LENGTH_SHORT).show();
         closePanel();
     }
 
@@ -507,21 +507,21 @@ public final class SideHub implements SidePanel.Host {
         hb.setStroke(dp(1), 0x33FFFFFF);
         hint.setBackground(hb);
         TextView t1 = new TextView(svc);
-        t1.setText("Modo lienzo");
+        t1.setText(Lang.t(522));
         t1.setTextSize(18f);
         t1.setTextColor(0xFFEDE7F6);
         t1.setTypeface(null, android.graphics.Typeface.BOLD);
         hint.addView(t1);
         TextView t2 = new TextView(svc);
-        t2.setText("Arrastrá la burbuja hasta donde quieras y tocá «Listo» para dejarla ahí.");
+        t2.setText(Lang.t(523));
         t2.setTextSize(13f);
         t2.setTextColor(0xFFB0A9B5);
         t2.setPadding(0, dp(6), 0, dp(12));
         hint.addView(t2);
         LinearLayout btns = new LinearLayout(svc);
         btns.setGravity(Gravity.END);
-        TextView reset = chip("Borde derecho", 0xFF2A2833);
-        TextView done = chip("Listo", 0xFF5B4B9A);
+        TextView reset = chip(Lang.t(524), 0xFF2A2833);
+        TextView done = chip(Lang.t(316), 0xFF5B4B9A);
         btns.addView(reset);
         LinearLayout.LayoutParams dl = new LinearLayout.LayoutParams(-2, -2);
         dl.leftMargin = dp(10);
@@ -645,8 +645,8 @@ public final class SideHub implements SidePanel.Host {
     public boolean test() {
         if (effectiveMode() == SideConfig.MODE_OFF) return false;
         ui.post(() -> {
-            MediaListener.Note n = new MediaListener.Note("zc-test", svc.getPackageName(), "Mensajes",
-                "Nuevo mensaje de Juan", "¿Te vemos más tarde?", 0, null, SideLauncher.icon(svc, svc.getPackageName()),
+            MediaListener.Note n = new MediaListener.Note("zc-test", svc.getPackageName(), Lang.t(525),
+                Lang.t(526), Lang.t(527), 0, null, SideLauncher.icon(svc, svc.getPackageName()),
                 null, true, false, System.currentTimeMillis(), new ArrayList<>());
             if (panel == null && canvas == null && nState == ST_IDLE) showNotice(n);
             else onNotification(n);

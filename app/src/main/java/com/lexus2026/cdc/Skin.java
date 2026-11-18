@@ -89,7 +89,7 @@ public class Skin {
     }
 
     public static String export(Context c) {
-        StringBuilder sb = new StringBuilder("ZCSKIN1\n");
+        StringBuilder sb = new StringBuilder(Lang.t(533));
         for (Map.Entry<String, ?> en : prefs(c).getAll().entrySet()) {
             String key = en.getKey();
             Object v = en.getValue();
@@ -137,7 +137,7 @@ public class Skin {
         e.apply();
     }
 
-    public static final String[] PRESETS = {"Cristal", "Neón", "Terminal", "Papel", "Brutalista", "AMOLED"};
+    public static final String[] PRESETS = {Lang.t(831), Lang.t(832), Lang.t(833), Lang.t(834), Lang.t(835), Lang.t(836)};
 
     private static void put(SharedPreferences.Editor e, String key, int v) { e.putInt(k(key), v); }
 

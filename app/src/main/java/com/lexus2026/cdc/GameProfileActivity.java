@@ -54,8 +54,8 @@ public class GameProfileActivity extends Activity {
             bdpi = o.dpi;
         }
 
-        String title = "Configuración general";
-        String sub = "Se aplica a los juegos sin perfil propio";
+        String title = Lang.t(291);
+        String sub = Lang.t(292);
         if (pkg != null) {
             try {
                 PackageManager pm = getPackageManager();
@@ -63,7 +63,7 @@ public class GameProfileActivity extends Activity {
             } catch (Exception e) {
                 title = pkg;
             }
-            sub = pkg + (GameSettings.hasProfile(this, pkg) ? "" : " · usando la configuración general");
+            sub = pkg + (GameSettings.hasProfile(this, pkg) ? "" : Lang.t(293));
         }
 
         LinearLayout root = GcUi.col(this);
@@ -76,7 +76,7 @@ public class GameProfileActivity extends Activity {
         card.setBackground(GcUi.round(this, GcUi.CARD, 18));
         card.setPadding(dp(16), dp(8), dp(16), dp(12));
 
-        sw(card, "Limpiar procesos antes de jugar", null, p.procs, v -> p.procs = v);
+        sw(card, Lang.t(294), null, p.procs, v -> p.procs = v);
 
         LinearLayout rb = GcUi.col(this);
         rb.setPadding(0, dp(12), 0, dp(12));
@@ -107,11 +107,11 @@ public class GameProfileActivity extends Activity {
         card.addView(GcUi.line(this));
         updatePct();
 
-        sw(card, "Compilar con ART antes de jugar", "Solo cuando el juego es nuevo o se actualizó", p.compile, v -> p.compile = v);
-        sw(card, "Panel flotante in-game", "Burbuja en el lateral izquierdo", p.panel, v -> p.panel = v);
-        sw(card, "Modo de ahorro de batería", null, p.saver, v -> p.saver = v);
-        sw(card, "No mantener actividades", "Temporal durante la sesión", p.noKeep, v -> p.noKeep = v);
-        sw(card, "Sin procesos en segundo plano", "Temporal durante la sesión", p.bgLimit, v -> p.bgLimit = v);
+        sw(card, Lang.t(295), Lang.t(296), p.compile, v -> p.compile = v);
+        sw(card, Lang.t(297), Lang.t(298), p.panel, v -> p.panel = v);
+        sw(card, Lang.t(299), null, p.saver, v -> p.saver = v);
+        sw(card, Lang.t(300), Lang.t(301), p.noKeep, v -> p.noKeep = v);
+        sw(card, Lang.t(302), Lang.t(301), p.bgLimit, v -> p.bgLimit = v);
 
         if (pkg == null) {
             modeBtn = GcUi.tv(this, "", 15, GcUi.GREEN, true);
@@ -119,19 +119,19 @@ public class GameProfileActivity extends Activity {
             modeBtn.setOnClickListener(v -> pickMode());
             card.addView(modeBtn);
             updateMode();
-            TextView ex = GcUi.tv(this, "Apps que nunca se cierran…", 15, GcUi.GREEN, true);
+            TextView ex = GcUi.tv(this, Lang.t(303), 15, GcUi.GREEN, true);
             ex.setPadding(0, dp(10), 0, dp(6));
             ex.setOnClickListener(v -> exceptions());
             card.addView(ex);
         }
         root.addView(card, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 16));
 
-        Button save = btn("Guardar", v -> save());
+        Button save = btn(Lang.t(23), v -> save());
         root.addView(save, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 16));
         if (pkg != null) {
-            Button rs = btn("Usar la configuración general", v -> {
+            Button rs = btn(Lang.t(304), v -> {
                 GameSettings.resetProfile(this, pkg);
-                Toast.makeText(this, "Perfil eliminado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, Lang.t(305), Toast.LENGTH_SHORT).show();
                 finish();
             });
             root.addView(rs);
@@ -169,12 +169,12 @@ public class GameProfileActivity extends Activity {
 
     private void updatePct() {
         int[] s = GameOps.size(bw, bh, p.pct);
-        pctLabel.setText("Resolución: " + p.pct + " %");
+        pctLabel.setText(Lang.t(306) + p.pct + " %");
         preview.setText(s[0] + " × " + s[1] + " · " + GameOps.dpi(bdpi, p.pct) + " dpi");
     }
 
     private void updateMode() {
-        modeBtn.setText("Modo de compilación: " + GameSettings.compileMode(this));
+        modeBtn.setText(Lang.t(307) + GameSettings.compileMode(this));
     }
 
     private void pickMode() {
@@ -183,7 +183,7 @@ public class GameProfileActivity extends Activity {
         String m = GameSettings.compileMode(this);
         for (int i = 0; i < modes.length; i++) if (modes[i].equals(m)) cur = i;
         new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-            .setTitle("Modo de compilación")
+            .setTitle(Lang.t(308))
             .setSingleChoiceItems(modes, cur, (d, which) -> {
                 GameSettings.setCompileMode(this, modes[which]);
                 updateMode();
@@ -209,21 +209,21 @@ public class GameProfileActivity extends Activity {
             chk[i] = cur.contains(all.get(i).packageName);
         }
         new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-            .setTitle("Apps que nunca se cierran")
+            .setTitle(Lang.t(309))
             .setMultiChoiceItems(lb.toArray(new String[0]), chk, (d, i, c) -> chk[i] = c)
-            .setPositiveButton("Guardar", (d, w) -> {
+            .setPositiveButton(Lang.t(23), (d, w) -> {
                 Set<String> n = new HashSet<String>();
                 for (int i = 0; i < chk.length; i++) if (chk[i]) n.add(pk.get(i));
                 GameSettings.setExceptions(this, n);
             })
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(Lang.t(24), null)
             .show();
     }
 
     private void save() {
         if (pkg == null) GameSettings.saveDefaults(this, p);
         else GameSettings.saveProfile(this, pkg, p);
-        Toast.makeText(this, "Guardado", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Lang.t(310), Toast.LENGTH_SHORT).show();
         finish();
     }
 }

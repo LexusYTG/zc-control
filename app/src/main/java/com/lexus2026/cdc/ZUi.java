@@ -72,7 +72,7 @@ final class ZUi {
         if (sub != null) col.addView(text(c, sub, 12f, SUB, false));
         r.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
         if (dim) {
-            TextView tag = text(c, "Pronto", 11f, SUB, true);
+            TextView tag = text(c, Lang.t(541), 11f, SUB, true);
             tag.setPadding(dp(c, 8), dp(c, 3), dp(c, 8), dp(c, 3));
             tag.setBackground(shape(c, CARD_HI, 10));
             r.addView(tag);

@@ -199,10 +199,10 @@ public final class GameWatchdog {
             if (r.code != 0) return false;
             String[] p = r.out.split("#\n", -1);
             if (p.length < 6) return false;
-            int[] phys = dims(p[0], "Physical size");
-            int[] ov = dims(p[0], "Override size");
-            int pd = num(p[1], "Physical density");
-            int od = num(p[1], "Override density");
+            int[] phys = dims(p[0], Lang.t(333));
+            int[] ov = dims(p[0], Lang.t(334));
+            int pd = num(p[1], Lang.t(335));
+            int od = num(p[1], Lang.t(336));
             int[] eff = ov != null ? ov : phys;
             int dpi = od > 0 ? od : pd;
             if (eff == null || dpi <= 0) return false;

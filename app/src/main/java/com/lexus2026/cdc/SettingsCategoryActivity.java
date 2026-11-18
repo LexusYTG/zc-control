@@ -23,7 +23,7 @@ public class SettingsCategoryActivity extends Activity {
         LinearLayout root = ZUi.box(this, LinearLayout.VERTICAL);
         root.setPadding(ZUi.dp(this, 20), ZUi.dp(this, 20), ZUi.dp(this, 20), ZUi.dp(this, 32));
 
-        TextView back = ZUi.text(this, "‹  Ajustes", 14f, ZUi.ACC, true);
+        TextView back = ZUi.text(this, Lang.t(509), 14f, ZUi.ACC, true);
         back.setPadding(0, ZUi.dp(this, 8), 0, ZUi.dp(this, 12));
         back.setOnClickListener(v -> finish());
         root.addView(back);
@@ -40,7 +40,7 @@ public class SettingsCategoryActivity extends Activity {
             if (i > 0) card.addView(ZUi.divider(this), new LinearLayout.LayoutParams(-1, 1));
             final boolean dim = l.target == null;
             card.addView(ZUi.row(this, null, l.title, l.sub, dim, (View v) -> {
-                if (dim) Toast.makeText(this, "Todavía no está disponible", Toast.LENGTH_SHORT).show();
+                if (dim) Toast.makeText(this, Lang.t(510), Toast.LENGTH_SHORT).show();
                 else l.target.open(this);
             }));
         }

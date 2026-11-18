@@ -60,7 +60,7 @@ public class MeterView extends View {
         if (memKb <= 0L) return "--";
         long mb = memKb / 1024L;
         if (mb >= 1024L) return String.format(Locale.US, "%.1f GB", mb / 1024f);
-        return mb + " MB";
+        return mb + Lang.t(472);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MeterView extends View {
         String[] v = hasGpu
             ? new String[]{cpu + "%", mem(), (gpuEst ? "~" : "") + gpu + "%", String.valueOf(fps)}
             : new String[]{cpu + "%", mem(), String.valueOf(fps)};
-        String[] labels = hasGpu ? new String[]{"CPU", "RAM", "GPU", "FPS"} : new String[]{"CPU", "RAM", "FPS"};
+        String[] labels = hasGpu ? new String[]{Lang.t(473), Lang.t(474), Lang.t(475), Lang.t(476)} : new String[]{Lang.t(473), Lang.t(474), Lang.t(476)};
         int cols = v.length;
         float rowH = h / 2f;
         float colW = w / cols;
@@ -93,6 +93,6 @@ public class MeterView extends View {
         sep.setAlpha((int) (51 * a));
         String t = temp < 0f ? "--" : String.format(Locale.US, "%.0f°C", temp);
         c.drawText(t, w / 2f, rowH + rowH * 0.54f, val);
-        c.drawText("TEMP SOC", w / 2f, rowH + rowH * 0.88f, lab);
+        c.drawText(Lang.t(477), w / 2f, rowH + rowH * 0.88f, lab);
     }
 }

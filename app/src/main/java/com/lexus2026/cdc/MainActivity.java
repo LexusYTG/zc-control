@@ -153,8 +153,8 @@ public class MainActivity extends Activity {
         root = box(LinearLayout.VERTICAL);
         root.setPadding(dp(20), dp(28), dp(20), dp(32));
 
-        root.addView(text("Permisos y estado", 30f, TXT, true));
-        TextView subtitle = text("Servicios, permisos y accesos directos de ZC Control", 14f, SUB, false);
+        root.addView(text(Lang.t(638), 30f, TXT, true));
+        TextView subtitle = text(Lang.t(450), 14f, SUB, false);
         subtitle.setPadding(0, dp(4), 0, dp(20));
         root.addView(subtitle);
 
@@ -167,60 +167,60 @@ public class MainActivity extends Activity {
         heroSub.setPadding(0, dp(4), 0, dp(14));
         hero.addView(heroSub);
         LinearLayout r1 = box(LinearLayout.HORIZONTAL);
-        r1.addView(chip("svc", "Servicio"), lp(0, -2, 1f, 0, 0, 4, 8));
-        r1.addView(chip("acc", "Accesibilidad"), lp(0, -2, 1f, 4, 0, 4, 8));
-        r1.addView(chip("wr", "Ajustes"), lp(0, -2, 1f, 4, 0, 0, 8));
+        r1.addView(chip("svc", Lang.t(451)), lp(0, -2, 1f, 0, 0, 4, 8));
+        r1.addView(chip("acc", Lang.t(865)), lp(0, -2, 1f, 4, 0, 4, 8));
+        r1.addView(chip("wr", Lang.t(240)), lp(0, -2, 1f, 4, 0, 0, 8));
         hero.addView(r1);
         LinearLayout r2 = box(LinearLayout.HORIZONTAL);
-        r2.addView(chip("dnd", "No molestar"), lp(0, -2, 1f, 0, 0, 4, 0));
-        r2.addView(chip("shz", "Shizuku"), lp(0, -2, 1f, 4, 0, 0, 0));
+        r2.addView(chip("dnd", Lang.t(889)), lp(0, -2, 1f, 0, 0, 4, 0));
+        r2.addView(chip("shz", Lang.t(452)), lp(0, -2, 1f, 4, 0, 0, 0));
         hero.addView(r2);
         root.addView(hero);
 
-        activate = pill("⚡  Activar todo con Shizuku", ACC, 0xFF0B0F1A, () -> {
+        activate = pill(Lang.t(453), ACC, 0xFF0B0F1A, () -> {
             if (Privileged.available()) autoGrant();
             else try { Shizuku.requestPermission(1); } catch (Throwable e) {
-                Toast.makeText(this, "Abrí Shizuku e iniciá el servicio primero", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, Lang.t(454), Toast.LENGTH_LONG).show();
             }
         });
         root.addView(activate, lp(-1, -2, 0f, 0, 12, 0, 0));
 
-        section("Personalización");
+        section(Lang.t(640));
         tileRow(
-            tile("🎨", "Barra de acciones", "Accesos y estilo del panel", () -> SettingsPageActivity.open(this, SettingsTree.find("sistema/panel")), 0),
-            tile("🫧", "Interfaz lateral", "Burbuja y gestos", () ->
+            tile("🎨", Lang.t(641), Lang.t(642), () -> SettingsPageActivity.open(this, SettingsTree.find("sistema/panel")), 0),
+            tile("🫧", Lang.t(643), Lang.t(455), () ->
                 SettingsPageActivity.open(this, SettingsTree.find("personalizacion/lateral")), 0));
         tileRow(
-            tile("🚀", "Launcher radial", "Arcos, tamaño y forma", () -> startActivity(new Intent(this, LauncherSettingsActivity.class)), 0),
-            tile("🎮", "Games", "Modo juego y perfiles", () -> startActivity(new Intent(this, GamesActivity.class)), 0));
+            tile("🚀", Lang.t(623), Lang.t(644), () -> startActivity(new Intent(this, LauncherSettingsActivity.class)), 0),
+            tile("🎮", Lang.t(645), Lang.t(646), () -> startActivity(new Intent(this, GamesActivity.class)), 0));
 
-        section("Acciones");
+        section(Lang.t(456));
         tileRow(
-            tile("▶", "Probar panel", "Abrirlo ahora", () -> {
+            tile("▶", Lang.t(457), Lang.t(458), () -> {
                 ControlService svc = ControlService.instance;
                 if (svc != null) svc.open();
-                else Toast.makeText(this, "El servicio todavía no está activo", Toast.LENGTH_LONG).show();
+                else Toast.makeText(this, Lang.t(10), Toast.LENGTH_LONG).show();
             }, 0),
-            tile("🏠", "Launcher de inicio", "Elegir cuál usar", () -> startActivity(new Intent(Settings.ACTION_HOME_SETTINGS)), 0));
+            tile("🏠", Lang.t(647), Lang.t(648), () -> startActivity(new Intent(Settings.ACTION_HOME_SETTINGS)), 0));
 
-        section("Permisos manuales");
+        section(Lang.t(459));
         LinearLayout perms = box(LinearLayout.VERTICAL);
         perms.setBackground(shape(CARD, 20));
-        perms.addView(listRow("Accesibilidad", "Necesario para el panel", () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
+        perms.addView(listRow(Lang.t(865), Lang.t(649), () -> startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
         perms.addView(divider(), new LinearLayout.LayoutParams(-1, 1));
-        perms.addView(listRow("Modificar ajustes", "Brillo y giro", () ->
+        perms.addView(listRow(Lang.t(460), Lang.t(461), () ->
             startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName())))));
         perms.addView(divider(), new LinearLayout.LayoutParams(-1, 1));
-        perms.addView(listRow("No molestar", "Acceso a la política", () -> startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))));
+        perms.addView(listRow(Lang.t(889), Lang.t(650), () -> startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))));
         root.addView(perms);
 
-        section("Panel del sistema");
+        section(Lang.t(866));
         LinearLayout lockRow = box(LinearLayout.HORIZONTAL);
-        lockRow.addView(pill("Suplantar", CARD_HI, TXT, () -> lock(true)), lp(0, -2, 1f, 0, 0, 6, 0));
-        lockRow.addView(pill("Restablecer", CARD_HI, TXT, () -> lock(false)), lp(0, -2, 1f, 6, 0, 0, 0));
+        lockRow.addView(pill(Lang.t(462), CARD_HI, TXT, () -> lock(true)), lp(0, -2, 1f, 0, 0, 6, 0));
+        lockRow.addView(pill(Lang.t(463), CARD_HI, TXT, () -> lock(false)), lp(0, -2, 1f, 6, 0, 0, 0));
         root.addView(lockRow);
 
-        section("Cómo se usa");
+        section(Lang.t(464));
         TextView help = text("Uso: arrastrá hacia abajo desde la barrita blanca del borde superior. Primera bajada: notificaciones; bajá de nuevo para expandir los accesos. Deslizá a los costados para cambiar de pestaña. Mantené apretado un acceso para abrir sus ajustes; para agregar, quitar u ordenar accesos usá el botón ✎ o el botón de la pestaña de controles.", 13f, SUB, false);
         help.setLineSpacing(0f, 1.2f);
         help.setPadding(dp(18), dp(16), dp(18), dp(16));
@@ -239,12 +239,12 @@ public class MainActivity extends Activity {
 
     private void lock(boolean on) {
         if (!Privileged.available()) {
-            Toast.makeText(this, "Necesita Shizuku activo", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, Lang.t(59), Toast.LENGTH_LONG).show();
             return;
         }
         Privileged.run("cmd statusbar send-disable-flag " + (on ? "statusbar-expansion" : "none"), () -> {
             getSharedPreferences("cc", MODE_PRIVATE).edit().putBoolean("lock", on).apply();
-            Toast.makeText(this, on ? "Panel del sistema reemplazado" : "Panel del sistema restablecido",
+            Toast.makeText(this, on ? Lang.t(465) : Lang.t(466),
                 Toast.LENGTH_SHORT).show();
         });
     }
@@ -309,9 +309,9 @@ public class MainActivity extends Activity {
         mark("dnd", dnd);
         mark("shz", shz);
         boolean all = svc && acc && wr && dnd;
-        heroTitle.setText(all ? "Todo listo" : "Faltan permisos");
+        heroTitle.setText(all ? Lang.t(467) : Lang.t(468));
         heroTitle.setTextColor(all ? OK : WARN);
-        heroSub.setText(all ? "El centro de control está activo" : shz ? "Tocá activar y se concede solo" : "Activá Shizuku o concedé los permisos a mano");
+        heroSub.setText(all ? Lang.t(469) : shz ? Lang.t(470) : Lang.t(471));
         activate.setVisibility(all ? View.GONE : View.VISIBLE);
     }
 

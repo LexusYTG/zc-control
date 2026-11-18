@@ -115,7 +115,7 @@ public class LayoutEditorActivity extends Activity {
     }
 
     private void confirm(String msg, final Runnable action) {
-        new AlertDialog.Builder(this).setMessage(msg).setPositiveButton("Aceptar", (d, w) -> action.run()).setNegativeButton("Cancelar", null).show();
+        new AlertDialog.Builder(this).setMessage(msg).setPositiveButton(Lang.t(366), (d, w) -> action.run()).setNegativeButton(Lang.t(24), null).show();
     }
 
     @Override
@@ -146,14 +146,14 @@ public class LayoutEditorActivity extends Activity {
         back.setOnClickListener(v -> finish());
         head.addView(back);
         TextView title = new TextView(this);
-        title.setText("Editor del lienzo");
+        title.setText(Lang.t(414));
         title.setTextSize(18f);
         title.setTextColor(txt);
         title.setTypeface(null, Typeface.BOLD);
         head.addView(title, new LinearLayout.LayoutParams(0, WCB, 1f));
-        pageBtn = small("Página 1", () -> { page = 1 - page; sel = null; rebuild(); });
+        pageBtn = small(Lang.t(415), () -> { page = 1 - page; sel = null; rebuild(); });
         head.addView(pageBtn);
-        head.addView(small("Ejemplo", () -> confirm("¿Reemplazar todo el diseño por el ejemplo?", () -> {
+        head.addView(small(Lang.t(416), () -> confirm(Lang.t(417), () -> {
             clearWidgets();
             elems.clear();
             elems.addAll(Elem.example(cols));
@@ -161,7 +161,7 @@ public class LayoutEditorActivity extends Activity {
             Elem.save(this, elems);
             rebuild();
         })));
-        head.addView(small("Vaciar", () -> confirm("¿Borrar todos los elementos?", () -> {
+        head.addView(small(Lang.t(418), () -> confirm(Lang.t(419), () -> {
             clearWidgets();
             elems.clear();
             sel = null;
@@ -189,17 +189,17 @@ public class LayoutEditorActivity extends Activity {
 
         LinearLayout pal = new LinearLayout(this);
         pal.setPadding(dp(8), 0, dp(8), dp(8));
-        pal.addView(small("＋ Acceso", () -> pickTile(key -> addElem("tile", 1, 1, 0, key))));
-        pal.addView(small("＋ Reloj", () -> addElem("clock", Math.min(cols, 6), 2, 0, "")));
-        pal.addView(small("＋ Reproductor", () -> addElem("media", Math.min(cols, 5), 3, 0, "")));
-        pal.addView(small("＋ Notificaciones", () -> addElem("notifs", cols, 5, 0, "")));
-        pal.addView(small("＋ Brillo", () -> addElem("bright", Math.min(cols, 4), 1, 0, "")));
-        pal.addView(small("＋ Volumen", () -> addElem("volume", Math.min(cols, 4), 1, 0, "")));
-        pal.addView(small("＋ Imagen o GIF", () -> pickMedia(false, false)));
-        pal.addView(small("＋ Video", () -> pickMedia(true, false)));
-        pal.addView(small("＋ App", () -> pickApp(pkg -> addElem("app", 1, 1, 0, pkg))));
-        pal.addView(small("＋ Widget", () -> pickWidget()));
-        pal.addView(small("＋ Texto", () -> promptText("", t -> addElem("text", Math.min(cols, 3), 1, 0, t))));
+        pal.addView(small(Lang.t(420), () -> pickTile(key -> addElem("tile", 1, 1, 0, key))));
+        pal.addView(small(Lang.t(421), () -> addElem("clock", Math.min(cols, 6), 2, 0, "")));
+        pal.addView(small(Lang.t(422), () -> addElem("media", Math.min(cols, 5), 3, 0, "")));
+        pal.addView(small(Lang.t(423), () -> addElem("notifs", cols, 5, 0, "")));
+        pal.addView(small(Lang.t(424), () -> addElem("bright", Math.min(cols, 4), 1, 0, "")));
+        pal.addView(small(Lang.t(425), () -> addElem("volume", Math.min(cols, 4), 1, 0, "")));
+        pal.addView(small(Lang.t(426), () -> pickMedia(false, false)));
+        pal.addView(small(Lang.t(427), () -> pickMedia(true, false)));
+        pal.addView(small(Lang.t(428), () -> pickApp(pkg -> addElem("app", 1, 1, 0, pkg))));
+        pal.addView(small(Lang.t(429), () -> pickWidget()));
+        pal.addView(small(Lang.t(430), () -> promptText("", t -> addElem("text", Math.min(cols, 3), 1, 0, t))));
         HorizontalScrollView ps = new HorizontalScrollView(this);
         ps.setHorizontalScrollBarEnabled(false);
         ps.addView(pal);
@@ -316,7 +316,7 @@ public class LayoutEditorActivity extends Activity {
     }
 
     private void rebuild() {
-        pageBtn.setText("Página " + (page + 1));
+        pageBtn.setText(Lang.t(431) + (page + 1));
         canvas.removeAllViews();
         views.clear();
         resizeCanvas();
@@ -347,8 +347,8 @@ public class LayoutEditorActivity extends Activity {
     private String widgetLabel(Elem e) {
         try {
             AppWidgetProviderInfo pi = AppWidgetManager.getInstance(this).getAppWidgetInfo(Integer.parseInt(e.a));
-            return pi != null ? pi.loadLabel(getPackageManager()) : "no disponible";
-        } catch (Exception x) { return "no disponible"; }
+            return pi != null ? pi.loadLabel(getPackageManager()) : Lang.t(432);
+        } catch (Exception x) { return Lang.t(432); }
     }
 
     private String tileName(String key) {
@@ -364,7 +364,7 @@ public class LayoutEditorActivity extends Activity {
                 if (("tp:" + f[0]).equals(key)) return f[1];
             }
         }
-        return key;
+        return Lang.s(key);
     }
 
     private String appName(String pkg) {
@@ -375,17 +375,17 @@ public class LayoutEditorActivity extends Activity {
 
     private String describe(Elem e) {
         switch (e.type) {
-            case "tile": return "Acceso: " + tileName(e.a);
-            case "clock": return "Reloj y fecha";
-            case "media": return "Reproductor";
-            case "notifs": return "Notificaciones";
-            case "bright": return "Brillo";
-            case "volume": return "Volumen";
-            case "image": return "Imagen o GIF";
-            case "video": return "Video";
-            case "widget": return "Widget: " + widgetLabel(e);
-            case "text": return "Texto: " + e.a;
-            case "app": return "App: " + appName(e.a);
+            case "tile": return Lang.t(880) + tileName(e.a);
+            case "clock": return Lang.t(881);
+            case "media": return Lang.t(882);
+            case "notifs": return Lang.t(874);
+            case "bright": return Lang.t(873);
+            case "volume": return Lang.t(883);
+            case "image": return Lang.t(884);
+            case "video": return Lang.t(885);
+            case "widget": return Lang.t(886) + widgetLabel(e);
+            case "text": return Lang.t(887) + e.a;
+            case "app": return Lang.t(888) + appName(e.a);
             default: return e.type;
         }
     }
@@ -456,9 +456,9 @@ public class LayoutEditorActivity extends Activity {
             case "video": {
                 Uri u = Uri.parse(e.a);
                 if (e.a.isEmpty()) {
-                    f.addView(centered("Sin archivo"), new FrameLayout.LayoutParams(MPB, MPB));
+                    f.addView(centered(Lang.t(433)), new FrameLayout.LayoutParams(MPB, MPB));
                 } else if (Media.isVideo(this, u)) {
-                    f.addView(centered("▶ Video"), new FrameLayout.LayoutParams(MPB, MPB));
+                    f.addView(centered(Lang.t(434)), new FrameLayout.LayoutParams(MPB, MPB));
                 } else {
                     ImageView iv = new ImageView(this);
                     iv.setScaleType(e.b == 1 ? ImageView.ScaleType.FIT_CENTER : ImageView.ScaleType.CENTER_CROP);
@@ -489,7 +489,7 @@ public class LayoutEditorActivity extends Activity {
         }
         final Elem e = sel;
         info.setText(describe(e) + "   (" + e.x + ", " + e.y + ")  " + e.w + "×" + e.h);
-        btnRow.addView(small("Eliminar", () -> {
+        btnRow.addView(small(Lang.t(636), () -> {
             if (e.type.equals("widget")) {
                 try { host.deleteAppWidgetId(Integer.parseInt(e.a)); } catch (Exception x) {}
             }
@@ -498,9 +498,9 @@ public class LayoutEditorActivity extends Activity {
             Elem.save(this, elems);
             rebuild();
         }));
-        btnRow.addView(small("Duplicar", () -> {
+        btnRow.addView(small(Lang.t(435), () -> {
             if (e.type.equals("clock") || e.type.equals("media") || e.type.equals("notifs") || e.type.equals("widget")) {
-                Toast.makeText(this, "Este elemento no se puede duplicar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, Lang.t(436), Toast.LENGTH_SHORT).show();
                 return;
             }
             Elem c = e.copy();
@@ -510,28 +510,28 @@ public class LayoutEditorActivity extends Activity {
             Elem.save(this, elems);
             rebuild();
         }));
-        btnRow.addView(small("A la página " + (e.page == 0 ? 2 : 1), () -> {
+        btnRow.addView(small(Lang.t(437) + (e.page == 0 ? 2 : 1), () -> {
             e.page = 1 - e.page;
             placeFree(e);
             page = e.page;
             Elem.save(this, elems);
             rebuild();
         }));
-        btnRow.addView(small("Al frente", () -> {
+        btnRow.addView(small(Lang.t(438), () -> {
             elems.remove(e);
             elems.add(e);
             Elem.save(this, elems);
             rebuild();
         }));
         if (e.type.equals("tile")) {
-            btnRow.addView(small("Cambiar acceso", () -> pickTile(key -> { e.a = key; Elem.save(this, elems); rebuild(); })));
+            btnRow.addView(small(Lang.t(439), () -> pickTile(key -> { e.a = key; Elem.save(this, elems); rebuild(); })));
         }
         if (e.type.equals("app")) {
-            btnRow.addView(small("Cambiar app", () -> pickApp(pkg -> { e.a = pkg; Elem.save(this, elems); rebuild(); })));
+            btnRow.addView(small(Lang.t(440), () -> pickApp(pkg -> { e.a = pkg; Elem.save(this, elems); rebuild(); })));
         }
         if (e.type.equals("text")) {
-            btnRow.addView(small("Editar texto", () -> promptText(e.a, t -> { e.a = t; Elem.save(this, elems); rebuild(); })));
-            btnRow.addView(small("Color", () -> {
+            btnRow.addView(small(Lang.t(441), () -> promptText(e.a, t -> { e.a = t; Elem.save(this, elems); rebuild(); })));
+            btnRow.addView(small(Lang.t(412), () -> {
                 int idx = 0;
                 for (int i = 0; i < COLORS.length; i++) {
                     if (COLORS[i] == e.b) idx = i;
@@ -542,8 +542,8 @@ public class LayoutEditorActivity extends Activity {
             }));
         }
         if (e.type.equals("image") || e.type.equals("video")) {
-            btnRow.addView(small("Cambiar archivo", () -> pickMedia(e.type.equals("video"), true)));
-            btnRow.addView(small(e.b == 1 ? "Rellenar" : "Ajustar", () -> {
+            btnRow.addView(small(Lang.t(637), () -> pickMedia(e.type.equals("video"), true)));
+            btnRow.addView(small(e.b == 1 ? Lang.t(442) : Lang.t(443), () -> {
                 e.b = e.b == 1 ? 0 : 1;
                 Elem.save(this, elems);
                 rebuild();
@@ -598,22 +598,22 @@ public class LayoutEditorActivity extends Activity {
         }
         for (String[] f : Skin.customTiles(this)) {
             keys.add("ct:" + f[0]);
-            names.add("★ " + (f[2].isEmpty() ? "Acceso" : f[2]));
+            names.add("★ " + (f[2].isEmpty() ? Lang.t(595) : f[2]));
         }
         for (String[] f : PanelView.thirdPartyInfo(this)) {
             keys.add("tp:" + f[0]);
-            names.add(f[1] + "  (app)");
+            names.add(f[1] + Lang.t(863));
         }
-        new AlertDialog.Builder(this).setTitle("Elegí un acceso")
+        new AlertDialog.Builder(this).setTitle(Lang.t(444))
             .setItems(names.toArray(new CharSequence[0]), (d, which) -> cb.accept(keys.get(which))).show();
     }
 
     private void promptText(String initial, final Consumer<String> cb) {
         final EditText et = new EditText(this);
         et.setText(initial);
-        new AlertDialog.Builder(this).setTitle("Texto").setView(et)
-            .setPositiveButton("Aceptar", (d, w) -> cb.accept(et.getText().toString()))
-            .setNegativeButton("Cancelar", null).show();
+        new AlertDialog.Builder(this).setTitle(Lang.t(445)).setView(et)
+            .setPositiveButton(Lang.t(366), (d, w) -> cb.accept(et.getText().toString()))
+            .setNegativeButton(Lang.t(24), null).show();
     }
 
     private void pickMedia(boolean video, boolean replace) {
@@ -635,7 +635,7 @@ public class LayoutEditorActivity extends Activity {
         java.util.Collections.sort(apps, (x, y) -> x[0].toLowerCase().compareTo(y[0].toLowerCase()));
         CharSequence[] names = new CharSequence[apps.size()];
         for (int i = 0; i < names.length; i++) names[i] = apps.get(i)[0];
-        new AlertDialog.Builder(this).setTitle("Elegí una app").setItems(names, (d, which) -> cb.accept(apps.get(which)[1])).show();
+        new AlertDialog.Builder(this).setTitle(Lang.t(864)).setItems(names, (d, which) -> cb.accept(apps.get(which)[1])).show();
     }
 
     private void pickWidget() {
@@ -643,7 +643,7 @@ public class LayoutEditorActivity extends Activity {
         final List<AppWidgetProviderInfo> list = awm.getInstalledProviders();
         List<CharSequence> names = new ArrayList<>();
         for (AppWidgetProviderInfo p : list) names.add(p.loadLabel(getPackageManager()));
-        new AlertDialog.Builder(this).setTitle("Elegí un widget")
+        new AlertDialog.Builder(this).setTitle(Lang.t(446))
             .setItems(names.toArray(new CharSequence[0]), (d, which) -> {
                 AppWidgetProviderInfo p = list.get(which);
                 int id = host.allocateAppWidgetId();

@@ -246,7 +246,7 @@ public class PanelView extends FrameLayout {
             ctx.startActivity(i);
             if (sk.closeOnAct != 0) onClose.run();
         } catch (Exception e) {
-            Toast.makeText(ctx, "No se pudo abrir el ajuste", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, Lang.t(478), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -269,16 +269,16 @@ public class PanelView extends FrameLayout {
     }
 
     private final List<Tile> tiles = Arrays.asList(
-        new Tile("Internet", R.drawable.ic_wifi, () -> wifi().isWifiEnabled(), "Wi-Fi activado", "Desactivado", () ->
+        new Tile("Internet", R.drawable.ic_wifi, () -> wifi().isWifiEnabled(), Lang.t(479), Lang.t(614), () ->
             priv("svc wifi " + (wifi().isWifiEnabled() ? "disable" : "enable"), Settings.Panel.ACTION_INTERNET_CONNECTIVITY)),
-        new Tile("Bluetooth", R.drawable.ic_bt, () -> btOn(), "Activado", "Desactivado", () ->
+        new Tile("Bluetooth", R.drawable.ic_bt, () -> btOn(), Lang.t(617), Lang.t(614), () ->
             priv("svc bluetooth " + (btOn() ? "disable" : "enable"), Settings.ACTION_BLUETOOTH_SETTINGS)),
-        new Tile("Linterna", R.drawable.ic_torch, () -> torch, "Encendida", "Apagada", () -> {
+        new Tile("Linterna", R.drawable.ic_torch, () -> torch, Lang.t(480), Lang.t(26), () -> {
             try { if (camId != null) cam.setTorchMode(camId, !torch); } catch (Exception e) {}
         }),
         new Tile("Giro automático", R.drawable.ic_rotate,
             () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1,
-            "Activado", "Desactivado", () -> {
+            Lang.t(617), Lang.t(614), () -> {
             if (Settings.System.canWrite(ctx)) {
                 int cur = Settings.System.getInt(ctx.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0);
                 Settings.System.putInt(ctx.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 1 - cur);
@@ -287,13 +287,13 @@ public class PanelView extends FrameLayout {
         }),
         new Tile("Ahorro de batería", R.drawable.ic_battery,
             () -> ((PowerManager) ctx.getSystemService(Context.POWER_SERVICE)).isPowerSaveMode(),
-            "Activado", "Desactivado", () -> {
+            Lang.t(617), Lang.t(614), () -> {
             boolean on = ((PowerManager) ctx.getSystemService(Context.POWER_SERVICE)).isPowerSaveMode();
             priv("settings put global low_power " + (on ? 0 : 1), Settings.ACTION_BATTERY_SAVER_SETTINGS);
         }),
         new Tile("No molestar", R.drawable.ic_dnd,
             () -> nm.getCurrentInterruptionFilter() != NotificationManager.INTERRUPTION_FILTER_ALL,
-            "Activado", "Desactivado", () -> {
+            Lang.t(617), Lang.t(614), () -> {
             if (nm.isNotificationPolicyAccessGranted()) {
                 boolean all = nm.getCurrentInterruptionFilter() == NotificationManager.INTERRUPTION_FILTER_ALL;
                 nm.setInterruptionFilter(
@@ -303,23 +303,23 @@ public class PanelView extends FrameLayout {
                 postDelayed(() -> refresh(), 300);
             } else open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         }),
-        new Tile("Modo avión", R.drawable.ic_airplane, () -> settingsOn(Settings.Global.AIRPLANE_MODE_ON), "Activado", "Desactivado", () -> {
+        new Tile("Modo avión", R.drawable.ic_airplane, () -> settingsOn(Settings.Global.AIRPLANE_MODE_ON), Lang.t(617), Lang.t(614), () -> {
             boolean on = settingsOn(Settings.Global.AIRPLANE_MODE_ON);
             priv("cmd connectivity airplane-mode " + (on ? "disable" : "enable"), Settings.ACTION_AIRPLANE_MODE_SETTINGS);
         }),
-        new Tile("Tema oscuro", R.drawable.ic_dark, () -> night, "Activado", "Desactivado", () -> {
+        new Tile("Tema oscuro", R.drawable.ic_dark, () -> night, Lang.t(617), Lang.t(614), () -> {
             priv("cmd uimode night " + (night ? "no" : "yes"), Settings.ACTION_DISPLAY_SETTINGS);
             onClose.run();
         }),
         new Tile("Ubicación", R.drawable.ic_location,
             () -> ((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).isLocationEnabled(),
-            "Activada", "Desactivada", () -> {
+            Lang.t(481), Lang.t(482), () -> {
             boolean on = ((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).isLocationEnabled();
             priv("cmd location set-location-enabled " + (on ? "false" : "true"), Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         }),
-        new Tile("Datos móviles", R.drawable.ic_data, () -> mobileData(), "Activados", "Desactivados", () ->
+        new Tile("Datos móviles", R.drawable.ic_data, () -> mobileData(), Lang.t(483), Lang.t(484), () ->
             priv("svc data " + (mobileData() ? "disable" : "enable"), Settings.ACTION_DATA_ROAMING_SETTINGS)),
-        new Tile("NFC", R.drawable.ic_nfc, () -> nfcOn(), "Activado", "Desactivado", () ->
+        new Tile("NFC", R.drawable.ic_nfc, () -> nfcOn(), Lang.t(617), Lang.t(614), () ->
             priv("svc nfc " + (nfcOn() ? "disable" : "enable"), Settings.ACTION_NFC_SETTINGS)),
         new Tile("Sonido", R.drawable.ic_sound, () -> audio.getRingerMode() != AudioManager.RINGER_MODE_NORMAL, "", "",
             () -> ringerLabel(), () -> {
@@ -333,44 +333,44 @@ public class PanelView extends FrameLayout {
             } else open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         }),
         new Tile("Brillo automático", R.drawable.ic_brightness,
-            () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0) == 1, "Activado", "Desactivado", () -> {
+            () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0) == 1, Lang.t(617), Lang.t(614), () -> {
             if (Settings.System.canWrite(ctx)) {
                 int cur = Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
                 Settings.System.putInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 1 - cur);
                 refresh();
             } else open(Settings.ACTION_MANAGE_WRITE_SETTINGS, true);
         }),
-        new Tile("Luz nocturna", R.drawable.ic_night, () -> secureOn("night_display_activated"), "Activada", "Desactivada", () ->
+        new Tile("Luz nocturna", R.drawable.ic_night, () -> secureOn("night_display_activated"), Lang.t(481), Lang.t(482), () ->
             toggleSecure("night_display_activated", Settings.ACTION_DISPLAY_SETTINGS)),
-        new Tile("Atenuar extra", R.drawable.ic_dim, () -> secureOn("reduce_bright_colors_activated"), "Activado", "Desactivado", () ->
+        new Tile("Atenuar extra", R.drawable.ic_dim, () -> secureOn("reduce_bright_colors_activated"), Lang.t(617), Lang.t(614), () ->
             toggleSecure("reduce_bright_colors_activated", Settings.ACTION_DISPLAY_SETTINGS)),
-        new Tile("Invertir colores", R.drawable.ic_invert, () -> secureOn("accessibility_display_inversion_enabled"), "Activado", "Desactivado", () ->
+        new Tile("Invertir colores", R.drawable.ic_invert, () -> secureOn("accessibility_display_inversion_enabled"), Lang.t(617), Lang.t(614), () ->
             toggleSecure("accessibility_display_inversion_enabled", Settings.ACTION_ACCESSIBILITY_SETTINGS)),
-        new Tile("Ahorro de datos", R.drawable.ic_datasaver, () -> dataSaver(), "Activado", "Desactivado", () ->
+        new Tile("Ahorro de datos", R.drawable.ic_datasaver, () -> dataSaver(), Lang.t(617), Lang.t(614), () ->
             priv("cmd netpolicy set restrict-background " + (dataSaver() ? "false" : "true"), Settings.ACTION_DATA_ROAMING_SETTINGS)),
         new Tile("Pantalla activa", R.drawable.ic_screen,
-            () -> Settings.Global.getInt(ctx.getContentResolver(), "stay_on_while_plugged_in", 0) != 0, "Al cargar", "Normal", () -> {
+            () -> Settings.Global.getInt(ctx.getContentResolver(), "stay_on_while_plugged_in", 0) != 0, Lang.t(652), Lang.t(561), () -> {
             boolean on = Settings.Global.getInt(ctx.getContentResolver(), "stay_on_while_plugged_in", 0) != 0;
             priv("settings put global stay_on_while_plugged_in " + (on ? 0 : 7), Settings.ACTION_DISPLAY_SETTINGS);
         }),
-        new Tile("Captura", R.drawable.ic_screenshot, () -> false, "", "Tocar", () -> svc(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT)),
-        new Tile("Bloquear", R.drawable.ic_padlock, () -> false, "", "Pantalla", () -> svc(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)),
-        new Tile("Apagar", R.drawable.ic_power, () -> false, "", "Menú", () -> svc(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG)),
-        new Tile("Panel del sistema", R.drawable.ic_lock, () -> prefs.getBoolean("lock", false), "Bloqueado", "Libre", () -> {
+        new Tile("Captura", R.drawable.ic_screenshot, () -> false, "", Lang.t(485), () -> svc(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT)),
+        new Tile("Bloquear", R.drawable.ic_padlock, () -> false, "", Lang.t(486), () -> svc(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)),
+        new Tile("Apagar", R.drawable.ic_power, () -> false, "", Lang.t(487), () -> svc(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG)),
+        new Tile("Panel del sistema", R.drawable.ic_lock, () -> prefs.getBoolean("lock", false), Lang.t(653), Lang.t(654), () -> {
             if (Privileged.available()) {
                 final boolean locked = prefs.getBoolean("lock", false);
                 Privileged.run("cmd statusbar send-disable-flag " + (locked ? "none" : "statusbar-expansion"), () -> {
                     prefs.edit().putBoolean("lock", !locked).apply(); refresh();
                 });
-            } else Toast.makeText(ctx, "Autorizá Shizuku en la app", Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(ctx, Lang.t(488), Toast.LENGTH_SHORT).show();
         })
     );
 
     private String ringerLabel() {
         switch (audio.getRingerMode()) {
-            case AudioManager.RINGER_MODE_VIBRATE: return "Vibrar";
-            case AudioManager.RINGER_MODE_SILENT: return "Silencio";
-            default: return "Sonar";
+            case AudioManager.RINGER_MODE_VIBRATE: return Lang.t(890);
+            case AudioManager.RINGER_MODE_SILENT: return Lang.t(891);
+            default: return Lang.t(489);
         }
     }
 
@@ -489,7 +489,7 @@ public class PanelView extends FrameLayout {
 
     private String labelOf(Tile t) {
         String v = Skin.getStr(ctx, "lbl_" + t.key, null);
-        return v == null || v.isEmpty() ? t.label : v;
+        return v == null || v.isEmpty() ? Lang.s(t.label) : v;
     }
 
     private int strokeCol() { return sk.strokeColor != 0 ? sk.strokeColor : withA(cText, 40); }
@@ -531,9 +531,9 @@ public class PanelView extends FrameLayout {
     }
 
     private void updateClock() {
-        String tp = sk.clockFormat == 1 ? (sk.showSeconds != 0 ? "h:mm:ss a" : "h:mm a") : (sk.showSeconds != 0 ? "H:mm:ss" : "H:mm");
+        String tp = sk.clockFormat == 1 ? (sk.showSeconds != 0 ? "h:mm:ss a" : "h:mm a") : (sk.showSeconds != 0 ? Lang.t(490) : "H:mm");
         cClock.setText(new SimpleDateFormat(tp, Locale.getDefault()).format(new Date()));
-        String[] pats = {"EEEE d 'de' MMMM", "EEE d MMM", "dd/MM/yyyy", "yyyy-MM-dd"};
+        String[] pats = {Lang.t(491), Lang.t(492), "dd/MM/yyyy", "yyyy-MM-dd"};
         int di = Math.max(0, Math.min(3, sk.dateFormat));
         cDate.setText(new SimpleDateFormat(pats[di], di < 2 ? new Locale("es") : Locale.getDefault()).format(new Date()));
     }
@@ -568,7 +568,7 @@ public class PanelView extends FrameLayout {
             ctx.startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             onClose.run();
         } catch (Exception e) {
-            Toast.makeText(ctx, "No se pudo abrir el ajuste", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, Lang.t(478), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -626,7 +626,7 @@ public class PanelView extends FrameLayout {
             if (ml != null) ml.cancelAllNotifications();
             postDelayed(() -> refreshNotes(), 250);
         });
-        clearBtn.setText(ss("txtClear", "Borrar todo"));
+        clearBtn.setText(ss("txtClear", Lang.t(600)));
         clearBtn.setTextSize(13f);
         clearBtn.setTextColor(cText);
         clearBtn.setGravity(Gravity.CENTER);
@@ -636,7 +636,7 @@ public class PanelView extends FrameLayout {
 
     private View mediaView(Elem e) {
         Uri u = Uri.parse(e.a);
-        if (e.a.isEmpty()) return placeholder("Sin archivo");
+        if (e.a.isEmpty()) return placeholder(Lang.t(433));
         View v;
         try {
             if (Media.isVideo(ctx, u)) {
@@ -648,7 +648,7 @@ public class PanelView extends FrameLayout {
                 v = iv;
             }
         } catch (Throwable t) {
-            return placeholder("No se pudo abrir el archivo");
+            return placeholder(Lang.t(493));
         }
         roundClip(v);
         return v;
@@ -658,14 +658,14 @@ public class PanelView extends FrameLayout {
         try {
             int id = Integer.parseInt(e.a);
             android.appwidget.AppWidgetProviderInfo info = android.appwidget.AppWidgetManager.getInstance(ctx).getAppWidgetInfo(id);
-            if (info == null) return placeholder("Widget no disponible");
+            if (info == null) return placeholder(Lang.t(494));
             android.appwidget.AppWidgetHostView hv = widgetHost().createView(ctx, id, info);
             float dd = ctx.getResources().getDisplayMetrics().density;
             hv.updateAppWidgetSize(new android.os.Bundle(), (int) (wPx / dd), (int) (hPx / dd), (int) (wPx / dd), (int) (hPx / dd));
             roundClip(hv);
             return hv;
         } catch (Throwable t) {
-            return placeholder("Widget no disponible");
+            return placeholder(Lang.t(494));
         }
     }
 
@@ -820,8 +820,8 @@ public class PanelView extends FrameLayout {
             final int type = pi(f[1]);
             final String target = f[3];
             final boolean sw = type == 3;
-            Tile t = new Tile(f[2].isEmpty() ? "Acceso" : f[2], 0, () -> sw && prefs.getBoolean("ctstate_" + id, false),
-                sw ? "Activado" : "", sw ? "Desactivado" : "Tocar", () -> runCustom(id, type, target));
+            Tile t = new Tile(f[2].isEmpty() ? Lang.t(595) : f[2], 0, () -> sw && prefs.getBoolean("ctstate_" + id, false),
+                sw ? Lang.t(617) : "", sw ? Lang.t(614) : Lang.t(485), () -> runCustom(id, type, target));
             t.key = "ct:" + id;
             out.add(t);
         }
@@ -834,7 +834,7 @@ public class PanelView extends FrameLayout {
                 if (GameWatchdog.route(ctx, target.trim())) break;
                 Intent li = ctx.getPackageManager().getLaunchIntentForPackage(target.trim());
                 if (li != null) launch(li);
-                else Toast.makeText(ctx, "No se encontró la app", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(ctx, Lang.t(495), Toast.LENGTH_SHORT).show();
                 break;
             }
             case 1:
@@ -842,10 +842,10 @@ public class PanelView extends FrameLayout {
                 break;
             case 2:
                 if (Privileged.available()) Privileged.run(target, () -> postDelayed(() -> refresh(), 400));
-                else Toast.makeText(ctx, "Necesita Shizuku", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(ctx, Lang.t(496), Toast.LENGTH_SHORT).show();
                 break;
             default: {
-                if (!Privileged.available()) { Toast.makeText(ctx, "Necesita Shizuku", Toast.LENGTH_SHORT).show(); break; }
+                if (!Privileged.available()) { Toast.makeText(ctx, Lang.t(496), Toast.LENGTH_SHORT).show(); break; }
                 boolean cur = prefs.getBoolean("ctstate_" + id, false);
                 String[] pr = target.split("&&&", 2);
                 String cmd = cur ? (pr.length > 1 ? pr[1] : "") : pr[0];
@@ -1162,7 +1162,7 @@ public class PanelView extends FrameLayout {
         MediaController c = controller();
         MediaMetadata md = c != null ? c.getMetadata() : null;
         String title = md != null ? md.getString(MediaMetadata.METADATA_KEY_TITLE) : null;
-        mediaTitle.setText(title != null ? title : "Sin reproducción");
+        mediaTitle.setText(title != null ? title : Lang.t(497));
         String artist = md != null ? md.getString(MediaMetadata.METADATA_KEY_ARTIST) : null;
         mediaArtist.setText(artist != null ? artist : "");
         Bitmap bmp = null;
@@ -1582,11 +1582,11 @@ public class PanelView extends FrameLayout {
         List<Tile> out = new ArrayList<>();
         for (String[] f : thirdPartyInfo(ctx)) {
             final String comp = f[0];
-            Tile t = new Tile(f[1], 0, () -> false, "", "App", null, () -> {
+            Tile t = new Tile(f[1], 0, () -> false, "", Lang.t(498), null, () -> {
                 if (Privileged.available()) {
                     Privileged.run("cmd statusbar add-tile " + comp + "; cmd statusbar click-tile " + comp);
                     onClose.run();
-                } else Toast.makeText(ctx, "Los accesos de apps necesitan Shizuku", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(ctx, Lang.t(499), Toast.LENGTH_SHORT).show();
             });
             t.key = "tp:" + comp;
             t.iconDrawable = thirdPartyIcon(ctx, comp);
@@ -1603,7 +1603,7 @@ public class PanelView extends FrameLayout {
             ic = pm.getApplicationIcon(e.a);
             label = pm.getApplicationLabel(pm.getApplicationInfo(e.a, 0)).toString();
         } catch (Exception x) {
-            return placeholder("App no encontrada");
+            return placeholder(Lang.t(500));
         }
         LinearLayout box = vcol();
         box.setGravity(Gravity.CENTER);
@@ -1717,11 +1717,11 @@ public class PanelView extends FrameLayout {
         LinearLayout top = hrow();
         top.setGravity(Gravity.CENTER_VERTICAL);
         TextView head = new TextView(ctx);
-        head.setText("Editar accesos");
+        head.setText(Lang.t(232));
         head.setTextSize(20f);
         head.setTextColor(tc);
         top.addView(head, new LinearLayout.LayoutParams(0, WC, 1f));
-        top.addView(pillButton("Listo", tc, rowBg, () -> {
+        top.addView(pillButton(Lang.t(316), tc, rowBg, () -> {
             prefs.edit().putString("tiles_custom", String.join("\n", w)).apply();
             work = null;
             closeEditor();
@@ -1729,7 +1729,7 @@ public class PanelView extends FrameLayout {
         }));
         col.addView(top);
         TextView help = new TextView(ctx);
-        help.setText("Activá o quitá accesos y ordenalos con las flechas. Los de apps necesitan Shizuku.");
+        help.setText(Lang.t(501));
         help.setTextSize(12f);
         help.setTextColor(sc);
         help.setPadding(0, dp(6), 0, dp(8));
@@ -1751,7 +1751,7 @@ public class PanelView extends FrameLayout {
         LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(WC, WC);
         rlp.topMargin = dp(12);
         rlp.gravity = Gravity.CENTER_HORIZONTAL;
-        col.addView(pillButton("Restablecer", sc, rowBg, () -> {
+        col.addView(pillButton(Lang.t(463), sc, rowBg, () -> {
             prefs.edit().remove("tiles_custom").remove("tiles_aosp").apply();
             work = null;
             showEditor();
@@ -1811,7 +1811,7 @@ public class PanelView extends FrameLayout {
         FrameLayout bar = new FrameLayout(ctx);
         LinearLayout row = hrow();
         tabLabels.clear();
-        String[] names = {ss("txtTab0", "Notificaciones"), ss("txtTab1", "Controles")};
+        String[] names = {ss("txtTab0", Lang.t(874)), ss("txtTab1", Lang.t(8))};
         for (int i = 0; i < names.length; i++) {
             final int idx = i;
             TextView tv = new TextView(ctx);
@@ -1959,7 +1959,7 @@ public class PanelView extends FrameLayout {
             if (ml != null) ml.cancelAllNotifications();
             postDelayed(() -> refreshNotes(), 250);
         });
-        clearBtn.setText(ss("txtClear", "Borrar todo")); clearBtn.setTextSize(13f);
+        clearBtn.setText(ss("txtClear", Lang.t(600))); clearBtn.setTextSize(13f);
         clearBtn.setTextColor(cText); clearBtn.setGravity(Gravity.CENTER);
         clearBtn.setPadding(dp(16), dp(8), dp(16), dp(8));
         clearBtn.setBackground(round(cCard, 20));
@@ -1998,7 +1998,7 @@ public class PanelView extends FrameLayout {
         }
 
         if (sk.showEdit != 0) {
-            TextView eb = pillButton(ss("txtEditTiles", "Editar accesos"), cText, cCard, () -> showEditor());
+            TextView eb = pillButton(ss("txtEditTiles", Lang.t(232)), cText, cCard, () -> showEditor());
             LinearLayout.LayoutParams elp = new LinearLayout.LayoutParams(WC, WC);
             elp.topMargin = dp(14);
             elp.gravity = Gravity.CENTER_HORIZONTAL;
@@ -2134,7 +2134,7 @@ public class PanelView extends FrameLayout {
 
     private void openNote(MediaListener.Note n) {
         if (!MediaListener.open(ctx, n)) {
-            Toast.makeText(ctx, "No se pudo abrir la notificación", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, Lang.t(502), Toast.LENGTH_SHORT).show();
         }
         if (n.autoCancel && n.clearable) MediaListener.dismiss(n);
         onClose.run();
@@ -2148,7 +2148,7 @@ public class PanelView extends FrameLayout {
         notifList.removeAllViews();
         if (notes.isEmpty()) {
             TextView empty = new TextView(ctx);
-            empty.setText(l == null ? "Acceso a notificaciones no activo" : ss("txtEmpty", "Sin notificaciones"));
+            empty.setText(l == null ? Lang.t(503) : ss("txtEmpty", Lang.t(601)));
             empty.setTextSize(13f); empty.setGravity(Gravity.CENTER); empty.setTextColor(cSub);
             empty.setPadding(0, dp(16), 0, dp(8));
             notifList.addView(empty, new LinearLayout.LayoutParams(MP, WC));
@@ -2174,7 +2174,7 @@ public class PanelView extends FrameLayout {
                     box.addView(noteRow(it), lp);
                 }
                 TextView more = new TextView(ctx);
-                more.setText(isOpen ? "▴ Mostrar menos" : "▾ " + (list.size() - 1) + " más de " + list.get(0).app);
+                more.setText(isOpen ? Lang.t(655) : "▾ " + (list.size() - 1) + Lang.t(656) + list.get(0).app);
                 more.setTextSize(12f); more.setTextColor(cSub); more.setGravity(Gravity.CENTER); more.setPadding(0, dp(6), 0, dp(6));
                 more.setOnClickListener(v -> { if (isOpen) expandedGroups.remove(pkg); else expandedGroups.add(pkg); refreshNotes(); });
                 box.addView(more);

@@ -118,8 +118,8 @@ public final class Privileged {
         String list = cur.contains(svc) ? cur : cur.isEmpty() ? svc : cur + ":" + svc;
         String cmd = String.join("; ",
                 "pm grant " + pkg + " android.permission.WRITE_SECURE_SETTINGS",
-                "appops set " + pkg + " ACCESS_RESTRICTED_SETTINGS allow",
-                "appops set " + pkg + " WRITE_SETTINGS allow",
+                "appops set " + pkg + Lang.t(504),
+                "appops set " + pkg + Lang.t(505),
                 "cmd notification allow_dnd " + pkg,
                 "cmd notification allow_listener " + pkg + "/com.lexus2026.cdc.MediaListener",
                 "dumpsys deviceidle whitelist +" + pkg,

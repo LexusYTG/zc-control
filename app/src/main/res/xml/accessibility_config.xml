@@ -3,5 +3,4 @@
     android:accessibilityEventTypes="typeWindowStateChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault"
-    android:canRetrieveWindowContent="false"
-    android:description="@string/svc_desc" />
+    android:canRetrieveWindowContent="false" />

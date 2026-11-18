@@ -72,8 +72,8 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
         root.setPadding(dp(20), dp(24), dp(20), dp(24));
 
         LinearLayout top = GcUi.row(this);
-        top.addView(GcUi.tv(this, "ZCTRL · GAME CONTROL", 11, GcUi.SUB, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
-        badge = GcUi.badge(this, "PREPARANDO", GcUi.GREEN);
+        top.addView(GcUi.tv(this, Lang.t(276), 11, GcUi.SUB, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
+        badge = GcUi.badge(this, Lang.t(277), GcUi.GREEN);
         top.addView(badge);
         root.addView(top);
 
@@ -89,7 +89,7 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
         TextView name = GcUi.tv(this, label, 26, GcUi.TEXT, true);
         name.setGravity(Gravity.CENTER);
         root.addView(name, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 12));
-        status = GcUi.tv(this, "Preparando entorno de juego…", 13, GcUi.SUB, false);
+        status = GcUi.tv(this, Lang.t(278), 13, GcUi.SUB, false);
         status.setGravity(Gravity.CENTER);
         root.addView(status, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 4));
 
@@ -99,20 +99,20 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
         bar.setProgressBackgroundTintList(ColorStateList.valueOf(GcUi.BOX));
         root.addView(bar, GcUi.lp(this, GcUi.MATCH, dp(8), 0f, 22));
         LinearLayout pr = GcUi.row(this);
-        phase = GcUi.tv(this, "Iniciando…", 12, GcUi.SUB, false);
+        phase = GcUi.tv(this, Lang.t(279), 12, GcUi.SUB, false);
         pr.addView(phase, new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
         pctView = GcUi.tv(this, "0 %", 12, GcUi.TEXT, false);
         pr.addView(pctView);
         root.addView(pr, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 6));
         root.addView(GcUi.line(this), GcUi.lp(this, GcUi.MATCH, dp(1), 0f, 14));
 
-        root.addView(GcUi.tv(this, "Procesos detectados", 17, GcUi.TEXT, true), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 16));
+        root.addView(GcUi.tv(this, Lang.t(280), 17, GcUi.TEXT, true), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 16));
         procs = GcUi.col(this);
-        procs.addView(GcUi.tv(this, "Esperando lectura…", 13, GcUi.GRAY, false));
+        procs.addView(GcUi.tv(this, Lang.t(281), 13, GcUi.GRAY, false));
         root.addView(procs, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 8));
         root.addView(GcUi.line(this), GcUi.lp(this, GcUi.MATCH, dp(1), 0f, 14));
 
-        root.addView(GcUi.tv(this, "Preparación", 17, GcUi.TEXT, true), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 16));
+        root.addView(GcUi.tv(this, Lang.t(282), 17, GcUi.TEXT, true), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 16));
         for (int i = 0; i < GameSession.STEPS.length; i++) {
             LinearLayout r = GcUi.row(this);
             marks[i] = GcUi.tv(this, "●", 15, GcUi.GRAY, true);
@@ -122,7 +122,7 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
             r.addView(texts[i], new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
             root.addView(r, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 10));
         }
-        TextView foot = GcUi.tv(this, "No cierres esta pantalla mientras se prepara el dispositivo.", 12, GcUi.SUB, false);
+        TextView foot = GcUi.tv(this, Lang.t(283), 12, GcUi.SUB, false);
         foot.setGravity(Gravity.CENTER);
         root.addView(foot, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 18));
         actions = GcUi.col(this);
@@ -175,11 +175,11 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
             procBadges.put(p, bd);
         }
         switch (s) {
-            case GameSession.RUNNING: GcUi.paint(bd, "Procesando", GcUi.ORANGE); break;
-            case GameSession.DONE: GcUi.paint(bd, "Finalizado", GcUi.GREEN); break;
-            case GameSession.SKIPPED: GcUi.paint(bd, "Omitido", GcUi.GRAY); break;
-            case GameSession.FAILED: GcUi.paint(bd, "Error", GcUi.RED); break;
-            default: GcUi.paint(bd, "En cola", GcUi.GRAY); break;
+            case GameSession.RUNNING: GcUi.paint(bd, Lang.t(876), GcUi.ORANGE); break;
+            case GameSession.DONE: GcUi.paint(bd, Lang.t(877), GcUi.GREEN); break;
+            case GameSession.SKIPPED: GcUi.paint(bd, Lang.t(878), GcUi.GRAY); break;
+            case GameSession.FAILED: GcUi.paint(bd, Lang.t(879), GcUi.RED); break;
+            default: GcUi.paint(bd, Lang.t(284), GcUi.GRAY); break;
         }
     }
 
@@ -187,17 +187,17 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
     public void finished(boolean ok, String msg) {
         if (isFinishing()) return;
         if (ok) {
-            GcUi.paint(badge, "LISTO", GcUi.GREEN);
+            GcUi.paint(badge, Lang.t(285), GcUi.GREEN);
             go();
         } else {
-            GcUi.paint(badge, "ERROR", GcUi.RED);
+            GcUi.paint(badge, Lang.t(286), GcUi.RED);
             status.setText(msg);
             showActions();
         }
     }
 
     private void go() {
-        progress(100, "Iniciando juego…");
+        progress(100, Lang.t(287));
         step(GameSession.S_LAUNCH, GameSession.RUNNING, "");
         ui.postDelayed(() -> {
             if (isFinishing()) return;
@@ -205,8 +205,8 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
             if (li == null) {
                 GameWatchdog.endAsync(this);
                 step(GameSession.S_LAUNCH, GameSession.FAILED, "");
-                GcUi.paint(badge, "ERROR", GcUi.RED);
-                status.setText("No se pudo abrir el juego");
+                GcUi.paint(badge, Lang.t(286), GcUi.RED);
+                status.setText(Lang.t(288));
                 showActions();
                 return;
             }
@@ -227,7 +227,7 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
     private void showActions() {
         actions.removeAllViews();
         Button a = new Button(this);
-        a.setText("Iniciar sin optimizar");
+        a.setText(Lang.t(289));
         a.setAllCaps(false);
         a.setOnClickListener(v -> {
             GameWatchdog.bypass(pkg);
@@ -241,7 +241,7 @@ public class GamePrepActivity extends Activity implements GameSession.Listener {
             finish();
         });
         Button c = new Button(this);
-        c.setText("Cerrar");
+        c.setText(Lang.t(290));
         c.setAllCaps(false);
         c.setOnClickListener(v -> { GameWatchdog.bypass(pkg); finish(); });
         actions.addView(a);

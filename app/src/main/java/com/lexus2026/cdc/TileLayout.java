@@ -1,7 +1,7 @@
 package com.lexus2026.cdc;
 
 public enum TileLayout {
-    ICON("Solo ícono"), LABEL("Ícono y texto"), PILL("Píldora");
+    ICON(Lang.t(534)), LABEL(Lang.t(535)), PILL(Lang.t(536));
 
     public final String label;
 

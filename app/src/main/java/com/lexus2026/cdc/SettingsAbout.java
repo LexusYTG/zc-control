@@ -12,13 +12,13 @@ final class SettingsAbout {
         String v = "";
         try {
             PackageInfo pi = a.getPackageManager().getPackageInfo(a.getPackageName(), 0);
-            v = "Versión " + pi.versionName;
+            v = Lang.t(506) + pi.versionName;
         } catch (Throwable ignored) { }
         new AlertDialog.Builder(a, AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-            .setTitle("ZC Control")
-            .setMessage(v + "\n\nCapa de personalización alternativa para Android. Los ajustes propios se aplican con Shizuku "
-                + "y se complementan con los del sistema.")
-            .setPositiveButton("Cerrar", null)
+            .setTitle(Lang.t(871))
+            .setMessage(v + Lang.t(507)
+                + Lang.t(508))
+            .setPositiveButton(Lang.t(290), null)
             .show();
     }
 }

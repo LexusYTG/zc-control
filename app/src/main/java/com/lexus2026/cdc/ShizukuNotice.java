@@ -18,10 +18,10 @@ public final class ShizukuNotice {
 
     public static void show(final Activity a) {
         new AlertDialog.Builder(a, AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-            .setTitle("Requiere Shizuku")
-            .setMessage("ZC Control usa Shizuku (permisos de shell/ADB) para cambiar ajustes del sistema, cerrar procesos, cambiar la resolución, compilar apps y restaurar todo al terminar. Sin Shizuku instalado, iniciado y con permiso concedido, estas funciones no funcionan.\n\nAbrí Shizuku, iniciá el servicio y volvé a esta app.")
-            .setPositiveButton("Abrir Shizuku", (d, w) -> open(a))
-            .setNegativeButton("Entendido", null)
+            .setTitle(Lang.t(518))
+            .setMessage(Lang.t(519))
+            .setPositiveButton(Lang.t(520), (d, w) -> open(a))
+            .setNegativeButton(Lang.t(521), null)
             .show();
     }
 

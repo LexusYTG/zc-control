@@ -166,16 +166,16 @@ public class SettingsPageActivity extends Activity {
         LinearLayout bar = new LinearLayout(this);
         bar.setGravity(Gravity.CENTER);
         bar.setPadding(dp(8), dp(6), dp(8), dp(6));
-        stateBtn(bar, "Acotada", 1, 0); stateBtn(bar, "Completa", 2, 0); stateBtn(bar, "Controles", 2, 1);
+        stateBtn(bar, Lang.t(6), 1, 0); stateBtn(bar, Lang.t(7), 2, 0); stateBtn(bar, Lang.t(8), 2, 1);
         Button real = new Button(this);
-        real.setText("▶ Real");
+        real.setText(Lang.t(9));
         real.setAllCaps(false);
         real.setTextSize(12f);
         real.setPadding(0, 0, 0, 0);
         real.setOnClickListener(v -> {
             ControlService svc = ControlService.instance;
             if (svc != null) svc.open();
-            else Toast.makeText(SettingsPageActivity.this, "El servicio todavía no está activo", Toast.LENGTH_LONG).show();
+            else Toast.makeText(SettingsPageActivity.this, Lang.t(10), Toast.LENGTH_LONG).show();
         });
         bar.addView(real, new LinearLayout.LayoutParams(0, WCB, 1f));
         Button eye = new Button(this);
@@ -504,9 +504,9 @@ public class SettingsPageActivity extends Activity {
         custom.setVisibility(View.GONE);
         float[] hsv = new float[3];
         Color.colorToHSV(cur.getAsInt() == 0 ? 0xFF6750A4 : cur.getAsInt(), hsv);
-        hsvBar(custom, hsv, key, paint, "Matiz", 360, (int) hsv[0], 0, 1f);
-        hsvBar(custom, hsv, key, paint, "Saturación", 100, (int) (hsv[1] * 100), 1, 0.01f);
-        hsvBar(custom, hsv, key, paint, "Brillo", 100, (int) (hsv[2] * 100), 2, 0.01f);
+        hsvBar(custom, hsv, key, paint, Lang.t(12), 360, (int) hsv[0], 0, 1f);
+        hsvBar(custom, hsv, key, paint, Lang.t(13), 100, (int) (hsv[1] * 100), 1, 0.01f);
+        hsvBar(custom, hsv, key, paint, Lang.t(873), 100, (int) (hsv[2] * 100), 2, 0.01f);
         TextView plus = new TextView(this);
         plus.setGravity(Gravity.CENTER);
         plus.setText("+");
@@ -531,11 +531,11 @@ public class SettingsPageActivity extends Activity {
     private void imageRow() {
         if (!item(2)) return;
         boolean has = Skin.imageFile(this).exists();
-        controls.addView(label(has ? "Imagen elegida ✓" : "Todavía no elegiste ninguna imagen", 13f, has ? txt : sub, 8));
+        controls.addView(label(has ? Lang.t(14) : Lang.t(15), 13f, has ? txt : sub, 8));
         LinearLayout row = new LinearLayout(this);
         row.setPadding(0, dp(6), 0, dp(2));
         Button pick = new Button(this);
-        pick.setText(has ? "Cambiar imagen" : "Elegir imagen");
+        pick.setText(has ? Lang.t(16) : Lang.t(17));
         pick.setAllCaps(false);
         pick.setOnClickListener(v -> {
             Intent it = new Intent(Intent.ACTION_GET_CONTENT);
@@ -546,7 +546,7 @@ public class SettingsPageActivity extends Activity {
         row.addView(pick, new LinearLayout.LayoutParams(0, WCB, 1f));
         if (has) {
             Button del = new Button(this);
-            del.setText("Quitar");
+            del.setText(Lang.t(18));
             del.setAllCaps(false);
             del.setOnClickListener(v -> { Skin.imageFile(SettingsPageActivity.this).delete(); buildControls(); changed(); });
             row.addView(del, new LinearLayout.LayoutParams(0, WCB, 1f));
@@ -566,7 +566,7 @@ public class SettingsPageActivity extends Activity {
                 if (ok) {
                     Skin.set(this, "bgMode", BgMode.IMAGE.ordinal());
                     buildControls(); changed();
-                } else Toast.makeText(this, "No se pudo usar esa imagen", Toast.LENGTH_LONG).show();
+                } else Toast.makeText(this, Lang.t(19), Toast.LENGTH_LONG).show();
             });
         }).start();
     }
@@ -672,7 +672,7 @@ public class SettingsPageActivity extends Activity {
         iv.setImageDrawable(SideLauncher.icon(this, pkg));
         row.addView(iv, new LinearLayout.LayoutParams(dp(36), dp(36)));
         boolean ok = SideLauncher.installedPkg(this, pkg);
-        TextView name = label(ok ? SideLauncher.label(this, pkg) : pkg + " (no instalada)", 14f, ok ? txt : sub, 0);
+        TextView name = label(ok ? SideLauncher.label(this, pkg) : pkg + Lang.t(20), 14f, ok ? txt : sub, 0);
         name.setSingleLine(true);
         LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0, WCB, 1f);
         nlp.leftMargin = dp(12);
@@ -685,7 +685,7 @@ public class SettingsPageActivity extends Activity {
 
     /** Diálogo para marcar qué apps aparecen en el panel. Las ya elegidas conservan su orden. */
     private void pickSideApps() {
-        Toast.makeText(this, "Cargando apps…", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, Lang.t(21), Toast.LENGTH_SHORT).show();
         new Thread(() -> {
             final List<SideLauncher.App> all = SideLauncher.installed(this);
             ui.post(() -> {
@@ -698,9 +698,9 @@ public class SettingsPageActivity extends Activity {
                     on[i] = cur.contains(all.get(i).pkg);
                 }
                 new AlertDialog.Builder(this)
-                    .setTitle("Apps del panel lateral")
+                    .setTitle(Lang.t(22))
                     .setMultiChoiceItems(names, on, (dlg, which, checked) -> on[which] = checked)
-                    .setPositiveButton("Guardar", (dlg, w) -> {
+                    .setPositiveButton(Lang.t(23), (dlg, w) -> {
                         List<String> out = new ArrayList<>();
                         for (String pkg : cur) {
                             boolean keep = true;
@@ -711,7 +711,7 @@ public class SettingsPageActivity extends Activity {
                         SideConfig.saveShortcuts(this, out);
                         buildControls();
                     })
-                    .setNegativeButton("Cancelar", null)
+                    .setNegativeButton(Lang.t(24), null)
                     .show();
             });
         }).start();
@@ -765,8 +765,8 @@ public class SettingsPageActivity extends Activity {
     }
 
     private List<String> tileNames() {
-        List<String> names = new ArrayList<>(Arrays.asList(PanelView.TILE_KEYS));
-        for (String[] f : Skin.customTiles(this)) names.add("★ " + (f[2].isEmpty() ? "Acceso" : f[2]));
+        List<String> names = new ArrayList<>(Lang.sAll(PanelView.TILE_KEYS));
+        for (String[] f : Skin.customTiles(this)) names.add("★ " + (f[2].isEmpty() ? Lang.t(595) : f[2]));
         return names;
     }
 
@@ -784,9 +784,9 @@ public class SettingsPageActivity extends Activity {
     }
 
     private static final String[] ZONE_KEYS = {"left", "center", "right", "full"};
-    private static final List<String> GEST_OPTS = Arrays.asList("Nada", "Abrir el panel", "Abrir el editor de accesos",
-        "Captura de pantalla", "Bloquear pantalla", "Menú de apagado", "Inicio", "Atrás", "Recientes",
-        "Notificaciones del sistema", "Ajustes rápidos del sistema", "Abrir una app (paquete)", "Ejecutar comando (Shizuku)");
+    private static final List<String> GEST_OPTS = Arrays.asList(Lang.t(578), Lang.t(579), Lang.t(580),
+        Lang.t(581), Lang.t(582), Lang.t(583), Lang.t(584), Lang.t(585), Lang.t(586),
+        Lang.t(587), Lang.t(588), Lang.t(589), Lang.t(590));
 
     private void gesture(String name, String key, String paramName) {
         choice(name, key, GEST_OPTS);
@@ -801,300 +801,300 @@ public class SettingsPageActivity extends Activity {
             case "bg_type": {
                 List<String> bgLabels = new ArrayList<>();
                 for (BgMode m : BgMode.values()) bgLabels.add(m.label);
-                choice("Tipo de fondo", "bgMode", bgLabels, true, i -> {
+                choice(Lang.t(838), "bgMode", bgLabels, true, i -> {
                     BgMode m = BgMode.values()[i];
                     int dim = Skin.get(this, "dim");
                     if (m == BgMode.SOLID && dim < 50) Skin.set(this, "dim", 92);
                     if (m != BgMode.SOLID && dim > 70) Skin.set(this, "dim", 35);
                 });
                 if (sk.bgMode == BgMode.IMAGE) imageRow();
-                if (sk.bgMode == BgMode.TRANSPARENT) note("El panel flota sobre lo que estés usando, sin oscurecer ni difuminar.");
+                if (sk.bgMode == BgMode.TRANSPARENT) note(Lang.t(69));
                 break;
             }
             case "bg_blur":
-                if (sk.bgMode == BgMode.BLUR) skSlider("Intensidad del difuminado", "blurR", 1, 12);
-                else if (sk.bgMode == BgMode.IMAGE) skSlider("Desenfoque de la imagen", "imgBlur", 0, 12);
+                if (sk.bgMode == BgMode.BLUR) skSlider(Lang.t(554), "blurR", 1, 12);
+                else if (sk.bgMode == BgMode.IMAGE) skSlider(Lang.t(71), "imgBlur", 0, 12);
                 break;
             case "bg_dim":
-                if (sk.bgMode == BgMode.SOLID) skSlider("Opacidad", "dim", 0, 100, "%");
-                else if (sk.bgMode != BgMode.TRANSPARENT) skSlider("Oscurecer", "dim", 0, 90, "%");
+                if (sk.bgMode == BgMode.SOLID) skSlider(Lang.t(553), "dim", 0, 100, "%");
+                else if (sk.bgMode != BgMode.TRANSPARENT) skSlider(Lang.t(555), "dim", 0, 90, "%");
                 break;
             case "bg_tint":
-                if (sk.bgMode == BgMode.SOLID) colorRow("Color del fondo", "bgColor", false);
-                else if (sk.bgMode != BgMode.TRANSPARENT) colorRow("Tinte", "bgColor", false);
-                if (sk.bgMode == BgMode.BLUR) note("Usa el difuminado del sistema (Android 12 o superior). Si tu equipo no lo permite, el fondo se oscurece. No toma capturas de pantalla.");
+                if (sk.bgMode == BgMode.SOLID) colorRow(Lang.t(68), "bgColor", false);
+                else if (sk.bgMode != BgMode.TRANSPARENT) colorRow(Lang.t(839), "bgColor", false);
+                if (sk.bgMode == BgMode.BLUR) note(Lang.t(70));
                 break;
 
             // ───────────── Apariencia › Hoja ─────────────
             case "sh_colors":
-                colorRow("Color de la hoja", "sheetColor", true);
-                colorRow("Segundo color (degradado)", "sheetColor2", true);
-                choice("Dirección del degradado", "sheetAngle", Arrays.asList("Arriba a abajo", "Izquierda a derecha", "Abajo a arriba", "Derecha a izquierda"));
+                colorRow(Lang.t(72), "sheetColor", true);
+                colorRow(Lang.t(76), "sheetColor2", true);
+                choice(Lang.t(77), "sheetAngle", Arrays.asList(Lang.t(78), Lang.t(79), Lang.t(80), Lang.t(81)));
                 break;
             case "sh_alpha":
-                skSlider("Opacidad de la hoja (0 = sin hoja)", "sheetAlpha", 0, 100, "%");
+                skSlider(Lang.t(73), "sheetAlpha", 0, 100, "%");
                 break;
             case "sh_radius":
-                skSlider("Redondeo de arriba", "sheetTopRadius", 0, 48, " dp");
-                skSlider("Redondeo de abajo", "sheetRadius", 0, 48, " dp");
+                skSlider(Lang.t(75), "sheetTopRadius", 0, 48, " dp");
+                skSlider(Lang.t(74), "sheetRadius", 0, 48, " dp");
                 break;
             case "sh_stroke":
-                skSlider("Borde de la hoja", "sheetStroke", 0, 8, " dp");
-                colorRow("Color del borde de la hoja", "sheetStrokeColor", true);
+                skSlider(Lang.t(82), "sheetStroke", 0, 8, " dp");
+                colorRow(Lang.t(83), "sheetStrokeColor", true);
                 break;
             case "sh_size":
-                skSlider("Ancho de la hoja", "sheetWidth", 50, 100, "%");
-                skSlider("Margen lateral", "sidePad", 0, 40, " dp");
-                skSlider("Margen superior", "topPad", 0, 120, " dp");
+                skSlider(Lang.t(84), "sheetWidth", 50, 100, "%");
+                skSlider(Lang.t(85), "sidePad", 0, 40, " dp");
+                skSlider(Lang.t(86), "topPad", 0, 120, " dp");
                 break;
 
             // ───────────── Apariencia › Botones ─────────────
             case "bt_shape": {
                 List<String> shapeLabels = new ArrayList<>();
                 for (TileShape s : TileShape.values()) shapeLabels.add(s.sym + " " + s.label);
-                choice("Forma", "shape", shapeLabels, true);
-                if (sk.shape == TileShape.ROUNDED) skSlider("Redondeo de la forma", "round", 0, 50, "%");
+                choice(Lang.t(87), "shape", shapeLabels, true);
+                if (sk.shape == TileShape.ROUNDED) skSlider(Lang.t(88), "round", 0, 50, "%");
                 List<String> layoutLabels = new ArrayList<>();
                 for (TileLayout l : TileLayout.values()) layoutLabels.add(l.label);
-                choice("Disposición", "layout", layoutLabels, true);
+                choice(Lang.t(89), "layout", layoutLabels, true);
                 break;
             }
             case "bt_size":
-                skSlider("Tamaño", "size", 36, 110, " dp");
-                skSlider("Separación", "gap", 0, 24, " dp");
-                skSlider("Columnas", "cols", 2, 6);
-                if (sk.layout == TileLayout.PILL) note("En píldora se usan hasta 3 columnas.");
+                skSlider(Lang.t(558), "size", 36, 110, " dp");
+                skSlider(Lang.t(90), "gap", 0, 24, " dp");
+                skSlider(Lang.t(91), "cols", 2, 6);
+                if (sk.layout == TileLayout.PILL) note(Lang.t(92));
                 break;
             case "bt_rot":
-                skSlider("Rotación de cada botón", "tileRot", 0, 359, "°");
-                skSlider("Escala encendido", "onScale", 60, 140, "%");
-                skSlider("Escala apagado", "offScale", 40, 140, "%");
+                skSlider(Lang.t(99), "tileRot", 0, 359, "°");
+                skSlider(Lang.t(100), "onScale", 60, 140, "%");
+                skSlider(Lang.t(101), "offScale", 40, 140, "%");
                 break;
             case "bt_text":
-                skSlider("Tamaño del ícono", "iconScale", 30, 80, "%");
-                if (sk.layout != TileLayout.ICON) skSlider("Tamaño del texto", "labelSize", 9, 16, " sp");
-                if (sk.layout == TileLayout.PILL) toggle("Mostrar el estado (texto chico)", "showSub");
-                toggle("Etiquetas en MAYÚSCULAS", "labelCaps");
+                skSlider(Lang.t(93), "iconScale", 30, 80, "%");
+                if (sk.layout != TileLayout.ICON) skSlider(Lang.t(94), "labelSize", 9, 16, " sp");
+                if (sk.layout == TileLayout.PILL) toggle(Lang.t(95), "showSub");
+                toggle(Lang.t(102), "labelCaps");
                 break;
             case "bt_border":
-                skSlider("Grosor del borde", "tileStroke", 0, 8, " dp");
-                colorRow("Color del borde", "strokeColor", true);
-                if (sk.layout == TileLayout.PILL) skSlider("Redondeo de la píldora", "pillRound", 0, 100, "%");
+                skSlider(Lang.t(97), "tileStroke", 0, 8, " dp");
+                colorRow(Lang.t(98), "strokeColor", true);
+                if (sk.layout == TileLayout.PILL) skSlider(Lang.t(96), "pillRound", 0, 100, "%");
                 break;
 
             // ───────────── Apariencia › Colores ─────────────
             case "co_theme":
-                choice("Tema del texto", "theme", Arrays.asList("Sistema", "Claro", "Oscuro"));
+                choice(Lang.t(840), "theme", Arrays.asList(Lang.t(841), Lang.t(106), Lang.t(107)));
                 break;
             case "co_accent":
-                colorRow("Acento (botón encendido)", "accent", true);
-                skSlider("Opacidad encendido", "onAlpha", 20, 100, "%");
+                colorRow(Lang.t(108), "accent", true);
+                skSlider(Lang.t(109), "onAlpha", 20, 100, "%");
                 break;
             case "co_off":
-                colorRow("Botón apagado", "tileOff", true);
-                skSlider("Opacidad apagado", "offAlpha", 0, 100, "%");
+                colorRow(Lang.t(110), "tileOff", true);
+                skSlider(Lang.t(111), "offAlpha", 0, 100, "%");
                 break;
             case "co_text":
-                colorRow("Texto e íconos", "textColor", true);
-                colorRow("Color de las etiquetas", "labelColor", true);
-                colorRow("Color del subtexto", "subColor", true);
-                colorRow("Color del texto encendido", "onFg", true);
+                colorRow(Lang.t(112), "textColor", true);
+                colorRow(Lang.t(103), "labelColor", true);
+                colorRow(Lang.t(104), "subColor", true);
+                colorRow(Lang.t(105), "onFg", true);
                 break;
 
             // ───────────── Apariencia › Reloj ─────────────
             case "rl_look":
-                skSlider("Tamaño", "clockSize", 16, 96, " sp");
-                choice("Alineación", "clockAlign", Arrays.asList("Izquierda", "Centro", "Derecha"));
-                choice("Grosor", "clockWeight", Arrays.asList("Fino", "Normal", "Negrita"));
-                choice("Fuente del reloj", "clockFont", Arrays.asList("Según grosor", "Sans", "Serif", "Mono", "Casual", "Condensada", "Cursiva", "Fina", "Media"));
-                toggle("Reloj en cursiva", "clockItalic");
+                skSlider(Lang.t(558), "clockSize", 16, 96, " sp");
+                choice(Lang.t(113), "clockAlign", Arrays.asList(Lang.t(63), Lang.t(64), Lang.t(65)));
+                choice(Lang.t(114), "clockWeight", Arrays.asList(Lang.t(115), Lang.t(561), Lang.t(116)));
+                choice(Lang.t(126), "clockFont", Arrays.asList(Lang.t(127), Lang.t(128), Lang.t(129), Lang.t(130), Lang.t(131), Lang.t(132), Lang.t(133), Lang.t(134), Lang.t(135)));
+                toggle(Lang.t(136), "clockItalic");
                 break;
             case "rl_time":
-                choice("Formato de hora", "clockFormat", Arrays.asList("24 h", "12 h"));
-                toggle("Mostrar segundos", "showSeconds");
+                choice(Lang.t(121), "clockFormat", Arrays.asList("24 h", "12 h"));
+                toggle(Lang.t(122), "showSeconds");
                 break;
             case "rl_date":
-                toggle("Mostrar la fecha", "showDate");
-                choice("Formato de fecha", "dateFormat", Arrays.asList("domingo 15 de noviembre", "dom 15 nov", "15/11/2026", "2026-11-15"));
-                skSlider("Tamaño de la fecha", "dateSize", 8, 32, " sp");
+                toggle(Lang.t(117), "showDate");
+                choice(Lang.t(123), "dateFormat", Arrays.asList(Lang.t(124), Lang.t(842), "15/11/2026", "2026-11-15"));
+                skSlider(Lang.t(125), "dateSize", 8, 32, " sp");
                 break;
             case "rl_colors":
-                colorRow("Color del reloj", "clockColor", true);
-                colorRow("Color de la fecha", "dateColor", true);
+                colorRow(Lang.t(137), "clockColor", true);
+                colorRow(Lang.t(138), "dateColor", true);
                 break;
             case "rl_pad":
-                skSlider("Margen vertical del encabezado", "clockPadV", 0, 48, " dp");
+                skSlider(Lang.t(562), "clockPadV", 0, 48, " dp");
                 break;
 
             // ───────────── Apariencia › Tipografía ─────────────
             case "ty_font":
-                choice("Fuente", "fontFamily", Arrays.asList("Sans", "Serif", "Mono", "Casual", "Condensada", "Cursiva", "Fina", "Media"));
-                skSlider("Escala del texto", "textScale", 50, 200, "%");
+                choice(Lang.t(147), "fontFamily", Arrays.asList(Lang.t(128), Lang.t(129), Lang.t(130), Lang.t(131), Lang.t(132), Lang.t(133), Lang.t(134), Lang.t(135)));
+                skSlider(Lang.t(148), "textScale", 50, 200, "%");
                 break;
             case "ty_style":
-                toggle("Negrita en todo", "textBold");
-                toggle("Cursiva en todo", "textItalic");
+                toggle(Lang.t(149), "textBold");
+                toggle(Lang.t(150), "textItalic");
                 break;
             case "ty_space":
-                skSlider("Espaciado entre letras", "letterSp", 0, 40);
+                skSlider(Lang.t(567), "letterSp", 0, 40);
                 break;
 
             // ───────────── Apariencia › Tarjetas y notificaciones ─────────────
             case "ca_look":
-                colorRow("Color de las tarjetas", "cardColor", true);
-                skSlider("Opacidad", "cardAlpha", 0, 100, "%");
-                skSlider("Redondeo", "cardR", 0, 40, " dp");
+                colorRow(Lang.t(151), "cardColor", true);
+                skSlider(Lang.t(553), "cardAlpha", 0, 100, "%");
+                skSlider(Lang.t(145), "cardR", 0, 40, " dp");
                 break;
             case "ca_border":
-                skSlider("Borde de las tarjetas", "cardStroke", 0, 6, " dp");
-                colorRow("Color del borde de las tarjetas", "cardStrokeColor", true);
+                skSlider(Lang.t(152), "cardStroke", 0, 6, " dp");
+                colorRow(Lang.t(153), "cardStrokeColor", true);
                 break;
             case "ca_lines":
-                skSlider("Líneas de texto (colapsada)", "notifLines", 1, 6);
-                skSlider("Líneas de texto (expandida)", "notifOpenLines", 2, 16);
+                skSlider(Lang.t(154), "notifLines", 1, 6);
+                skSlider(Lang.t(155), "notifOpenLines", 2, 16);
                 break;
             case "ca_sizes":
-                skSlider("Tamaño del título", "notifTitleSize", 8, 24, " sp");
-                skSlider("Tamaño del texto", "notifTextSize", 8, 24, " sp");
-                skSlider("Tamaño del ícono", "notifIconSize", 20, 64, " dp");
+                skSlider(Lang.t(156), "notifTitleSize", 8, 24, " sp");
+                skSlider(Lang.t(94), "notifTextSize", 8, 24, " sp");
+                skSlider(Lang.t(93), "notifIconSize", 20, 64, " dp");
                 break;
             case "ca_extra":
-                toggle("Ícono de la app en las notificaciones", "notifApp");
-                toggle("Mostrar la hora", "notifShowTime");
+                toggle(Lang.t(146), "notifApp");
+                toggle(Lang.t(157), "notifShowTime");
                 break;
             case "ca_list":
-                skSlider("Separación entre notificaciones", "notifGap", 0, 24, " dp");
-                skSlider("Alto máximo de la lista", "notifMaxH", 10, 80, "%");
-                toggle("Mostrar el botón de borrar todo", "showClear");
+                skSlider(Lang.t(158), "notifGap", 0, 24, " dp");
+                skSlider(Lang.t(159), "notifMaxH", 10, 80, "%");
+                toggle(Lang.t(161), "showClear");
                 break;
 
             // ───────────── Apariencia › Brillo, volumen y reproductor ─────────────
             case "br_style":
-                choice("Estilo", "sliderStyle", Arrays.asList("Horizontal", "Vertical"));
+                choice(Lang.t(141), "sliderStyle", Arrays.asList(Lang.t(142), Lang.t(143)));
                 break;
             case "br_thick":
-                skSlider("Tamaño de los sliders", "sliderThick", 40, 90, " dp");
+                skSlider(Lang.t(144), "sliderThick", 40, 90, " dp");
                 break;
             case "br_corner":
-                skSlider("Redondeo de los sliders verticales", "vCorner", 10, 40);
+                skSlider(Lang.t(160), "vCorner", 10, 40);
                 break;
             case "br_media":
-                toggle("Mostrar el reproductor", "showMedia");
+                toggle(Lang.t(843), "showMedia");
                 break;
             case "br_mediah":
-                skSlider("Alto del reproductor", "mediaH", 80, 260, " dp");
+                skSlider(Lang.t(569), "mediaH", 80, 260, " dp");
                 break;
 
             // ───────────── Accesos ─────────────
             case "ac_visible":
-                skSlider("Accesos visibles", "compact", 0, 8);
-                note("Son los primeros de tu lista. Para ordenarlos, usá el botón ✎ del panel real.");
+                skSlider(Lang.t(139), "compact", 0, 8);
+                note(Lang.t(140));
                 break;
             case "ac_custom":
                 renderCustomTiles();
                 break;
             case "ai_name":
-                textInput("Nombre", "lbl_" + selKey(), tileNames().get(selTile));
-                textInput("Glifo (emoji o texto en lugar del ícono)", "glyph_" + selKey(), "");
+                textInput(Lang.t(854), "lbl_" + selKey(), tileNames().get(selTile));
+                textInput(Lang.t(222), "glyph_" + selKey(), "");
                 break;
             case "ai_colors":
-                colorRow("Color encendido", "tOn_" + selKey(), true);
-                colorRow("Color apagado", "tOff_" + selKey(), true);
+                colorRow(Lang.t(223), "tOn_" + selKey(), true);
+                colorRow(Lang.t(224), "tOff_" + selKey(), true);
                 break;
             case "ai_span":
-                skSlider("Columnas que ocupa", "tSpan_" + selKey(), 1, 6);
+                skSlider(Lang.t(598), "tSpan_" + selKey(), 1, 6);
                 break;
             case "ac_apps": {
                 final List<String> apps = SideConfig.shortcuts(this);
-                if (apps.isEmpty()) note("Todavía no hay apps en el panel.");
+                if (apps.isEmpty()) note(Lang.t(43));
                 for (int i = 0; i < apps.size(); i++) sideShortcutRow(i, apps.get(i), apps.size());
-                toolBtn("＋ Agregar o quitar apps", this::pickSideApps);
-                note("También podés editar los accesos desde el propio panel: tocá ✎ o mantené apretada una app.");
+                toolBtn(Lang.t(44), this::pickSideApps);
+                note(Lang.t(45));
                 break;
             }
             case "fb_mode":
-                choice("Mostrar", "fabMode", Arrays.asList("Oculto", "Solo en Controles", "Siempre"));
+                choice(Lang.t(198), "fabMode", Arrays.asList(Lang.t(199), Lang.t(200), Lang.t(201)));
                 break;
             case "fb_size":
-                skSlider("Tamaño", "fabSize", 32, 96, " dp");
+                skSlider(Lang.t(558), "fabSize", 32, 96, " dp");
                 break;
             case "fb_sym":
-                textInput("Símbolo", "txtFab", "✎");
-                note("Se arrastra a cualquier lado y recuerda dónde lo dejaste.");
+                textInput(Lang.t(851), "txtFab", "✎");
+                note(Lang.t(202));
                 break;
             case "hd_gear":
-                toggle("Botón de ajustes ⚙", "showGear");
+                toggle(Lang.t(118), "showGear");
                 break;
             case "hd_edit":
-                toggle("Botón ✎ para editar accesos", "showEdit");
+                toggle(Lang.t(120), "showEdit");
                 break;
             case "hd_size":
-                skSlider("Tamaño de los botones ⚙ y ✎", "gearSize", 24, 80, " dp");
+                skSlider(Lang.t(119), "gearSize", 24, 80, " dp");
                 break;
 
             // ───────────── Textos ─────────────
             case "tx_tabs":
-                textInput("Título de la pestaña 1", "txtTab0", "Notificaciones");
-                textInput("Título de la pestaña 2", "txtTab1", "Controles");
+                textInput(Lang.t(225), "txtTab0", Lang.t(874));
+                textInput(Lang.t(226), "txtTab1", Lang.t(8));
                 break;
             case "tx_clear":
-                textInput("Texto de borrar todo", "txtClear", "Borrar todo");
+                textInput(Lang.t(227), "txtClear", Lang.t(600));
                 break;
             case "tx_empty":
-                textInput("Texto sin notificaciones", "txtEmpty", "Sin notificaciones");
+                textInput(Lang.t(228), "txtEmpty", Lang.t(601));
                 break;
             case "tx_sym":
-                textInput("Símbolo de ajustes", "txtGear", "⚙");
-                textInput("Símbolo de editar", "txtEditBtn", "✎");
+                textInput(Lang.t(229), "txtGear", "⚙");
+                textInput(Lang.t(230), "txtEditBtn", "✎");
                 break;
             case "tx_edit":
-                textInput("Texto del botón de editar accesos", "txtEditTiles", "Editar accesos");
+                textInput(Lang.t(231), "txtEditTiles", Lang.t(232));
                 break;
             case "tx_names":
-                if (item(0)) controls.addView(label("Nombres de los accesos", 12f, acc, 18));
-                for (String tk : PanelView.TILE_KEYS) textInput(tk, "lbl_" + tk, tk);
+                if (item(0)) controls.addView(label(Lang.t(658), 12f, acc, 18));
+                for (String tk : PanelView.TILE_KEYS) textInput(Lang.s(tk), "lbl_" + tk, Lang.s(tk));
                 break;
 
             // ───────────── Comportamiento ─────────────
             case "cp_close":
-                toggle("Tocar fuera cierra el panel", "closeTap");
+                toggle(Lang.t(844), "closeTap");
                 break;
             case "cp_onact":
-                toggle("Cerrar al abrir un ajuste", "closeOnAct");
+                toggle(Lang.t(845), "closeOnAct");
                 break;
             case "cp_haptic":
-                toggle("Vibración al tocar", "haptic");
+                toggle(Lang.t(846), "haptic");
                 break;
             case "cp_tabs":
-                choice("Pestaña inicial", "defaultTab", Arrays.asList("Notificaciones", "Controles"));
-                toggle("Mostrar las pestañas", "showTabs");
+                choice(Lang.t(173), "defaultTab", Arrays.asList(Lang.t(874), Lang.t(8)));
+                toggle(Lang.t(174), "showTabs");
                 break;
             case "cp_test":
-                choice("Con el botón Probar abre en", "startStage", Arrays.asList("Vista acotada", "Vista completa"));
+                choice(Lang.t(170), "startStage", Arrays.asList(Lang.t(171), Lang.t(172)));
                 break;
             case "cp_grab":
-                toggle("Mostrar la barrita de abajo", "showGrab");
-                skSlider("Ancho de la barrita de abajo", "grabW", 16, 200, " dp");
-                skSlider("Grosor de la barrita de abajo", "grabH", 2, 16, " dp");
+                toggle(Lang.t(175), "showGrab");
+                skSlider(Lang.t(176), "grabW", 16, 200, " dp");
+                skSlider(Lang.t(177), "grabH", 2, 16, " dp");
                 break;
 
             // ───────────── Diseño manual ─────────────
             case "dm_mode":
-                choice("Modo de diseño", "layoutMode", Arrays.asList("Clásico (cuadrícula automática)", "Lienzo (lo armo a mano)"));
+                choice(Lang.t(186), "layoutMode", Arrays.asList(Lang.t(187), Lang.t(188)));
                 break;
             case "dm_cols":
-                skSlider("Columnas del lienzo", "canvasCols", 4, 16);
+                skSlider(Lang.t(574), "canvasCols", 4, 16);
                 break;
             case "dm_editor":
-                toolBtn("Abrir el editor del lienzo", () -> startActivity(new Intent(this, LayoutEditorActivity.class)));
-                note("En el lienzo ubicás cada elemento donde quieras y del tamaño que quieras: accesos, reloj, reproductor, notificaciones, sliders, imágenes, GIF, videos, widgets y textos.");
+                toolBtn(Lang.t(575), () -> startActivity(new Intent(this, LayoutEditorActivity.class)));
+                note(Lang.t(189));
                 break;
 
             // ───────────── Apertura del panel ─────────────
             case "ba_zone": {
                 String cz = Skin.prefs(this).getString("zone", "full");
                 int zi = Math.max(0, Arrays.asList(ZONE_KEYS).indexOf(cz));
-                chipsRow("Zona de apertura", Arrays.asList("Izquierda", "Centro", "Derecha", "Todo arriba"), zi, i -> {
+                chipsRow(Lang.t(847), Arrays.asList(Lang.t(63), Lang.t(64), Lang.t(65), Lang.t(66)), zi, i -> {
                     Skin.prefs(this).edit().putString("zone", ZONE_KEYS[i]).apply();
                     ControlService s = ControlService.instance;
                     if (s != null) s.rebuildHandle();
@@ -1102,45 +1102,45 @@ public class SettingsPageActivity extends Activity {
                 break;
             }
             case "ba_look":
-                slider("Opacidad de la barrita (0 = invisible)", 0, 100, "%", true,
+                slider(Lang.t(178), 0, 100, "%", true,
                     () -> Skin.prefs(this).getInt("pill_alpha", 60),
                     v -> Skin.prefs(this).edit().putInt("pill_alpha", v).apply());
-                skSlider("Largo de la barrita", "pillW", 24, 240, " dp", true);
-                skSlider("Grosor de la barrita", "pillH", 2, 14, " dp", true);
-                colorRow("Color de la barrita", "pillColor", true);
-                skSlider("Redondeo de la barrita", "pillRadius", 0, 20, " dp", true);
+                skSlider(Lang.t(179), "pillW", 24, 240, " dp", true);
+                skSlider(Lang.t(180), "pillH", 2, 14, " dp", true);
+                colorRow(Lang.t(181), "pillColor", true);
+                skSlider(Lang.t(182), "pillRadius", 0, 20, " dp", true);
                 break;
             case "ba_touch":
-                skSlider("Margen superior de la barrita", "pillTop", 0, 40, " dp", true);
-                skSlider("Alto de la zona táctil", "handleH", 12, 160, " dp", true);
-                skSlider("Distancia para empezar a bajar", "openThr", 2, 120, " dp");
+                skSlider(Lang.t(183), "pillTop", 0, 40, " dp", true);
+                skSlider(Lang.t(184), "handleH", 12, 160, " dp", true);
+                skSlider(Lang.t(185), "openThr", 2, 120, " dp");
                 break;
             case "gb_tap":
-                gesture("Un toque", "gestTap", "Paquete o comando del toque");
+                gesture(Lang.t(848), "gestTap", Lang.t(194));
                 break;
             case "gb_double":
-                gesture("Doble toque", "gestDouble", "Paquete o comando del doble toque");
+                gesture(Lang.t(849), "gestDouble", Lang.t(195));
                 break;
             case "gb_long":
-                gesture("Mantener apretado", "gestLong", "Paquete o comando de mantener apretado");
-                note("Bajar desde la barrita sigue abriendo el panel aunque tengas gestos asignados.");
+                gesture(Lang.t(850), "gestLong", Lang.t(196));
+                note(Lang.t(197));
                 break;
 
             // ───────────── Temas ─────────────
             case "th_presets":
-                if (item(0)) controls.addView(label("Presets", 12f, acc, 18));
+                if (item(0)) controls.addView(label(Lang.t(659), 12f, acc, 18));
                 chips(Arrays.asList(Skin.PRESETS), -1, i -> { Skin.applyPreset(this, i); buildControls(); changed(true); });
                 break;
             case "th_slots":
                 for (int sl = 1; sl <= 3; sl++) {
                     final int slot = sl;
-                    toolBtn("Guardar en la ranura " + slot, () -> {
+                    toolBtn(Lang.t(190) + slot, () -> {
                         Skin.saveSlot(this, slot);
-                        Toast.makeText(this, "Guardado en la ranura " + slot, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, Lang.t(191) + slot, Toast.LENGTH_SHORT).show();
                     });
-                    toolBtn("Cargar la ranura " + slot, () -> {
+                    toolBtn(Lang.t(192) + slot, () -> {
                         int n = Skin.loadSlot(this, slot);
-                        if (n < 0) Toast.makeText(this, "Esa ranura está vacía", Toast.LENGTH_SHORT).show();
+                        if (n < 0) Toast.makeText(this, Lang.t(193), Toast.LENGTH_SHORT).show();
                         else { buildControls(); changed(true); }
                     });
                 }
@@ -1148,134 +1148,134 @@ public class SettingsPageActivity extends Activity {
 
             // ───────────── Animaciones ─────────────
             case "an_style":
-                choice("Estilo", "animStyle", Arrays.asList("Desacelera", "Suave", "Rebote hacia afuera", "Rebota", "Lineal", "Se echa hacia atrás"));
-                skSlider("Duración", "animDur", 0, 1200, " ms");
-                skSlider("Duración de las pestañas", "tabAnimDur", 0, 1200, " ms");
+                choice(Lang.t(141), "animStyle", Arrays.asList(Lang.t(162), Lang.t(163), Lang.t(164), Lang.t(165), Lang.t(166), Lang.t(167)));
+                skSlider(Lang.t(168), "animDur", 0, 1200, " ms");
+                skSlider(Lang.t(169), "tabAnimDur", 0, 1200, " ms");
                 break;
             case "an_tap":
-                choice("Animación al tocar un acceso", "tapAnim", Arrays.asList("Ninguna", "Rebote", "Giro", "Vuelta", "Temblor", "Pulso"));
+                choice(Lang.t(852), "tapAnim", Arrays.asList(Lang.t(203), Lang.t(204), Lang.t(205), Lang.t(206), Lang.t(207), Lang.t(208)));
                 break;
             case "an_entry":
-                choice("Animación de entrada de los accesos", "entryAnim", Arrays.asList("Ninguna", "Sube y aparece", "Crece", "Entra desde la izquierda"));
+                choice(Lang.t(853), "entryAnim", Arrays.asList(Lang.t(203), Lang.t(209), Lang.t(210), Lang.t(211)));
                 break;
 
             // ───────────── Interfaz lateral ─────────────
             case "lt_mode": {
                 final boolean threeBtn = SideConfig.threeButtonNav(this);
-                chipsRow("Modo de la interfaz", Arrays.asList("Apagada", "Burbuja", "Gestos (3 botones)"), SideConfig.getMode(this), i -> {
+                chipsRow(Lang.t(25), Arrays.asList(Lang.t(26), Lang.t(543), Lang.t(27)), SideConfig.getMode(this), i -> {
                     if (i == SideConfig.MODE_GESTURE && !threeBtn) {
-                        Toast.makeText(this, "El modo gestos solo funciona con la navegación de tres botones", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, Lang.t(28), Toast.LENGTH_LONG).show();
                     } else {
                         SideConfig.setMode(this, i);
                     }
                     buildControls();
                 });
                 note("Los dos modos usan los mismos accesos, ventanas y notificaciones; solo cambia cómo se abre el panel: tocando la burbuja o deslizando desde el borde derecho.");
-                note("Servicio: " + (ControlService.instance != null ? "activo" : "inactivo")
-                    + "  ·  Acceso a notificaciones: " + (MediaListener.instance != null ? "activo" : "pendiente")
-                    + "  ·  Navegación: " + (threeBtn ? "tres botones" : "gestos o dos botones"));
+                note(Lang.t(29) + (ControlService.instance != null ? "activo" : "inactivo")
+                    + Lang.t(30) + (MediaListener.instance != null ? "activo" : "pendiente")
+                    + Lang.t(31) + (threeBtn ? Lang.t(837) : Lang.t(32)));
                 break;
             }
             case "bb_look":
-                sideSlider("Tamaño de la burbuja", "bubbleSize", 32, 72, " dp");
-                sideSlider("Opacidad de la burbuja", "bubbleAlpha", 30, 100, "%");
+                sideSlider(Lang.t(33), "bubbleSize", 32, 72, " dp");
+                sideSlider(Lang.t(34), "bubbleAlpha", 30, 100, "%");
                 break;
             case "bb_hold":
-                sideSlider("Mantener apretada para moverla", "holdSecs", 3, 15, " s");
+                sideSlider(Lang.t(544), "holdSecs", 3, 15, " s");
                 break;
             case "bb_actions":
-                toolBtn("Mover la burbuja ahora (modo lienzo)", () -> {
+                toolBtn(Lang.t(35), () -> {
                     SideHub h = sideHub();
                     if (h != null && SideConfig.getMode(this) == SideConfig.MODE_BUBBLE) { h.enterCanvas(); moveTaskToBack(true); }
-                    else Toast.makeText(this, "Activá el modo burbuja primero", Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(this, Lang.t(36), Toast.LENGTH_SHORT).show();
                 });
-                toolBtn("Devolver la burbuja al borde derecho", () -> { SideConfig.resetPos(this); });
-                toolBtn("Abrir el panel ahora", () -> {
+                toolBtn(Lang.t(37), () -> { SideConfig.resetPos(this); });
+                toolBtn(Lang.t(38), () -> {
                     SideHub h = sideHub();
                     if (h != null && SideConfig.getMode(this) != SideConfig.MODE_OFF) { h.open(); moveTaskToBack(true); }
-                    else Toast.makeText(this, "Activá la burbuja o los gestos primero", Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(this, Lang.t(39), Toast.LENGTH_SHORT).show();
                 });
-                note("Si te estorba: mantené apretada la burbuja unos segundos (por defecto 10). Se abre el modo lienzo y la arrastrás adonde quieras.");
+                note(Lang.t(40));
                 break;
             case "ln_anim":
-                sideToggle("Mostrar notificaciones nuevas con animación", "noteOn");
-                sideSlider("Tiempo visible", "noteSecs", 2, 15, " s");
+                sideToggle(Lang.t(41), "noteOn");
+                sideSlider(Lang.t(42), "noteSecs", 2, 15, " s");
                 break;
             case "ln_test":
-                toolBtn("Probar una notificación", () -> {
+                toolBtn(Lang.t(546), () -> {
                     SideHub h = sideHub();
-                    if (h == null || !h.test()) Toast.makeText(this, "Activá la burbuja o los gestos primero", Toast.LENGTH_SHORT).show();
+                    if (h == null || !h.test()) Toast.makeText(this, Lang.t(39), Toast.LENGTH_SHORT).show();
                     else moveTaskToBack(true);
                 });
                 note("Solo avisa de notificaciones normales: no muestra las silenciosas, las fijas, las de progreso ni las de la propia app. Tocá la tarjeta para abrir la app; deslizala hacia arriba para descartarla.");
                 break;
             case "vt_open":
-                sideToggle("Abrir las apps en ventana flotante", "floatWin");
+                sideToggle(Lang.t(46), "floatWin");
                 break;
             case "vt_geom":
-                sideSlider("Modo de ventana que se pide (5 = libre, 1 = completa, 6 = dividida)", "winMode", 1, 6, "");
-                sideSlider("Ancho de la ventana", "winSize", 20, 100, "%");
-                sideSlider("Alto de la ventana", "winH", 20, 100, "%");
-                sideSlider("Posición horizontal (0 = izquierda, 100 = derecha)", "winX", 0, 100, "%");
-                sideSlider("Posición vertical (0 = arriba, 100 = abajo)", "winY", 0, 100, "%");
+                sideSlider(Lang.t(47), "winMode", 1, 6, "");
+                sideSlider(Lang.t(48), "winSize", 20, 100, "%");
+                sideSlider(Lang.t(49), "winH", 20, 100, "%");
+                sideSlider(Lang.t(50), "winX", 0, 100, "%");
+                sideSlider(Lang.t(51), "winY", 0, 100, "%");
                 break;
             case "vt_bounds":
-                sideToggle("Pasar tamaño y posición al lanzar", "winBounds");
+                sideToggle(Lang.t(52), "winBounds");
                 break;
             case "vt_aux":
-                sideToggle("Lanzar antes la actividad auxiliar invisible (como Taskbar)", "winHack");
-                sideSlider("Espera entre la auxiliar y la app", "winHackMs", 0, 600, " ms");
+                sideToggle(Lang.t(53), "winHack");
+                sideSlider(Lang.t(54), "winHackMs", 0, 600, " ms");
                 break;
             case "vt_apis":
-                sideToggle("Desbloquear APIs ocultas por reflexión", "winExempt");
-                sideToggle("Escribir las opciones globales de ventana libre al lanzar", "winSettings");
+                sideToggle(Lang.t(55), "winExempt");
+                sideToggle(Lang.t(56), "winSettings");
                 break;
             case "vt_prep":
-                toolBtn("Preparar ventanas flotantes (Shizuku)", () -> {
+                toolBtn(Lang.t(57), () -> {
                     if (Privileged.available()) {
                         SideLauncher.prepareFreeform();
-                        Toast.makeText(this, "Listo. En algunos equipos hay que reiniciar para que tome efecto", Toast.LENGTH_LONG).show();
-                    } else Toast.makeText(this, "Necesita Shizuku activo", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, Lang.t(58), Toast.LENGTH_LONG).show();
+                    } else Toast.makeText(this, Lang.t(59), Toast.LENGTH_LONG).show();
                 });
-                note("Funciona si el sistema y la app lo permiten. Si no, la app se abre normalmente en pantalla completa.");
+                note(Lang.t(60));
                 break;
             case "lg_w":
-                note(SideConfig.threeButtonNav(this) ? "Tu equipo usa navegación de tres botones: el modo gestos está disponible."
-                    : "Tu equipo usa navegación por gestos (o dos botones): el modo gestos queda desactivado para no chocar con los gestos de Android.");
-                sideSlider("Ancho de la zona del borde", "edgeW", 12, 40, " dp");
+                note(SideConfig.threeButtonNav(this) ? Lang.t(61)
+                    : Lang.t(62));
+                sideSlider(Lang.t(550), "edgeW", 12, 40, " dp");
                 break;
             case "lg_h":
-                sideSlider("Alto de la zona del borde", "edgeH", 30, 100, "%");
+                sideSlider(Lang.t(551), "edgeH", 30, 100, "%");
                 break;
 
             // ───────────── Automatización ─────────────
             case "au_theme":
-                toggle("Tema oscuro por horario", "autoTheme");
-                skSlider("Desde las", "autoFrom", 0, 23, " h");
-                skSlider("Hasta las", "autoTo", 0, 23, " h");
+                toggle(Lang.t(212), "autoTheme");
+                skSlider(Lang.t(213), "autoFrom", 0, 23, " h");
+                skSlider(Lang.t(214), "autoTo", 0, 23, " h");
                 break;
             case "au_bat":
-                toggle("Acento rojo con batería baja (menos de 20%)", "lowBatRed");
+                toggle(Lang.t(215), "lowBatRed");
                 break;
 
             // ───────────── Herramientas ─────────────
             case "tl_config":
-                toolBtn("Copiar configuración", () -> {
+                toolBtn(Lang.t(233), () -> {
                     ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     cm.setPrimaryClip(ClipData.newPlainText("zc-control", Skin.export(this)));
-                    Toast.makeText(this, "Configuración copiada", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, Lang.t(234), Toast.LENGTH_SHORT).show();
                 });
-                toolBtn("Pegar configuración", () -> {
+                toolBtn(Lang.t(235), () -> {
                     ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     ClipData cd = cm.getPrimaryClip();
                     CharSequence tx = cd != null && cd.getItemCount() > 0 ? cd.getItemAt(0).coerceToText(this) : null;
                     int n = tx == null ? -1 : Skin.importAll(this, tx.toString());
-                    if (n < 0) Toast.makeText(this, "El portapapeles no tiene una configuración válida", Toast.LENGTH_LONG).show();
-                    else { Toast.makeText(this, "Se aplicaron " + n + " valores", Toast.LENGTH_SHORT).show(); changed(true); }
+                    if (n < 0) Toast.makeText(this, Lang.t(236), Toast.LENGTH_LONG).show();
+                    else { Toast.makeText(this, Lang.t(237) + n + Lang.t(855), Toast.LENGTH_SHORT).show(); changed(true); }
                 });
-                toolBtn("🎲 Aleatorizar todo", () -> { Skin.randomize(this); changed(true); });
+                toolBtn(Lang.t(238), () -> { Skin.randomize(this); changed(true); });
                 Button reset = new Button(this);
-                reset.setText("Restablecer todo");
+                reset.setText(Lang.t(239));
                 reset.setAllCaps(false);
                 reset.setOnClickListener(v -> { Skin.reset(SettingsPageActivity.this); changed(true); });
                 LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(MPB, WCB);
@@ -1292,23 +1292,23 @@ public class SettingsPageActivity extends Activity {
     private void renderCustomTiles() {
         final List<String[]> cts = Skin.customTiles(this);
         for (final String[] f : cts) {
-            controls.addView(label("★ " + (f[2].isEmpty() ? "Acceso" : f[2]), 14f, acc, 14));
-            chips(Arrays.asList("Abrir app", "Abrir enlace", "Comando", "Interruptor"), parseInt0(f[1]), i -> {
+            controls.addView(label("★ " + (f[2].isEmpty() ? Lang.t(595) : f[2]), 14f, acc, 14));
+            chips(Arrays.asList(Lang.t(216), Lang.t(217), Lang.t(218), Lang.t(219)), parseInt0(f[1]), i -> {
                 f[1] = String.valueOf(i);
                 Skin.saveCustomTiles(this, cts);
                 changed();
             });
-            textEdit("Nombre", f[2], v -> { f[2] = v; Skin.saveCustomTiles(this, cts); changed(); });
+            textEdit(Lang.t(854), f[2], v -> { f[2] = v; Skin.saveCustomTiles(this, cts); changed(); });
             textEdit("Destino (paquete, enlace o comando; interruptor: encendido&&&apagado)", f[3], v -> {
                 f[3] = v;
                 Skin.saveCustomTiles(this, cts);
                 changed();
             });
-            toolBtn("Eliminar este acceso", () -> { cts.remove(f); Skin.saveCustomTiles(this, cts); buildControls(); changed(); });
+            toolBtn(Lang.t(596), () -> { cts.remove(f); Skin.saveCustomTiles(this, cts); buildControls(); changed(); });
         }
-        toolBtn("＋ Agregar acceso propio", () -> {
+        toolBtn(Lang.t(220), () -> {
             String id = Long.toString(System.currentTimeMillis(), 36);
-            cts.add(new String[]{id, "0", "Nuevo", ""});
+            cts.add(new String[]{id, "0", Lang.t(221), ""});
             Skin.saveCustomTiles(this, cts);
             enableTile("ct:" + id);
             buildControls();

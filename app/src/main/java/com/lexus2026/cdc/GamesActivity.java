@@ -43,8 +43,8 @@ public class GamesActivity extends Activity {
         root.setPadding(dp(16), dp(20), dp(16), dp(24));
 
         LinearLayout head = GcUi.row(this);
-        head.addView(GcUi.tv(this, "GAMES", 18, GcUi.TEXT, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
-        head.addView(GcUi.badge(this, "ZCtrl", GcUi.GREEN));
+        head.addView(GcUi.tv(this, Lang.t(337), 18, GcUi.TEXT, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
+        head.addView(GcUi.badge(this, Lang.t(338), GcUi.GREEN));
         root.addView(head);
 
         LinearLayout card = GcUi.col(this);
@@ -55,13 +55,13 @@ public class GamesActivity extends Activity {
         box.setBackground(GcUi.round(this, GcUi.BOX, 14));
         box.setPadding(dp(14), dp(14), dp(14), dp(14));
         LinearLayout t1 = GcUi.row(this);
-        t1.addView(GcUi.tv(this, "ZC Game Control", 18, GcUi.TEXT, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
-        badge = GcUi.badge(this, "Desactivado", GcUi.GRAY);
+        t1.addView(GcUi.tv(this, Lang.t(339), 18, GcUi.TEXT, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
+        badge = GcUi.badge(this, Lang.t(614), GcUi.GRAY);
         t1.addView(badge);
         box.addView(t1);
-        box.addView(GcUi.tv(this, "Optimización automática antes de iniciar tus juegos", 13, GcUi.SUB, false), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 6));
+        box.addView(GcUi.tv(this, Lang.t(340), 13, GcUi.SUB, false), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 6));
         LinearLayout t2 = GcUi.row(this);
-        t2.addView(GcUi.tv(this, "Activar Game Control", 14, GcUi.SUB, false), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
+        t2.addView(GcUi.tv(this, Lang.t(341), 14, GcUi.SUB, false), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
         sw = new Switch(this);
         sw.setOnCheckedChangeListener((v, on) -> {
             if (binding) return;
@@ -73,11 +73,11 @@ public class GamesActivity extends Activity {
         box.addView(t2, GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 10));
         card.addView(box);
 
-        card.addView(GcUi.tv(this, "Tus juegos", 18, GcUi.TEXT, true), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 18));
+        card.addView(GcUi.tv(this, Lang.t(342), 18, GcUi.TEXT, true), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 18));
         list = GcUi.col(this);
         card.addView(list);
 
-        TextView add = GcUi.tv(this, "+  Agregar juego", 15, GcUi.GREEN, true);
+        TextView add = GcUi.tv(this, Lang.t(616), 15, GcUi.GREEN, true);
         add.setPadding(0, dp(14), 0, dp(14));
         add.setOnClickListener(v -> pickExtra());
         card.addView(add);
@@ -85,7 +85,7 @@ public class GamesActivity extends Activity {
 
         LinearLayout cfg = GcUi.row(this);
         cfg.setPadding(0, dp(14), 0, dp(4));
-        cfg.addView(GcUi.tv(this, "Configuración general", 15, GcUi.SUB, false), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
+        cfg.addView(GcUi.tv(this, Lang.t(291), 15, GcUi.SUB, false), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
         cfg.addView(GcUi.tv(this, "⚙", 18, GcUi.SUB, false));
         cfg.setOnClickListener(v -> startActivity(new Intent(this, GameProfileActivity.class)));
         card.addView(cfg);
@@ -111,7 +111,7 @@ public class GamesActivity extends Activity {
 
     private void refreshBadge() {
         boolean on = GameSettings.enabled(this);
-        GcUi.paint(badge, on ? "Activado" : "Desactivado", on ? GcUi.GREEN : GcUi.GRAY);
+        GcUi.paint(badge, on ? Lang.t(617) : Lang.t(614), on ? GcUi.GREEN : GcUi.GRAY);
     }
 
     private void play(String pkg) {
@@ -149,7 +149,7 @@ public class GamesActivity extends Activity {
     private void render(List<Item> items) {
         list.removeAllViews();
         if (items.isEmpty()) {
-            list.addView(GcUi.tv(this, "No se detectaron juegos. Tocá «Agregar juego».", 13, GcUi.SUB, false), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 10));
+            list.addView(GcUi.tv(this, Lang.t(343), 13, GcUi.SUB, false), GcUi.lp(this, GcUi.MATCH, GcUi.WRAP, 0f, 10));
         }
         for (final Item it : items) {
             LinearLayout r = GcUi.row(this);
@@ -161,8 +161,8 @@ public class GamesActivity extends Activity {
             tx.setPadding(dp(14), 0, dp(8), 0);
             tx.addView(GcUi.tv(this, it.label, 17, GcUi.TEXT, true));
             String sub = GameSettings.hasProfile(this, it.pkg)
-                ? "Perfil personalizado · " + GameSettings.profile(this, it.pkg).pct + " %"
-                : "Configuración predeterminada";
+                ? Lang.t(344) + GameSettings.profile(this, it.pkg).pct + " %"
+                : Lang.t(345);
             tx.addView(GcUi.tv(this, sub, 12, GcUi.SUB, false));
             r.addView(tx, new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
             TextView ch = GcUi.tv(this, "›", 28, GcUi.SUB, false);
@@ -173,15 +173,15 @@ public class GamesActivity extends Activity {
             if (it.extra) {
                 r.setOnLongClickListener(v -> {
                     new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-                        .setTitle("Quitar de la lista")
+                        .setTitle(Lang.t(346))
                         .setMessage(it.label)
-                        .setPositiveButton("Quitar", (d, w) -> {
+                        .setPositiveButton(Lang.t(18), (d, w) -> {
                             Set<String> s = GameSettings.extras(this);
                             s.remove(it.pkg);
                             GameSettings.setExtras(this, s);
                             reload();
                         })
-                        .setNegativeButton("Cancelar", null)
+                        .setNegativeButton(Lang.t(24), null)
                         .show();
                     return true;
                 });
@@ -209,14 +209,14 @@ public class GamesActivity extends Activity {
             final String[] names = new String[all.size()];
             for (int i = 0; i < names.length; i++) names[i] = all.get(i).label;
             runOnUiThread(() -> new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK)
-                .setTitle("Agregar juego")
+                .setTitle(Lang.t(347))
                 .setItems(names, (d, which) -> {
                     Set<String> s = GameSettings.extras(this);
                     s.add(all.get(which).pkg);
                     GameSettings.setExtras(this, s);
                     reload();
                 })
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(Lang.t(24), null)
                 .show());
         }).start();
     }

@@ -22,13 +22,13 @@ public final class GameSession implements Runnable {
     public static final int PENDING = 0, RUNNING = 1, DONE = 2, SKIPPED = 3, FAILED = 4;
     public static final int S_STATE = 0, S_READ = 1, S_KILL = 2, S_RES = 3, S_TWEAK = 4, S_COMPILE = 5, S_LAUNCH = 6;
     public static final String[] STEPS = {
-        "Guardando estado original",
-        "Lectura de procesos",
-        "Limpieza de procesos",
-        "Ajustando resolución y DPI",
-        "Ajustes de actividades y batería",
-        "Comprobando compilación",
-        "Iniciando juego"
+        Lang.t(607),
+        Lang.t(608),
+        Lang.t(609),
+        Lang.t(610),
+        Lang.t(611),
+        Lang.t(612),
+        Lang.t(613)
     };
 
     public interface Listener {
@@ -82,7 +82,7 @@ public final class GameSession implements Runnable {
     private boolean abort() {
         if (!cancel) return false;
         GameWatchdog.restore(ctx);
-        end(false, "Preparación cancelada");
+        end(false, Lang.t(311));
         return true;
     }
 
@@ -98,24 +98,24 @@ public final class GameSession implements Runnable {
 
     private void work() {
         if (!Privileged.available()) {
-            end(false, "Shizuku no está activo o no concedió permiso. ZC Game Control lo necesita para preparar el dispositivo.");
+            end(false, Lang.t(312));
             return;
         }
-        prog(2, "Guardando estado original…");
+        prog(2, Lang.t(313));
         step(S_STATE, RUNNING, "");
         if (!GameWatchdog.begin(ctx, pkg)) {
-            step(S_STATE, FAILED, "No se pudo leer el estado");
+            step(S_STATE, FAILED, Lang.t(314));
             end(false, "No se pudo registrar el estado original; no se modificó nada.");
             return;
         }
         step(S_STATE, DONE, "");
-        prog(8, "Estado guardado");
+        prog(8, Lang.t(315));
         if (abort()) return;
         if (prof.procs) {
             cleanup();
         } else {
-            step(S_READ, SKIPPED, "Desactivado");
-            step(S_KILL, SKIPPED, "Desactivado");
+            step(S_READ, SKIPPED, Lang.t(614));
+            step(S_KILL, SKIPPED, Lang.t(614));
         }
         if (abort()) return;
         resolution();
@@ -124,16 +124,16 @@ public final class GameSession implements Runnable {
         if (abort()) return;
         compile();
         if (abort()) return;
-        prog(100, "Listo");
+        prog(100, Lang.t(316));
         step(S_LAUNCH, RUNNING, "");
         end(true, "");
     }
 
     private void cleanup() {
         step(S_READ, RUNNING, "");
-        prog(12, "Leyendo procesos…");
+        prog(12, Lang.t(317));
         List<String> cand = candidates();
-        step(S_READ, DONE, cand.size() + " paquetes");
+        step(S_READ, DONE, cand.size() + Lang.t(857));
         for (String p : cand) proc(p, PENDING);
         step(S_KILL, RUNNING, "");
         int n = cand.size();
@@ -141,15 +141,15 @@ public final class GameSession implements Runnable {
         int killed = 0;
         for (String p : cand) {
             if (cancel) return;
-            prog(15 + 35 * i / Math.max(1, n), "Cerrando " + p);
+            prog(15 + 35 * i / Math.max(1, n), Lang.t(318) + p);
             proc(p, RUNNING);
             int st = clean(p);
             if (st == DONE) killed++;
             proc(p, st);
             i++;
         }
-        step(S_KILL, DONE, killed + " cerrados");
-        prog(52, "Limpieza terminada");
+        step(S_KILL, DONE, killed + Lang.t(858));
+        prog(52, Lang.t(319));
     }
 
     private int clean(String p) {
@@ -240,25 +240,25 @@ public final class GameSession implements Runnable {
             return;
         }
         step(S_RES, RUNNING, "");
-        prog(58, "Ajustando resolución…");
+        prog(58, Lang.t(320));
         boolean ok = GameOps.resolution(ctx, prof.pct);
         GameWatchdog.Orig o = GameWatchdog.orig(ctx);
         if (ok && o != null) {
             int[] s = GameOps.size(o.w, o.h, prof.pct);
             step(S_RES, DONE, s[0] + "×" + s[1] + " · " + GameOps.dpi(o.dpi, prof.pct) + " dpi");
         } else {
-            step(S_RES, FAILED, "No se pudo aplicar");
+            step(S_RES, FAILED, Lang.t(321));
         }
-        prog(70, "Resolución lista");
+        prog(70, Lang.t(322));
     }
 
     private void tweaks() {
         if (!prof.noKeep && !prof.bgLimit && !prof.saver) {
-            step(S_TWEAK, SKIPPED, "Desactivado");
+            step(S_TWEAK, SKIPPED, Lang.t(614));
             return;
         }
         step(S_TWEAK, RUNNING, "");
-        prog(72, "Aplicando ajustes temporales…");
+        prog(72, Lang.t(323));
         int bad = 0;
         int n = 0;
         if (prof.noKeep) {
@@ -273,17 +273,17 @@ public final class GameSession implements Runnable {
             n++;
             if (!GameOps.saver(ctx, true)) bad++;
         }
-        step(S_TWEAK, bad == 0 ? DONE : FAILED, bad == 0 ? n + " aplicados" : bad + " de " + n + " fallaron");
-        prog(80, "Ajustes aplicados");
+        step(S_TWEAK, bad == 0 ? DONE : FAILED, bad == 0 ? n + Lang.t(859) : bad + Lang.t(324) + n + Lang.t(860));
+        prog(80, Lang.t(325));
     }
 
     private void compile() {
         if (!prof.compile) {
-            step(S_COMPILE, SKIPPED, "Desactivado");
+            step(S_COMPILE, SKIPPED, Lang.t(614));
             return;
         }
         step(S_COMPILE, RUNNING, "");
-        prog(82, "Comprobando compilación…");
+        prog(82, Lang.t(326));
         try {
             PackageInfo pi = ctx.getPackageManager().getPackageInfo(pkg, 0);
             long vc = GameOps.versionCode(pi);
@@ -294,13 +294,13 @@ public final class GameSession implements Runnable {
             else if (vc != r.code) why = "actualizado";
             else if (!r.ok) why = "reintento";
             else {
-                step(S_COMPILE, SKIPPED, "Al día · v" + vn);
-                prog(95, "Compilación al día");
+                step(S_COMPILE, SKIPPED, Lang.t(327) + vn);
+                prog(95, Lang.t(328));
                 return;
             }
             if (r != null) GameSettings.dropRec(ctx, pkg);
             String mode = GameSettings.compileMode(ctx);
-            prog(85, "Compilando (" + mode + ")…");
+            prog(85, Lang.t(329) + mode + ")…");
             ShellExec.Res c = ShellExec.exec("cmd package compile -m " + mode + " -f '" + pkg + "'", 300000);
             boolean ok = c.code == 0 && c.out.contains("Success");
             GameSettings.Rec n = new GameSettings.Rec();
@@ -310,10 +310,10 @@ public final class GameSession implements Runnable {
             n.ok = ok;
             n.mode = mode;
             GameSettings.saveRec(ctx, pkg, n);
-            step(S_COMPILE, ok ? DONE : FAILED, ok ? why + " · " + mode : "Falló (" + why + ")");
+            step(S_COMPILE, ok ? DONE : FAILED, ok ? why + " · " + mode : Lang.t(330) + why + ")");
         } catch (Exception e) {
-            step(S_COMPILE, FAILED, "No se pudo leer la versión");
+            step(S_COMPILE, FAILED, Lang.t(331));
         }
-        prog(95, "Compilación terminada");
+        prog(95, Lang.t(332));
     }
 }

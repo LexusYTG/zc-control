@@ -215,7 +215,7 @@ public final class GamePanel {
         box.setBackground(GcUi.round(svc, 0xF2111827, 18));
 
         LinearLayout head = GcUi.row(svc);
-        head.addView(GcUi.tv(svc, "Game Control", 16, GcUi.TEXT, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
+        head.addView(GcUi.tv(svc, Lang.t(606), 16, GcUi.TEXT, true), new LinearLayout.LayoutParams(0, GcUi.WRAP, 1f));
         TextView x = GcUi.tv(svc, "✕", 18, GcUi.SUB, false);
         x.setPadding(dp(12), dp(4), dp(4), dp(4));
         x.setOnClickListener(v -> closePanel());
@@ -223,7 +223,7 @@ public final class GamePanel {
         box.addView(head);
         box.addView(GcUi.tv(svc, label, 12, GcUi.SUB, false));
 
-        add(box, GcUi.tv(svc, "Brillo", 13, GcUi.SUB, true), 14);
+        add(box, GcUi.tv(svc, Lang.t(873), 13, GcUi.SUB, true), 14);
         SeekBar sb = new SeekBar(svc);
         sb.setMax(GameOps.maxBrightness());
         sb.setProgress(GameOps.brightness(svc));
@@ -254,7 +254,7 @@ public final class GamePanel {
         add(box, sb, 4);
 
         final Switch sw = new Switch(svc);
-        sw.setText("Ahorro de batería");
+        sw.setText(Lang.t(875));
         sw.setTextColor(GcUi.TEXT);
         sw.setEnabled(false);
         add(box, sw, 12);
@@ -268,7 +268,7 @@ public final class GamePanel {
             });
         }).start();
 
-        TextView mb = GcUi.tv(svc, "Medidor de rendimiento", 14, GcUi.TEXT, true);
+        TextView mb = GcUi.tv(svc, Lang.t(275), 14, GcUi.TEXT, true);
         mb.setGravity(Gravity.CENTER);
         mb.setPadding(0, dp(12), 0, dp(12));
         mb.setBackground(GcUi.round(svc, GcUi.BOX, 12));

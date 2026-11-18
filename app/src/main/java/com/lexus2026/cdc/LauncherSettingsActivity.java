@@ -20,7 +20,7 @@ import java.util.List;
 
 /** Ajustes del launcher y editor de categorías. Todo se guarda al instante. */
 public class LauncherSettingsActivity extends Activity {
-    private static final String[] SHAPES = {"Círculo", "Cuadrado suave", "Cuadrado", "Rombo"};
+    private static final String[] SHAPES = {Lang.t(619), Lang.t(620), Lang.t(621), Lang.t(622)};
     private static final int[] PALETTE = {0xFF7C4DFF, 0xFF2979FF, 0xFFE91E63, 0xFFFF9800, 0xFF00BCD4,
         0xFF4CAF50, 0xFFFFC107, 0xFFF44336, 0xFF607D8B, 0xFF8D6E63};
     private LauncherSettings st;
@@ -43,82 +43,82 @@ public class LauncherSettingsActivity extends Activity {
             return in;
         });
         box.setPadding(dp(18), dp(40), dp(18), dp(28));
-        add(text("Launcher radial", 24, Color.WHITE));
+        add(text(Lang.t(623), 24, Color.WHITE));
 
-        head("Radial");
-        seek("Posiciones del 1er arco", LauncherSettings.RING1, 1, 7, "");
-        seek("Posiciones del 2º arco", LauncherSettings.RING2, 0, 9, "");
-        seek("Apertura angular", LauncherSettings.ARC, 20, 300, "°");
-        seek("Tamaño de burbuja", LauncherSettings.BUBBLE, 24, 96, " dp");
-        seek("Separación entre posiciones", LauncherSettings.GAP, 0, 60, " dp");
-        seek("Distancia para abrir el 2º arco", LauncherSettings.STAGE2, 10, 90, " dp");
-        seek("Sensibilidad del desplazamiento", LauncherSettings.SENS, 50, 200, " %");
-        seek("Retardo para mostrar el radial", LauncherSettings.HOLD, 0, 500, " ms");
-        seek("Duración de animaciones", LauncherSettings.ANIM, 80, 600, " ms");
-        seek("Radio del 1er arco (0 = automático)", LauncherSettings.R1, 0, 260, " dp");
-        seek("Separación entre arcos (0 = automático)", LauncherSettings.R2GAP, 0, 140, " dp");
-        seek("Grosor del arco de fondo (0 = oculto)", LauncherSettings.TRACK, 0, 80, " dp");
-        seek("Rotación del radial", LauncherSettings.ROT, -90, 90, "°");
+        head(Lang.t(372));
+        seek(Lang.t(373), LauncherSettings.RING1, 1, 7, "");
+        seek(Lang.t(374), LauncherSettings.RING2, 0, 9, "");
+        seek(Lang.t(375), LauncherSettings.ARC, 20, 300, "°");
+        seek(Lang.t(376), LauncherSettings.BUBBLE, 24, 96, " dp");
+        seek(Lang.t(377), LauncherSettings.GAP, 0, 60, " dp");
+        seek(Lang.t(378), LauncherSettings.STAGE2, 10, 90, " dp");
+        seek(Lang.t(379), LauncherSettings.SENS, 50, 200, " %");
+        seek(Lang.t(380), LauncherSettings.HOLD, 0, 500, " ms");
+        seek(Lang.t(381), LauncherSettings.ANIM, 80, 600, " ms");
+        seek(Lang.t(382), LauncherSettings.R1, 0, 260, " dp");
+        seek(Lang.t(383), LauncherSettings.R2GAP, 0, 140, " dp");
+        seek(Lang.t(384), LauncherSettings.TRACK, 0, 80, " dp");
+        seek(Lang.t(385), LauncherSettings.ROT, -90, 90, "°");
         final TextView fit = button(fitLabel());
         fit.setOnClickListener(v -> { st.set(LauncherSettings.FIT, 1 - st.get(LauncherSettings.FIT)); fit.setText(fitLabel()); });
         final TextView shape = button("");
-        shape.setText("Forma de las burbujas: " + SHAPES[st.get(LauncherSettings.SHAPE)]);
+        shape.setText(Lang.t(624) + SHAPES[st.get(LauncherSettings.SHAPE)]);
         shape.setOnClickListener(v -> {
             int n = (st.get(LauncherSettings.SHAPE) + 1) % SHAPES.length;
             st.set(LauncherSettings.SHAPE, n);
-            shape.setText("Forma de las burbujas: " + SHAPES[n]);
+            shape.setText(Lang.t(624) + SHAPES[n]);
         });
-        seek("Posición horizontal de los arcos", LauncherSettings.RAD_X, -200, 200, " dp");
-        seek("Posición vertical de los arcos (+ sube)", LauncherSettings.RAD_Y, -150, 300, " dp");
-        add(text("Mantener pulsado el botón central solo muestra el radial. Tocarlo 5 veces seguidas abre el menú de emergencia con todas las apps (también las ocultas).", 12, 0xFF8A8FA8));
+        seek(Lang.t(386), LauncherSettings.RAD_X, -200, 200, " dp");
+        seek(Lang.t(387), LauncherSettings.RAD_Y, -150, 300, " dp");
+        add(text(Lang.t(388), 12, 0xFF8A8FA8));
 
-        head("Apariencia");
-        seek("Altura de la barra", LauncherSettings.DOCK_H, 56, 110, " dp");
-        seek("Ancho de la barra", LauncherSettings.DOCK_W, 30, 100, " %");
-        seek("Elevación de la barra", LauncherSettings.DOCK_Y, 0, 400, " dp");
+        head(Lang.t(861));
+        seek(Lang.t(389), LauncherSettings.DOCK_H, 56, 110, " dp");
+        seek(Lang.t(390), LauncherSettings.DOCK_W, 30, 100, " %");
+        seek(Lang.t(391), LauncherSettings.DOCK_Y, 0, 400, " dp");
         final TextView pos = button(posLabel());
         pos.setOnClickListener(v -> { st.set(LauncherSettings.DOCK_POS, (st.get(LauncherSettings.DOCK_POS) + 1) % 3); pos.setText(posLabel()); });
         final TextView dsk = button(deskLabel());
         dsk.setOnClickListener(v -> { st.set(LauncherSettings.DESKTOP, 1 - st.get(LauncherSettings.DESKTOP)); dsk.setText(deskLabel()); });
-        seek("Tamaño de iconos del dock", LauncherSettings.DOCK_ICON, 36, 64, " dp");
-        seek("Tamaño de iconos del cajón", LauncherSettings.APP_ICON, 36, 72, " dp");
-        seek("Oscurecer el fondo", LauncherSettings.DIM, 0, 80, " %");
+        seek(Lang.t(392), LauncherSettings.DOCK_ICON, 36, 64, " dp");
+        seek(Lang.t(393), LauncherSettings.APP_ICON, 36, 72, " dp");
+        seek(Lang.t(394), LauncherSettings.DIM, 0, 80, " %");
         final TextView bg = button("");
         bg.setText(bgLabel());
         bg.setOnClickListener(v -> { st.set(LauncherSettings.BG, 1 - st.get(LauncherSettings.BG)); bg.setText(bgLabel()); });
         final TextView nm = button("");
         nm.setText(newLabel());
         nm.setOnClickListener(v -> { st.set(LauncherSettings.NEW_MODE, 1 - st.get(LauncherSettings.NEW_MODE)); nm.setText(newLabel()); });
-        button("Elegir fondo de pantalla del sistema").setOnClickListener(v ->
-            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER), "Fondo de pantalla")));
-        button("Color del fondo sólido").setOnClickListener(v -> colorDialog(LauncherSettings.BG_COLOR));
-        button("Color de acento").setOnClickListener(v -> colorDialog(LauncherSettings.ACCENT));
+        button(Lang.t(395)).setOnClickListener(v ->
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER), Lang.t(625))));
+        button(Lang.t(396)).setOnClickListener(v -> colorDialog(LauncherSettings.BG_COLOR));
+        button(Lang.t(397)).setOnClickListener(v -> colorDialog(LauncherSettings.ACCENT));
 
-        head("Categorías (el orden define el radial)");
+        head(Lang.t(398));
         catBox = new LinearLayout(this);
         catBox.setOrientation(LinearLayout.VERTICAL);
         add(catBox);
-        button("+ Nueva categoría").setOnClickListener(v -> editCategory(null));
+        button(Lang.t(399)).setOnClickListener(v -> editCategory(null));
         refreshCats();
         setContentView(sv);
     }
 
     private String posLabel() {
         int p = st.get(LauncherSettings.DOCK_POS);
-        return "Posición de la barra: " + (p == 1 ? "izquierda" : p == 2 ? "derecha" : "centro");
+        return Lang.t(400) + (p == 1 ? "izquierda" : p == 2 ? "derecha" : "centro");
     }
 
     private String deskLabel() {
-        return "Modo escritorio (horizontal, apps en ventana): " + (st.get(LauncherSettings.DESKTOP) == 1 ? "sí" : "no");
+        return Lang.t(626) + (st.get(LauncherSettings.DESKTOP) == 1 ? Lang.t(627) : "no");
     }
 
     private String newLabel() {
-        return "Apps sin categoría: " + (st.get(LauncherSettings.NEW_MODE) == 1 ? "dentro de la carpeta «Nuevas»" : "sueltas en el escritorio");
+        return Lang.t(628) + (st.get(LauncherSettings.NEW_MODE) == 1 ? Lang.t(629) : Lang.t(630));
     }
 
-    private String fitLabel() { return "Encoger burbujas si no caben: " + (st.get(LauncherSettings.FIT) == 1 ? "sí" : "no"); }
+    private String fitLabel() { return Lang.t(631) + (st.get(LauncherSettings.FIT) == 1 ? Lang.t(627) : "no"); }
 
-    private String bgLabel() { return "Fondo: " + (st.get(LauncherSettings.BG) == 1 ? "color sólido" : "el del sistema"); }
+    private String bgLabel() { return Lang.t(632) + (st.get(LauncherSettings.BG) == 1 ? Lang.t(633) : Lang.t(634)); }
 
     private void refreshCats() {
         catBox.removeAllViews();
@@ -128,17 +128,17 @@ public class LauncherSettingsActivity extends Activity {
             final CategoryManager.Category c = l.get(i);
             LinearLayout row = new LinearLayout(this);
             row.setGravity(Gravity.CENTER_VERTICAL);
-            TextView info = text(c.icon + "  " + c.name + "\n" + (i < r1 ? "1er arco" : i < r1 + r2 ? "2º arco"
-                : "sin posición en el radial"), 15, Color.WHITE);
+            TextView info = text(c.icon + "  " + c.name + "\n" + (i < r1 ? Lang.t(862) : i < r1 + r2 ? Lang.t(635)
+                : Lang.t(401)), 15, Color.WHITE);
             row.addView(info, new LinearLayout.LayoutParams(0, -2, 1));
             row.addView(small("▲", () -> { cm.move(c.id, -1); refreshCats(); }));
             row.addView(small("▼", () -> { cm.move(c.id, 1); refreshCats(); }));
             row.addView(small("✎", () -> editCategory(c)));
             row.addView(small("✕", () -> new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-                .setTitle("¿Eliminar «" + c.name + "»?")
-                .setMessage("Las apps que solo estén en ella volverán a «Nuevas».")
-                .setPositiveButton("Eliminar", (x, w) -> { cm.remove(c.id); refreshCats(); })
-                .setNegativeButton("Cancelar", null).show()));
+                .setTitle(Lang.t(402) + c.name + "»?")
+                .setMessage(Lang.t(403))
+                .setPositiveButton(Lang.t(636), (x, w) -> { cm.remove(c.id); refreshCats(); })
+                .setNegativeButton(Lang.t(24), null).show()));
             catBox.addView(row);
         }
     }
@@ -148,9 +148,9 @@ public class LauncherSettingsActivity extends Activity {
         lay.setOrientation(LinearLayout.VERTICAL);
         lay.setPadding(dp(20), dp(8), dp(20), 0);
         final EditText name = new EditText(this), icon = new EditText(this), hex = new EditText(this);
-        name.setHint("Nombre"); name.setText(c == null ? "" : c.name);
-        icon.setHint("Icono (emoji o letra)"); icon.setText(c == null ? "⭐" : c.icon);
-        hex.setHint("Color RRGGBB");
+        name.setHint(Lang.t(854)); name.setText(c == null ? "" : c.name);
+        icon.setHint(Lang.t(404)); icon.setText(c == null ? "⭐" : c.icon);
+        hex.setHint(Lang.t(405));
         hex.setText(String.format("%06X", (c == null ? PALETTE[0] : c.color) & 0xFFFFFF));
         for (EditText e : new EditText[]{name, icon, hex}) { e.setTextColor(Color.WHITE); e.setHintTextColor(0xFF888888); lay.addView(e); }
         HorizontalScrollView hs = new HorizontalScrollView(this);
@@ -175,31 +175,31 @@ public class LauncherSettingsActivity extends Activity {
         sh.setOnClickListener(v -> { shp[0] = shp[0] >= SHAPES.length - 1 ? -1 : shp[0] + 1; sh.setText(shapeLabel(shp[0])); });
         lay.addView(sh);
         new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-            .setTitle(c == null ? "Nueva categoría" : "Editar categoría").setView(lay)
-            .setPositiveButton("Guardar", (x, w) -> {
+            .setTitle(c == null ? Lang.t(406) : Lang.t(407)).setView(lay)
+            .setPositiveButton(Lang.t(23), (x, w) -> {
                 int color;
                 try { color = Color.parseColor("#" + hex.getText().toString().trim()); } catch (Exception ex) { color = PALETTE[0]; }
                 String n = name.getText().toString().trim(), ic = icon.getText().toString().trim();
-                if (n.isEmpty()) n = "Categoría";
+                if (n.isEmpty()) n = Lang.t(408);
                 if (ic.isEmpty()) ic = "•";
                 CategoryManager.Category t = c == null ? cm.add(n, ic, color) : c;
                 t.name = n; t.icon = ic; t.color = color; t.shape = shp[0];
                 cm.save();
                 refreshCats();
-            }).setNegativeButton("Cancelar", null).show();
+            }).setNegativeButton(Lang.t(24), null).show();
     }
 
-    private String shapeLabel(int s) { return "Forma: " + (s < 0 ? "la global" : SHAPES[s]); }
+    private String shapeLabel(int s) { return Lang.t(409) + (s < 0 ? Lang.t(410) : SHAPES[s]); }
 
     private void colorDialog(final String key) {
         final EditText hex = new EditText(this);
-        hex.setHint("RRGGBB");
+        hex.setHint(Lang.t(411));
         hex.setText(String.format("%06X", st.get(key) & 0xFFFFFF));
         hex.setTextColor(Color.WHITE);
-        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert).setTitle("Color").setView(hex)
-            .setPositiveButton("Aplicar", (x, w) -> {
+        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert).setTitle(Lang.t(412)).setView(hex)
+            .setPositiveButton(Lang.t(413), (x, w) -> {
                 try { st.set(key, Color.parseColor("#" + hex.getText().toString().trim())); } catch (Exception ignored) { }
-            }).setNegativeButton("Cancelar", null).show();
+            }).setNegativeButton(Lang.t(24), null).show();
     }
 
     // ---------- helpers de UI ----------

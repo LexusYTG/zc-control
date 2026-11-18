@@ -40,8 +40,8 @@ public class SettingsHomeActivity extends Activity {
         LinearLayout root = ZUi.box(this, LinearLayout.VERTICAL);
         root.setPadding(ZUi.dp(this, 20), ZUi.dp(this, 28), ZUi.dp(this, 20), ZUi.dp(this, 32));
 
-        root.addView(ZUi.text(this, "Ajustes", 30f, ZUi.TXT, true));
-        TextView sub = ZUi.text(this, "ZC Control · personalización del sistema", 14f, ZUi.SUB, false);
+        root.addView(ZUi.text(this, Lang.t(240), 30f, ZUi.TXT, true));
+        TextView sub = ZUi.text(this, Lang.t(511), 14f, ZUi.SUB, false);
         sub.setPadding(0, ZUi.dp(this, 4), 0, ZUi.dp(this, 16));
         root.addView(sub);
 
@@ -50,7 +50,7 @@ public class SettingsHomeActivity extends Activity {
         banner.setGravity(Gravity.CENTER_VERTICAL);
         banner.setPadding(ZUi.dp(this, 16), ZUi.dp(this, 14), ZUi.dp(this, 16), ZUi.dp(this, 14));
         banner.setBackground(ZUi.shape(this, 0x22FBBF24, 16));
-        bannerText = ZUi.text(this, "Faltan permisos · tocá para configurarlos", 14f, ZUi.WARN, true);
+        bannerText = ZUi.text(this, Lang.t(512), 14f, ZUi.WARN, true);
         banner.addView(bannerText, new LinearLayout.LayoutParams(0, -2, 1f));
         banner.addView(ZUi.text(this, "›", 22f, ZUi.WARN, false));
         banner.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
@@ -60,7 +60,7 @@ public class SettingsHomeActivity extends Activity {
 
         // buscador
         final EditText search = new EditText(this);
-        search.setHint("🔍  Buscar en ajustes...");
+        search.setHint(Lang.t(513));
         search.setSingleLine(true);
         search.setTextColor(ZUi.TXT);
         search.setHintTextColor(ZUi.SUB);
@@ -89,14 +89,23 @@ public class SettingsHomeActivity extends Activity {
         }
         root.addView(tree);
 
+        TextView lang = ZUi.text(this, "🌐  " + Lang.t(872), 15f, ZUi.TXT, true);
+        lang.setGravity(Gravity.CENTER);
+        lang.setPadding(ZUi.dp(this, 12), ZUi.dp(this, 16), ZUi.dp(this, 12), ZUi.dp(this, 16));
+        lang.setBackground(ZUi.shape(this, ZUi.CARD, 16));
+        lang.setOnClickListener(v -> Lang.pick(this));
+        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(-1, -2);
+        lp2.topMargin = ZUi.dp(this, 20);
+        root.addView(lang, lp2);
+
         // botón al Ajustes del sistema
-        TextView sys = ZUi.text(this, "Abrir ajustes del sistema", 15f, ZUi.TXT, true);
+        TextView sys = ZUi.text(this, Lang.t(514), 15f, ZUi.TXT, true);
         sys.setGravity(Gravity.CENTER);
         sys.setPadding(ZUi.dp(this, 12), ZUi.dp(this, 16), ZUi.dp(this, 12), ZUi.dp(this, 16));
         sys.setBackground(ZUi.shape(this, ZUi.CARD_HI, 16));
         sys.setOnClickListener(v -> {
             try { startActivity(new Intent(Settings.ACTION_SETTINGS)); }
-            catch (Throwable e) { Toast.makeText(this, "No se pudo abrir los ajustes del sistema", Toast.LENGTH_SHORT).show(); }
+            catch (Throwable e) { Toast.makeText(this, Lang.t(515), Toast.LENGTH_SHORT).show(); }
         });
         LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(-1, -2);
         sp.topMargin = ZUi.dp(this, 28);
@@ -139,7 +148,7 @@ public class SettingsHomeActivity extends Activity {
         results.setVisibility(searching ? View.VISIBLE : View.GONE);
         if (!searching) return;
         List<SettingsTree.Hit> hits = SettingsTree.search(q);
-        results.addView(ZUi.sectionLabel(this, hits.isEmpty() ? "Sin resultados" : "Resultados"));
+        results.addView(ZUi.sectionLabel(this, hits.isEmpty() ? Lang.t(516) : Lang.t(517)));
         if (hits.isEmpty()) return;
         LinearLayout card = ZUi.box(this, LinearLayout.VERTICAL);
         card.setBackground(ZUi.shape(this, ZUi.CARD, 20));

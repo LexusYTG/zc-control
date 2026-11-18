@@ -288,7 +288,7 @@ public class SidePanel extends FrameLayout {
 
     private void buildList() {
         final Context c = getContext();
-        header(editing ? "Editar accesos" : "Accesos rápidos", editing ? "Listo" : "✎", () -> { editing = !editing; rebuild(); });
+        header(editing ? Lang.t(232) : Lang.t(688), editing ? Lang.t(316) : "✎", () -> { editing = !editing; rebuild(); });
         final List<String> apps = SideConfig.shortcuts(c);
         LinearLayout list = new LinearLayout(c);
         list.setOrientation(LinearLayout.VERTICAL);
@@ -299,7 +299,7 @@ public class SidePanel extends FrameLayout {
             boolean ok = SideLauncher.installedPkg(c, pkg);
             if (!ok && !editing) continue;
             LinearLayout r = row(ok ? SideLauncher.icon(c, pkg) : null,
-                ok ? SideLauncher.label(c, pkg) : pkg + " (no instalada)", ok ? TXT : SUB);
+                ok ? SideLauncher.label(c, pkg) : pkg + Lang.t(20), ok ? TXT : SUB);
             if (editing) {
                 final int last = apps.size() - 1;
                 r.addView(miniBtn("▲", idx > 0, () -> { SideConfig.moveShortcut(c, idx, idx - 1); rebuild(); }));
@@ -318,11 +318,11 @@ public class SidePanel extends FrameLayout {
             shown++;
         }
         if (shown == 0) {
-            TextView e = text("Todavía no agregaste apps.", 13f, SUB, false);
+            TextView e = text(Lang.t(528), 13f, SUB, false);
             e.setPadding(dp(2), dp(10), dp(2), dp(10));
             list.addView(e);
         }
-        LinearLayout add = row(null, "Agregar acceso…", TXT);
+        LinearLayout add = row(null, Lang.t(529), TXT);
         ((ImageView) add.getChildAt(0)).setImageDrawable(plusDrawable());
         add.setOnClickListener(v -> { mode = M_PICK; rebuild(); });
         list.addView(divider());
@@ -332,11 +332,11 @@ public class SidePanel extends FrameLayout {
         card.addView(sc, new LinearLayout.LayoutParams(-1, -2));
         if (!editing) {
             card.addView(divider());
-            TextView rec = text("Ventanas recientes", 13f, TXT, false);
+            TextView rec = text(Lang.t(530), 13f, TXT, false);
             rec.setPadding(dp(4), dp(9), dp(4), dp(9));
             rec.setOnClickListener(v -> host.recents());
             card.addView(rec);
-            TextView cfg = text("Configuración", 13f, TXT, false);
+            TextView cfg = text(Lang.t(748), 13f, TXT, false);
             cfg.setPadding(dp(4), dp(9), dp(4), dp(9));
             cfg.setOnClickListener(v -> host.openSettings());
             card.addView(cfg);
@@ -370,10 +370,10 @@ public class SidePanel extends FrameLayout {
 
     private void buildPicker() {
         final Context c = getContext();
-        header("Elegí las apps", "Listo", () -> { mode = M_LIST; rebuild(); });
+        header(Lang.t(531), Lang.t(316), () -> { mode = M_LIST; rebuild(); });
         final LinearLayout list = new LinearLayout(c);
         list.setOrientation(LinearLayout.VERTICAL);
-        TextView loading = text("Cargando…", 13f, SUB, false);
+        TextView loading = text(Lang.t(532), 13f, SUB, false);
         loading.setPadding(dp(2), dp(10), dp(2), dp(10));
         list.addView(loading);
         LimitedScroll sc = scroller();

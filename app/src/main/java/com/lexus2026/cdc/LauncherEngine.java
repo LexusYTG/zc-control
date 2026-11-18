@@ -141,8 +141,8 @@ public class LauncherEngine {
         head.addView(close);
         col.addView(head);
         chips = new LinearLayout(a);
-        chipNew = chip("Sin categoría");
-        chipAll = chip("Todas");
+        chipNew = chip(Lang.t(348));
+        chipAll = chip(Lang.t(349));
         chipNew.setOnClickListener(v -> { showPending = true; populate(); });
         chipAll.setOnClickListener(v -> { showPending = false; populate(); });
         chips.addView(chipNew);
@@ -546,19 +546,19 @@ public class LauncherEngine {
         List<ApplicationManager.App> items;
         gear.setVisibility(View.GONE);
         if ("*".equals(openId)) {
-            title.setText("Todas las apps");
+            title.setText(Lang.t(350));
             items = am.all();
-            empty.setText("Cargando apps…");
+            empty.setText(Lang.t(21));
             gear.setVisibility(View.VISIBLE);
         } else if ("new".equals(openId)) {
-            title.setText("Nuevas");
+            title.setText(Lang.t(351));
             items = am.pending(cm);
-            empty.setText("No quedan apps sin categoría.");
+            empty.setText(Lang.t(352));
         } else {
             CategoryManager.Category c = cm.byId(openId);
             title.setText(c == null ? "" : c.icon + "  " + c.name);
             items = am.inCategory(cm, openId);
-            empty.setText("Esta categoría está vacía.\nMantén pulsada una app y elige «Enviar a…».");
+            empty.setText(Lang.t(353));
         }
         chips.setVisibility(View.GONE);
         empty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
@@ -583,7 +583,7 @@ public class LauncherEngine {
 
     private void launch(String pkg) {
         if (am.launch(pkg)) closeDrawer(false);
-        else Toast.makeText(act, "No se pudo abrir la app", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(act, Lang.t(354), Toast.LENGTH_SHORT).show();
     }
 
     private class AppAdapter extends BaseAdapter {
@@ -645,7 +645,7 @@ public class LauncherEngine {
                 gestures(cell, a, null, -1);
             } else {
                 iv.setImageDrawable(new FolderDrawable(am.pending(cm)));
-                t.setText("Nuevas");
+                t.setText(Lang.t(351));
                 cell.setOnTouchListener(null);
                 cell.setOnLongClickListener(null);
                 cell.setOnClickListener(v -> openDrawer("new"));
@@ -688,17 +688,17 @@ public class LauncherEngine {
         TextView hd = tv(a.label, 16, Color.WHITE);
         hd.setPadding(dp(16), dp(8), dp(16), dp(8));
         box.addView(hd);
-        item(box, "Abrir", () -> launch(a.pkg));
-        item(box, "Enviar a…", () -> sendTo(a));
-        if (st.isPinned(a.pkg)) item(box, "Quitar del inicio", () -> { st.unpin(a.pkg); refreshDesk(); });
-        else item(box, "Fijar al inicio", () -> { st.pin(a.pkg); refreshDesk(); });
-        item(box, "Añadir a la pantalla principal", () -> addToDock(a));
-        if (catId != null && !"*".equals(catId)) item(box, "Quitar de esta categoría", () -> { cm.removeApp(a.pkg, catId); populate(); });
-        if (dockIdx >= 0) item(box, "Quitar de la pantalla principal", () -> { st.setDock(dockIdx, null); buildDock(); });
-        if (am.isHidden(a.pkg)) item(box, "Mostrar app", () -> { st.setHidden(a.pkg, false); populate(); });
-        else item(box, "Ocultar app", () -> { st.setHidden(a.pkg, true); st.unpin(a.pkg); refreshDesk(); populate(); });
-        item(box, "Información de la app", () -> am.info(a.pkg));
-        item(box, "Desinstalar", () -> am.uninstall(a.pkg));
+        item(box, Lang.t(355), () -> launch(a.pkg));
+        item(box, Lang.t(356), () -> sendTo(a));
+        if (st.isPinned(a.pkg)) item(box, Lang.t(357), () -> { st.unpin(a.pkg); refreshDesk(); });
+        else item(box, Lang.t(358), () -> { st.pin(a.pkg); refreshDesk(); });
+        item(box, Lang.t(359), () -> addToDock(a));
+        if (catId != null && !"*".equals(catId)) item(box, Lang.t(618), () -> { cm.removeApp(a.pkg, catId); populate(); });
+        if (dockIdx >= 0) item(box, Lang.t(360), () -> { st.setDock(dockIdx, null); buildDock(); });
+        if (am.isHidden(a.pkg)) item(box, Lang.t(361), () -> { st.setHidden(a.pkg, false); populate(); });
+        else item(box, Lang.t(362), () -> { st.setHidden(a.pkg, true); st.unpin(a.pkg); refreshDesk(); populate(); });
+        item(box, Lang.t(363), () -> am.info(a.pkg));
+        item(box, Lang.t(364), () -> am.uninstall(a.pkg));
         ScrollView sc = new ScrollView(act);
         sc.addView(box);
         menu = new PopupWindow(sc, dp(250), -2, true);
@@ -748,27 +748,27 @@ public class LauncherEngine {
 
     private void sendTo(final ApplicationManager.App a) {
         final List<CategoryManager.Category> l = cm.list();
-        if (l.isEmpty()) { Toast.makeText(act, "Crea categorías en los ajustes", Toast.LENGTH_SHORT).show(); return; }
+        if (l.isEmpty()) { Toast.makeText(act, Lang.t(365), Toast.LENGTH_SHORT).show(); return; }
         String[] names = new String[l.size()];
         final boolean[] chk = new boolean[l.size()];
         Set<String> cur = cm.of(a.pkg);
         for (int i = 0; i < names.length; i++) { names[i] = l.get(i).icon + "  " + l.get(i).name; chk[i] = cur.contains(l.get(i).id); }
-        dlg().setTitle("Enviar a…").setMultiChoiceItems(names, chk, (x, i, on) -> chk[i] = on)
-            .setPositiveButton("Aceptar", (x, w) -> {
+        dlg().setTitle(Lang.t(356)).setMultiChoiceItems(names, chk, (x, i, on) -> chk[i] = on)
+            .setPositiveButton(Lang.t(366), (x, w) -> {
                 Set<String> ids = new LinkedHashSet<>();
                 for (int i = 0; i < chk.length; i++) if (chk[i]) ids.add(l.get(i).id);
                 cm.setApp(a.pkg, ids);
                 populate();
-            }).setNegativeButton("Cancelar", null).show();
+            }).setNegativeButton(Lang.t(24), null).show();
     }
 
     private void addToDock(final ApplicationManager.App a) {
-        String[] n = {"Izquierda 1", "Izquierda 2", "Derecha 1", "Derecha 2"};
+        String[] n = {Lang.t(367), Lang.t(368), Lang.t(369), Lang.t(370)};
         for (int i = 0; i < 4; i++) {
             ApplicationManager.App o = am.find(st.getDock(i));
             if (o != null) n[i] += "  (" + o.label + ")";
         }
-        dlg().setTitle("Posición en el dock").setItems(n, (x, w) -> { st.setDock(w, a.pkg); buildDock(); }).show();
+        dlg().setTitle(Lang.t(371)).setItems(n, (x, w) -> { st.setDock(w, a.pkg); buildDock(); }).show();
     }
 
     // ---------- utilidades ----------

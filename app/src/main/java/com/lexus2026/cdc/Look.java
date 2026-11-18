@@ -4,10 +4,10 @@ import android.content.Context;
 
 /** Apariencias disponibles para el panel. */
 public enum Look {
-    AOSP("aosp", "AOSP", 2),
+    AOSP("aosp", Lang.t(447), 2),
     IOS("ios", "iOS", 4),
-    XIAOMI("xiaomi", "Xiaomi", 4),
-    COLOROS("coloros", "ColorOS", 4);
+    XIAOMI("xiaomi", Lang.t(448), 4),
+    COLOROS("coloros", Lang.t(449), 4);
 
     public final String key;
     public final String label;

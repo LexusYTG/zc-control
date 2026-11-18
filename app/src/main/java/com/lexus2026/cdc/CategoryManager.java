@@ -66,14 +66,14 @@ public class CategoryManager {
             }
         } catch (Exception ignored) { }
         if (!sp.contains("cats")) {
-            add("Juegos", "🎮", 0xFF7C4DFF);
-            add("Multimedia", "🎵", 0xFFE91E63);
-            add("Herramientas", "🛠", 0xFF2979FF);
-            add("Comunicación", "💬", 0xFF00BCD4);
-            add("Productividad", "💼", 0xFFFF9800);
-            add("Favoritos", "⭐", 0xFFFFC107);
-            add("Fotos", "🖼", 0xFF4CAF50);
-            add("Sistema", "⚙", 0xFF607D8B);
+            add(Lang.t(241), "🎮", 0xFF7C4DFF);
+            add(Lang.t(242), "🎵", 0xFFE91E63);
+            add(Lang.t(856), "🛠", 0xFF2979FF);
+            add(Lang.t(243), "💬", 0xFF00BCD4);
+            add(Lang.t(244), "💼", 0xFFFF9800);
+            add(Lang.t(245), "⭐", 0xFFFFC107);
+            add(Lang.t(246), "🖼", 0xFF4CAF50);
+            add(Lang.t(841), "⚙", 0xFF607D8B);
         }
     }
 
