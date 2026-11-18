@@ -36,6 +36,7 @@ public class SettingsHomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        if (!Consent.granted(this)) { Consent.require(this, false); return; }
         LinearLayout root = ZUi.box(this, LinearLayout.VERTICAL);
         root.setPadding(ZUi.dp(this, 20), ZUi.dp(this, 28), ZUi.dp(this, 20), ZUi.dp(this, 32));
 
@@ -158,6 +159,7 @@ public class SettingsHomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!Consent.granted(this)) return;
         refreshBanner();
         // Con Shizuku corriendo, todo se configura solo.
         try {

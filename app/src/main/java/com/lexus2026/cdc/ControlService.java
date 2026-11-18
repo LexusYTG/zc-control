@@ -46,6 +46,9 @@ public class ControlService extends AccessibilityService {
     // Fondo difuminado: captura reducida y desenfocada de lo que hay detrás del panel.
 
     public static volatile ControlService instance = null;
+    /** Servicio conectado por el sistema, con o sin consentimiento; solo instance implica servicio activo. */
+    static volatile ControlService connected = null;
+    private boolean started = false;
 
     /** Interfaz lateral (burbuja / gestos): un único subsistema que vive dentro de este servicio. */
     private SideHub side = null;
@@ -180,6 +183,22 @@ public class ControlService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
+        connected = this;
+        if (!Consent.granted(this)) return; // sin consentimiento el servicio queda inerte
+        startAll();
+    }
+
+    /** Se llama al aceptar el consentimiento si el servicio ya estaba conectado. */
+    void onConsentGranted() {
+        ui.post(() -> {
+            if (started) return;
+            if (Consent.granted(this)) startAll();
+        });
+    }
+
+    private void startAll() {
+        if (started) return;
+        started = true;
         instance = this;
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         registerGuard();
@@ -418,6 +437,7 @@ public class ControlService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (!started) return; // sin consentimiento no se lee ningún evento
         if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.getPackageName() != null) GameWatchdog.onForeground(this, event.getPackageName().toString(), event.getClassName() != null ? event.getClassName().toString() : "");
         // Autocuración: si por algún motivo la zona táctil no está y el dispositivo está en uso, se repone.
         if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
@@ -429,6 +449,8 @@ public class ControlService extends AccessibilityService {
 
     @Override
     public void onDestroy() {
+        connected = null;
+        started = false;
         instance = null;
         GameWatchdog.detach();
         MediaListener.onPosted = null;

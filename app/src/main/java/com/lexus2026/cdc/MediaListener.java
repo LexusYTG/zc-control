@@ -135,8 +135,20 @@ public class MediaListener extends NotificationListenerService {
         if (r != null) r.run();
     }
 
-    @Override public void onListenerConnected() { instance = this; fire(); }
+    @Override public void onListenerConnected() {
+        bound = this;
+        if (Consent.granted(this)) { instance = this; fire(); } // sin consentimiento no se expone nada
+    }
+
+    private static volatile MediaListener bound = null;
+
+    /** Se llama al aceptar el consentimiento: expone el listener que ya estaba conectado. */
+    static void activate() {
+        MediaListener b = bound;
+        if (b != null) { instance = b; fire(); }
+    }
     @Override public void onListenerDisconnected() {
+        if (bound == this) bound = null;
         if (instance == this) instance = null;
         rebind(this);
     }
@@ -153,6 +165,7 @@ public class MediaListener extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        if (!Consent.granted(this)) return;
         fire();
         java.util.function.Consumer<Note> hook = onPosted;
         if (hook == null || sbn == null) return;
@@ -186,6 +199,7 @@ public class MediaListener extends NotificationListenerService {
         return note;
     }
     @Override public void onNotificationRemoved(StatusBarNotification sbn) {
+        if (!Consent.granted(this)) return;
         if (sbn != null) hidden.remove(sbn.getKey());
         fire();
     }

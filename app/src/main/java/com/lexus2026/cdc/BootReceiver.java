@@ -7,6 +7,7 @@ import android.content.Intent;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context c, Intent i) {
+        if (!Consent.granted(c)) return;
         final PendingResult pr = goAsync();
         new Thread(() -> {
             try {

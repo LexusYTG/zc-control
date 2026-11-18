@@ -14,6 +14,7 @@ public class LauncherActivity extends Activity {
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
+        if (!Consent.granted(this)) { Consent.require(this, true); return; }
         getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
         if (Build.VERSION.SDK_INT >= 30) getWindow().setDecorFitsSystemWindows(false);
@@ -30,6 +31,7 @@ public class LauncherActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
+        if (engine == null) return;
         // Modo escritorio: teléfono en horizontal; si no, vertical como siempre.
         boolean desk = new LauncherSettings(this).get(LauncherSettings.DESKTOP) == 1;
         int want = desk ? android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
@@ -40,10 +42,11 @@ public class LauncherActivity extends Activity {
 
     @Override protected void onNewIntent(Intent i) {
         super.onNewIntent(i);
+        if (engine == null) return;
         if (Intent.ACTION_MAIN.equals(i.getAction())) engine.onHome(); // se pulsó Home
     }
 
-    @Override public void onBackPressed() { engine.onBack(); } // un launcher nunca se cierra con Atrás
+    @Override public void onBackPressed() { if (engine != null) engine.onBack(); } // un launcher nunca se cierra con Atrás
 
-    @Override protected void onDestroy() { super.onDestroy(); engine.onDestroy(); }
+    @Override protected void onDestroy() { super.onDestroy(); if (engine != null) engine.onDestroy(); }
 }
