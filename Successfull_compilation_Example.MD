@@ -16,7 +16,6 @@ LICENSE    app    build.gradle.kts   settings.gradle.kts                        
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
-> Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :app:generateDebugResValues
 > Task :app:checkDebugAarMetadata
 > Task :app:mapDebugSourceSetPaths
@@ -47,7 +46,6 @@ LICENSE    app    build.gradle.kts   settings.gradle.kts                        
 > Task :app:writeDebugSigningConfigVersions
 > Task :app:processDebugResources
 > Task :app:mergeExtDexDebug
-> Task :app:compileDebugKotlin
 w: file:///data/data/com.termux/files/home/zc-control/app/src/main/java/com/lexus2026/cdc/PanelView.kt:169:38 'getDefaultAdapter(): BluetoothAdapter!' is deprecated. Deprecated in Java
 w: file:///data/data/com.termux/files/home/zc-control/app/src/main/java/com/lexus2026/cdc/PanelView.kt:171:45 'getDefaultAdapter(): BluetoothAdapter!' is deprecated. Deprecated in Java
 

@@ -1,336 +1,253 @@
+<div align="center">
 
-# ZC Control
+# 🦢 ZC Control
 
-### Una capa de personalización extremadamente modificable para Android, pensada para reemplazar por completo la del sistema
+**Una capa de personalización extremadamente modificable para Android.**
+Pensada para que cada parte de la interfaz con la que interactúas a diario sea tuya.
 
-## ¿Qué es?
+[![Release](https://img.shields.io/github/v/release/LexusYTG/zc-control?style=flat-square&color=2ea043)](https://github.com/LexusYTG/zc-control/releases)
+[![Licencia](https://img.shields.io/badge/licencia-GPLv3-blue?style=flat-square)](LICENSE)
+[![Plataforma](https://img.shields.io/badge/plataforma-Android-3ddc84?style=flat-square)](#requisitos)
+[![Sin Internet](https://img.shields.io/badge/permiso%20INTERNET-no%20declarado-success?style=flat-square)](#-privacidad-y-consentimiento)
+[![Ley 25.326](https://img.shields.io/badge/datos%20personales-Ley%2025.326-informational?style=flat-square)](#-privacidad-y-consentimiento)
 
-**ZC Control** es una capa de personalización para Android. Su objetivo es que **cada parte de la interfaz con la que interactúas a diario** (panel de ajustes rápidos, notificaciones, pantalla de inicio, accesos, ventanas, ajustes) **sea tuya y completamente modificable**: cómo se ve, cómo se comporta, qué muestra, dónde está y cómo se abre.
+[Qué es](#-qué-es) · [Módulos](#-módulos) · [Funciones](#-qué-hace-hoy) · [Privacidad](#-privacidad-y-consentimiento) · [Instalación](#-instalación-y-primer-uso) · [Recuperación](#%EF%B8%8F-advertencia-recuperación-del-panel-original) · [Compilación](#-compilación) · [Soporte](#-distribución-oficial-y-soporte) · [Licencia](#-licencia)
 
-No pretende ser un tema ni un widget más. La idea es que, con el tiempo, la capa del fabricante deje de ser necesaria y toda la experiencia diaria pase por ZC Control, con un nivel de personalización mucho mayor que el que ofrece cualquier sistema de serie.
-
-## Estructura de la app (una sola app, cuatro módulos)
-
-Al abrir la app se ve la pantalla principal con cuatro módulos y, abajo, permisos y ajustes del sistema:
-
-- **ZC Control Center**: panel de ajustes rápidos y notificaciones propio.
-- **ZC Action Hub**: burbuja flotante (o gesto de borde, experimental).
-- **ZC Game Center**: modo juego con perfiles.
-- **ZC Launcher**: pantalla de inicio propia.
-- **ZC Permission Control**: permisos, Shizuku y estado de los servicios.
-
-La primera vez, después del consentimiento, un asistente pregunta el idioma (se lee de `res/raw/lengua.md`, agregar un idioma ahí lo suma solo) y si se quiere el paquete completo o elegir módulo por módulo.
-
-## ¿Qué hace hoy?
-
-Estas son las piezas que **ya existen y funcionan**:
-
-- **Panel de control propio.** Reemplaza al panel de ajustes rápidos y a la barra de notificaciones, y puede deshabilitar el original. Funciona en dos niveles: una primera bajada compacta (notificaciones y cuatro accesos) y una segunda con el centro de control completo. Casi todo es configurable: fondo y desenfoque, hoja, botones, colores, reloj, tipografía, tarjetas, brillo y volumen, reproductor, accesos propios, textos, diseño manual, zona de apertura, temas, animaciones y automatización.
-- **Notificaciones.** El panel muestra y gestiona las notificaciones de todas las apps (para eso lee las notificaciones del sistema).
-- **Launcher propio.** Pantalla de inicio con dock de 5 posiciones, botón Home central, cajones por categoría y navegación radial de dos etapas. Es opcional: solo actúa como pantalla de inicio si lo eliges como launcher.
-- **Interfaz lateral.** Modo burbuja o modo gestos, con accesos configurables, notificaciones animadas y apertura de apps en ventanas flotantes cuando el sistema lo permite.
-- **App de Ajustes propia.** Con buscador, desde donde se configura todo lo anterior. También ofrece un botón para abrir los ajustes del sistema.
-- **Game Control.** Perfiles por juego. Al abrir un juego, ZC Control guarda el estado del sistema, cierra otras apps, ajusta resolución y DPI, cambia opciones de batería y actividades, puede forzar la compilación del juego y lo inicia; al salir, restaura todo. Mientras juegas puede mostrar CPU, RAM, GPU, FPS y temperatura.
-
-## ¿Qué busca ser?
-
-Hacia dónde va el proyecto, y lo que **todavía no está hecho**:
-
-- Que **cada pantalla y cada elemento** de la capa reemplazada tenga sus propias opciones de apariencia y comportamiento, sin límites impuestos por el fabricante.
-- Cubrir más superficies del sistema con la misma filosofía (hoy cubre panel, notificaciones, inicio, accesos laterales y ajustes propios).
-- Que la configuración sea la **única fuente de verdad**: lo que se ve en pantalla sale de los ajustes, y agregar un ajuste es agregar una línea.
-- Varios ajustes del árbol de configuración aún aparecen como «Pronto»: están planificados, no terminados.
-
-## Límites (sé realista)
-
-ZC Control **no es una ROM, no usa root y no modifica los archivos del sistema**. Android no permite que una app de terceros sustituya de verdad la interfaz del sistema, así que ZC Control lo consigue combinando cuatro cosas:
-
-1. un **servicio de accesibilidad**, que dibuja sus propias ventanas por encima del sistema;
-2. el **acceso a notificaciones**, para mostrarlas y descartarlas;
-3. **ajustes seguros y comandos de shell** concedidos a través de **Shizuku**, por ejemplo para bloquear la expansión del panel original;
-4. su propio **launcher**, para la pantalla de inicio.
-
-Consecuencias: depende de Shizuku, de la versión de Android y del fabricante; algunas funciones pueden fallar o comportarse distinto según el dispositivo; y el sistema original sigue ahí debajo (por eso existe la función de restaurar).
-
-## Permisos y privacidad
-
-Para hacer lo anterior, ZC Control pide permisos **muy poderosos**: puede leer tus notificaciones, saber qué app está en primer plano, listar las apps instaladas y cambiar ajustes del sistema. Léelo antes de instalar.
-
-- Al abrir la app por primera vez se muestra una **pantalla de consentimiento**. **Hasta que aceptes, ningún componente lee, pide ni modifica nada:** el servicio de accesibilidad y el de notificaciones quedan inertes, el receptor de arranque no hace nada y no se solicita ningún permiso ni acceso a Shizuku.
-- Si rechazas, se te agradece, la app se cierra por completo y **borra sus propios datos**.
-- El `AndroidManifest.xml` **no declara el permiso `INTERNET`**: la herramienta no solicita ni dispone de acceso a Internet y no transmite datos a terceros. Puedes comprobarlo tú mismo; la pantalla de consentimiento explica cómo.
-- Todo se procesa de forma local en el dispositivo.
+</div>
 
 ---
 
-## Distribución oficial, soporte y reclamos
+## ✨ Qué es
+
+**ZC Control** es una capa de personalización para Android: panel de ajustes rápidos, notificaciones, pantalla de inicio, accesos, ventanas y ajustes. Todo pensado para que **cómo se ve, cómo se comporta, qué muestra, dónde está y cómo se abre** dependa de ti.
+
+No pretende ser un tema ni un widget más. La idea es que, con el tiempo, la capa del fabricante deje de ser necesaria y la experiencia diaria pase por ZC Control, con un nivel de personalización mayor al de cualquier sistema de serie.
+
+## 🧩 Módulos
+
+Una sola app, cuatro módulos y un centro de permisos:
+
+| Módulo | Qué hace |
+|---|---|
+| **ZC Control Center** | Panel de ajustes rápidos y notificaciones propio |
+| **ZC Action Hub** | Burbuja flotante (o gesto de borde, experimental) |
+| **ZC Game Center** | Modo juego con perfiles por juego |
+| **ZC Launcher** | Pantalla de inicio propia |
+| **ZC Permission Control** | Permisos, Shizuku, estado de los servicios y retiro del consentimiento |
+
+La primera vez, después del consentimiento, un asistente pregunta el idioma (se lee de `res/raw/lengua.md`; agregar un idioma ahí lo suma solo) y si quieres el paquete completo o elegir módulo por módulo.
+
+## 🚀 Qué hace hoy
+
+Piezas que **ya existen y funcionan**:
+
+- **Panel de control propio.** Reemplaza el panel de ajustes rápidos y la barra de notificaciones, y puede deshabilitar el original. Dos niveles: una primera bajada compacta (notificaciones y cuatro accesos) y una segunda con el centro de control completo. Casi todo es configurable: fondo y desenfoque, hoja, botones, colores, reloj, tipografía, tarjetas, brillo y volumen, reproductor, accesos propios, textos, diseño manual, zona de apertura, temas, animaciones y automatización.
+- **Notificaciones.** El panel muestra y gestiona las notificaciones de todas las apps.
+- **Launcher propio.** Dock de 5 posiciones, botón Home central, cajones por categoría y navegación radial de dos etapas. Es opcional: solo actúa como pantalla de inicio si lo eliges como launcher.
+- **Interfaz lateral.** Modo burbuja o modo gestos, con accesos configurables, notificaciones animadas y apertura de apps en ventanas flotantes cuando el sistema lo permite.
+- **App de Ajustes propia.** Con buscador, desde donde se configura todo lo anterior, y un botón para abrir los ajustes del sistema.
+- **Game Control.** Perfiles por juego. Al abrir un juego guarda el estado del sistema, cierra otras apps, ajusta resolución y DPI, cambia opciones de batería y actividades, puede forzar la compilación del juego y lo inicia; al salir, restaura todo. Mientras juegas puede mostrar CPU, RAM, GPU, FPS y temperatura.
+
+### 🔭 Hacia dónde va
+
+- Que **cada pantalla y cada elemento** tenga sus propias opciones de apariencia y comportamiento.
+- Cubrir más superficies del sistema con la misma filosofía.
+- Que la configuración sea la **única fuente de verdad**: lo que se ve sale de los ajustes, y agregar un ajuste es agregar una línea.
+- Varios ajustes aparecen como «Pronto»: están planificados, no terminados.
+
+## 🧱 Límites (sé realista)
+
+ZC Control **no es una ROM, no usa root y no modifica los archivos del sistema**. Android no permite que una app de terceros sustituya de verdad la interfaz del sistema, así que se apoya en cuatro cosas:
+
+1. Un **servicio de accesibilidad**, que dibuja sus propias ventanas por encima del sistema.
+2. El **acceso a notificaciones**, para mostrarlas y descartarlas.
+3. **Ajustes seguros y comandos de shell** concedidos por **Shizuku**, por ejemplo para bloquear la expansión del panel original.
+4. Su propio **launcher**, para la pantalla de inicio.
+
+Consecuencias: depende de Shizuku, de la versión de Android y del fabricante; algunas funciones pueden fallar o comportarse distinto según el dispositivo; y el sistema original sigue ahí debajo (por eso existe la restauración).
+
+## 🔐 Privacidad y consentimiento
+
+ZC Control pide permisos **muy poderosos**: puede leer tus notificaciones, saber qué app está en primer plano, listar las apps instaladas y cambiar ajustes del sistema. **Léelo antes de instalar.**
+
+Al abrir la app por primera vez se muestra un **EULA formal con política de tratamiento de datos personales**, redactado conforme a la **Ley 25.326** de la República Argentina. Incluye la identificación del desarrollador, la finalidad, los derechos de acceso, rectificación y supresión, y cómo verificar todo por tu cuenta. El consentimiento se da con **dos casillas separadas**: una por el contrato y otra por el tratamiento local de datos.
+
+| Garantía | Detalle |
+|---|---|
+| **Nada sin tu permiso** | Hasta que aceptes, ningún componente lee, pide ni modifica nada: los servicios quedan inertes, el receptor de arranque no hace nada y no se solicita ningún permiso ni acceso a Shizuku. |
+| **Si rechazas** | La app se cierra por completo y **borra sus propios datos**. |
+| **Sin Internet** | El `AndroidManifest.xml` **no declara el permiso `INTERNET`** y el código no usa conexiones de red. No transmite datos a terceros. |
+| **Todo local** | Todo se procesa en el dispositivo; el desarrollador no recibe ni mantiene ninguna base de datos con información tuya. |
+| **Retiro del consentimiento** | El botón **«Retirar consentimiento y borrar todo»**, en el centro de permisos, quita los permisos, restaura el panel y la barra del sistema, borra los datos de la app y la cierra. |
+| **Nuevas versiones del EULA** | Si el texto cambia de forma que te afecte, la app vuelve a pedir tu aceptación. |
+
+La app guarda en tu dispositivo la versión del EULA y la fecha y hora de tu aceptación. Si activaste las copias de seguridad de Android, el sistema podría incluir los datos propios de la app en ellas; eso lo controlas tú desde los ajustes del dispositivo.
+
+**Cómo comprobarlo tú mismo:**
+
+- Abre el `AndroidManifest.xml` de la app y verifica que **no** exista el permiso `INTERNET`.
+- Entra en «Información de la aplicación → Uso de datos» y comprueba que no haya tráfico de red.
+- Si encuentras `INTERNET` o cualquier comportamiento no descrito aquí, desinstala, no vuelvas a ejecutarla y revisa tu dispositivo.
+
+> Los derechos sobre datos personales (acceso, rectificación, supresión) se pueden ejercer al instante desde la propia app o, si lo prefieres, por el correo indicado en el EULA. Es la única excepción a la regla de no atender solicitudes fuera de GitHub Issues.
+
+## 📦 Requisitos
+
+- Un dispositivo Android compatible.
+- Shizuku instalado y en funcionamiento.
+- Los servicios y permisos necesarios para que la app pueda realizar las modificaciones del sistema.
+
+Algunas funciones dependen de las capacidades y restricciones de cada versión de Android y del fabricante.
+
+## 🛠 Instalación y primer uso
+
+1. Descarga e instala ZC Control (desde las [Releases](https://github.com/LexusYTG/zc-control/releases) del repositorio oficial o compilándolo tú).
+2. Inicia Shizuku y comprueba que funcione correctamente.
+3. Abre ZC Control y lee el EULA: si no aceptas, la app se cierra y no hace nada.
+4. Tras aceptar, autoriza el permiso de Shizuku que solicita la app.
+5. La app configura automáticamente los servicios de accesibilidad, los ajustes correspondientes y No molestar.
+
+Una vez completada la configuración, ya puedes usar el centro de control alternativo.
+
+## ⚠️ Advertencia: recuperación del panel original
+
+> **Lee esta sección antes de utilizar la aplicación.**
+
+ZC Control puede deshabilitar el panel de control original de Android para que el personalizado ocupe su lugar. Si lo deshabilitas y luego **desinstalas ZC Control sin restaurarlo**, podrías quedarte sin acceso al panel del sistema. En ese caso la recuperación podría requerir ADB y, en el peor de los casos (extremo e improbable), restablecer el dispositivo de fábrica.
+
+> **Regla fundamental: nunca desinstales ZC Control sin restaurar antes el panel de control original.**
+
+**Cómo evitarlo:** antes de desinstalar, restaura el panel original, o usa **«Retirar consentimiento y borrar todo»**, que lo restaura por ti (con Shizuku activo).
+
+<details>
+<summary><b>Ya desinstalé la app y perdí el panel</b></summary>
+
+1. Vuelve a instalar ZC Control.
+2. Abre la aplicación y acepta el EULA.
+3. Busca el botón **«Restaurar / Restablecer sistema»** y ejecuta la restauración del panel original.
+4. Comprueba que el panel de Android vuelva a funcionar.
+5. Ahora sí puedes desinstalar ZC Control sin inconvenientes.
+
+Con ADB, también puedes restaurarlo manualmente:
+
+```bash
+adb shell cmd statusbar send-disable-flag none
+```
+
+</details>
+
+## 🔨 Compilación
+
+ZC Control se compila desde Linux o desde Android con Termux, con Gradle y ADB disponibles. Usa el Gradle instalado en el entorno, sin Gradle Wrapper.
+
+```bash
+git clone https://github.com/LexusYTG/zc-control.git
+cd zc-control
+gradle assembleDebug
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+El APK queda en `app/build/outputs/apk/debug/app-debug.apk`. El tiempo depende del dispositivo y de si las dependencias ya están descargadas.
+
+**Sobre las compilaciones `debug`:** el proyecto usa compilaciones de depuración para que cualquiera pueda obtenerlo y compilarlo sin infraestructura propia de firma.
+
+## 🏛 Distribución oficial y soporte
 
 ### Único origen oficial
 
 **El único lugar oficial de ZC Control es este repositorio:**
 
-👉 **https://www.github.com/LexusYTG/zc-control/**
+👉 **https://github.com/LexusYTG/zc-control**
 
-Todo lo que no provenga de ahí **no es ZC Control oficial**, aunque tenga el mismo nombre, el mismo ícono o diga serlo.
+Todo lo que no provenga de aquí **no es ZC Control oficial**, aunque tenga el mismo nombre o ícono. Las [Releases](https://github.com/LexusYTG/zc-control/releases) del repositorio incluyen un APK `debug`; como cada persona firma con su propia clave, **no existe una firma oficial para verificar un APK ya hecho**. La forma más segura de obtener la app es **compilarla tú desde el repositorio oficial**.
 
-### ZC Control no está en ninguna tienda
+### No está en ninguna tienda
 
-Esta aplicación **no está publicada** y **no pretende estarlo** en ninguna tienda de aplicaciones ni sitio de descargas. En particular, **no está** en:
+ZC Control **no está publicada** ni pretende estarlo en tiendas ni sitios de descargas: ni Google Play, APKPure, APKMirror, Aptoide, Uptodown, APKCombo, APKVision, ni las tiendas de fabricantes (Samsung, Huawei, Amazon, Xiaomi, OPPO, vivo, realme, Honor, etc.), ni canales de Telegram, WhatsApp o Discord, ni enlaces de Mega, MediaFire, Drive o Dropbox, ni videos con enlaces de descarga.
 
-- Google Play Store
-- APKVision
-- APKPure
-- APKMirror
-- Aptoide
-- Uptodown
-- APKCombo
-- Samsung Galaxy Store
-- Huawei AppGallery
-- Amazon Appstore
-- Xiaomi GetApps / Mi Store
-- Tiendas de otros fabricantes (OPPO, vivo, realme, Honor, etc.)
-- Canales de Telegram, grupos de WhatsApp, servidores de Discord
-- Enlaces de Mega, MediaFire, Google Drive, Dropbox o similares
-- Videos de YouTube con enlaces de descarga
-- Cualquier otra tienda, repositorio, foro o sitio no mencionado aquí
+La única tienda a la que aspira es **[F-Droid](https://f-droid.org/)**, por ser de código abierto y compilar desde el código fuente. **Hoy todavía no está.** Si algún día se publica, se anunciará en este README, y solo contará como oficial el paquete que F-Droid compile y distribuya desde este código.
 
-**La única tienda en la que aspira a estar es [F-Droid](https://f-droid.org/)**, por ser de código abierto y por compilar las aplicaciones desde su código fuente. **Hoy todavía no está en F-Droid.** Si algún día se publica, se anunciará en este mismo README, en el repositorio oficial, y solo contará como oficial el paquete que F-Droid compile y distribuya desde este código.
+<details>
+<summary><b>Si lo instalaste desde cualquier otro sitio</b></summary>
 
-### Si lo instalaste desde cualquier otro sitio
-
-Si obtuviste esta herramienta de cualquier sitio o repositorio que **no sea el oficial**:
-
-- **No la avalamos.** No sabemos qué contiene ese archivo: puede estar modificado, desactualizado, empaquetado con publicidad, con rastreadores o con código malicioso.
-- **No damos soporte.** No atendemos reportes, dudas ni reclamos sobre copias de origen distinto al repositorio oficial.
-- **No respondemos por esa copia.** Las declaraciones de privacidad y consentimiento de este proyecto describen únicamente el código de este repositorio. No podemos cumplirlas ni garantizarlas sobre un paquete que no distribuimos nosotros, porque físicamente no tenemos forma de saber qué se instaló en tu dispositivo.
+- **No la avalamos.** No sabemos qué contiene ese archivo: puede estar modificado, desactualizado, con publicidad, rastreadores o código malicioso.
+- **No damos soporte** ni atendemos reportes o reclamos sobre copias de origen distinto al repositorio oficial.
+- **No respondemos por esa copia.** Las declaraciones de privacidad y consentimiento describen únicamente el código de este repositorio; no podemos cumplirlas ni garantizarlas sobre un paquete que no distribuimos nosotros.
 - **No estamos de acuerdo** con que se distribuya como si fuera una versión oficial.
 
-La licencia (GPLv3) permite que otras personas redistribuyan y modifiquen el código, pero exige que las versiones modificadas se identifiquen como tales (ver «Términos adicionales» al final de este documento). Que algo sea legalmente redistribuible no lo convierte en oficial ni nos hace responsables de ello.
+La GPLv3 permite redistribuir y modificar el código, pero exige identificar las versiones modificadas como tales (ver «Términos adicionales»). Que algo sea redistribuible no lo convierte en oficial.
 
-### Cómo comprobar lo que instalaste
+</details>
 
-Las compilaciones de este proyecto son de tipo `debug` y cada persona que compila las firma con su propia clave, así que **no existe una firma oficial con la que verificar un APK ya hecho**. La forma más segura de obtener ZC Control es **compilarlo tú mismo desde el repositorio oficial** (ver la sección «Compilación»).
+<details>
+<summary><b>Qué soporte se ofrece y qué no</b></summary>
 
-Además, puedes comprobar cualquier copia:
+ZC Control es un proyecto voluntario. **No hay garantías de plazo, de respuesta ni de corrección**, y se ofrece «tal cual».
 
-- Abre su `AndroidManifest.xml` y verifica que **no** exista el permiso `INTERNET`.
-- Revisa en «Información de la aplicación → Uso de datos» que no haya tráfico de red.
-- Si encuentras `INTERNET` o cualquier comportamiento que no esté descrito en este README, desinstala, no vuelvas a ejecutarla y revisa tu dispositivo.
+**Se atienden** los reportes que cumplan todo esto:
 
-### Qué soporte se ofrece y qué no
-
-ZC Control es un proyecto mantenido de forma voluntaria. **No hay garantías de plazo, de respuesta ni de corrección**, y la herramienta se ofrece «tal cual», según la licencia.
-
-**Se atienden** reportes que cumplan todo lo siguiente:
-
-1. La app fue compilada desde el **código del repositorio oficial**, sin modificaciones.
-2. Es la versión más reciente del repositorio, o una cercana a ella.
-3. Cumples los requisitos de este README (Shizuku instalado, iniciado y con permiso concedido).
-4. El reporte se hace en **[GitHub Issues](https://github.com/LexusYTG/zc-control/issues)** e incluye: modelo del dispositivo, versión de Android, descripción del problema, pasos para reproducirlo y, si puedes, capturas o registros.
+1. Compilada desde el **código del repositorio oficial**, sin modificaciones.
+2. Versión más reciente del repositorio, o una cercana.
+3. Requisitos cumplidos (Shizuku instalado, iniciado y con permiso concedido).
+4. Reporte en **[GitHub Issues](https://github.com/LexusYTG/zc-control/issues)** con: modelo del dispositivo, versión de Android, descripción, pasos para reproducirlo y, si puedes, capturas o registros.
 5. Un problema por reporte.
 
 **No se atienden:**
 
-- Copias obtenidas de cualquier origen distinto al repositorio oficial.
-- Versiones modificadas, con partes cambiadas o recompiladas por terceros.
-- Compilaciones antiguas cuando el problema ya está corregido en la versión actual.
-- Instalaciones sin Shizuku, o con los permisos del sistema sin conceder.
-- Comportamientos causados por restricciones del fabricante o de la versión de Android (ahorro de batería agresivo, bloqueo de servicios en segundo plano, capas del fabricante, etc.). Se pueden reportar como incompatibilidad, pero no está garantizado que tengan solución.
-- Daños o pérdidas de datos derivados de usar la herramienta sin haber leído las advertencias de este documento.
-- Reportes, reseñas, comentarios o mensajes publicados en tiendas, foros, redes o sitios de terceros: **no se revisan**.
-- Solicitudes de soporte por mensajes privados, correo o cualquier otro canal fuera del repositorio.
+- Copias de cualquier origen distinto al repositorio oficial.
+- Versiones modificadas o recompiladas por terceros.
+- Compilaciones antiguas cuando el problema ya está corregido.
+- Instalaciones sin Shizuku o con los permisos sin conceder.
+- Restricciones del fabricante o de Android (ahorro de batería agresivo, bloqueo de servicios en segundo plano, capas del fabricante). Se pueden reportar como incompatibilidad, sin garantía de solución.
+- Daños o pérdidas de datos por usar la herramienta sin haber leído las advertencias.
+- Reportes, reseñas o mensajes en tiendas, foros, redes o sitios de terceros: **no se revisan**.
+- Solicitudes de soporte por mensajes privados, correo u otro canal fuera del repositorio (la excepción son los derechos sobre datos personales).
 
-### Fallos, daños y reclamos
+</details>
 
-- Si algo falla en una copia compilada desde el repositorio oficial, repórtalo en GitHub Issues como se indica arriba. Se revisará durante el desarrollo, sin plazo garantizado.
-- Si algo falla en una copia de otro origen, **el reclamo corresponde a quien te la entregó o la publicó**, no a este proyecto.
-- Si perdiste el panel original o el sistema quedó en un estado raro, sigue **primero** el procedimiento de la sección «ADVERTENCIA IMPORTANTE: recuperación del panel original». Es la vía de recuperación prevista.
-- El autor **no asume responsabilidad por daños** derivados del uso, la modificación o la redistribución del software (GPLv3, secciones 15 y 16, y términos adicionales).
+<details>
+<summary><b>Fallos, daños y reclamos</b></summary>
+
+- Si algo falla en una copia compilada desde el repositorio oficial, repórtalo en GitHub Issues. Se revisará durante el desarrollo, sin plazo garantizado.
+- Si falla una copia de otro origen, **el reclamo corresponde a quien te la entregó o publicó**.
+- Si perdiste el panel original o el sistema quedó raro, sigue **primero** la sección de recuperación.
+- El autor **no asume responsabilidad por daños** derivados del uso, la modificación o la redistribución del software (GPLv3, secciones 15 y 16, y términos adicionales), sin perjuicio de los derechos irrenunciables que correspondan por ley.
 - Si sospechas que una copia es maliciosa, desinstálala y denuncia el sitio que la distribuye. No la envíes a este proyecto como si fuera un error de ZC Control.
 
----
+</details>
 
-## Requisitos
+## 🐞 Reporte de errores
 
-Antes de utilizar ZC Control, es necesario disponer de:
+ZC Control está en pleno desarrollo. Si encuentras errores, incompatibilidades o problemas, repórtalos en [GitHub Issues](https://github.com/LexusYTG/zc-control/issues) con el modelo del dispositivo, la versión de Android, la descripción, los pasos para reproducirlo y, si puedes, capturas o registros. Los reportes ayudan a mejorar la compatibilidad y se revisan durante el desarrollo.
 
-- Un dispositivo Android compatible.
-- Shizuku instalado y en funcionamiento.
-- Los servicios y permisos necesarios para que la aplicación pueda realizar las modificaciones del sistema.
+## 🌱 Estado del proyecto
 
-**Importante:** algunas funciones dependen de las capacidades y restricciones de cada versión de Android y del fabricante del dispositivo.
+Desarrollo en evolución: algunas funciones pueden cambiar o corregirse a medida que avance. Se agradecen los reportes, las pruebas y la colaboración.
 
----
+## 📄 Licencia
 
-## Instalación y primer uso
+Copyright © 2025-2026 LexusYTG
 
-1. Descarga e instala ZC Control.
-2. Inicia Shizuku y comprueba que se encuentre funcionando correctamente.
-3. Abre ZC Control y lee la pantalla de consentimiento: si no aceptas, la aplicación se cierra y no hace nada.
-4. Tras aceptar, autoriza el permiso de Shizuku que solicita la aplicación.
-5. La herramienta realizará automáticamente las configuraciones necesarias para establecer su funcionamiento.
+Este programa es software libre: puedes redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU, versión 3 o (a tu elección) cualquier versión posterior. Se distribuye con la esperanza de que sea útil, pero **SIN NINGUNA GARANTÍA**, ni siquiera la implícita de comerciabilidad o idoneidad para un propósito particular. Consulta <https://www.gnu.org/licenses/>. El texto completo está en [LICENSE](LICENSE).
 
-Durante este proceso se configuran los servicios de accesibilidad, los ajustes correspondientes y No molestar.
+<details>
+<summary><b>Términos adicionales (Sección 7 de la GPLv3)</b></summary>
 
-Una vez completada la configuración, podrás utilizar el centro de control alternativo.
-
----
-
-## ADVERTENCIA IMPORTANTE: recuperación del panel original
-
-> **Lee esta sección antes de utilizar la aplicación.**
-
-ZC Control tiene la capacidad de deshabilitar el panel de control original de Android para permitir que la experiencia personalizada ocupe su lugar.
-
-Esto implica una consideración importante:
-
-Si deshabilitas el panel original y posteriormente desinstalas ZC Control sin restaurarlo previamente, podrías quedarte sin acceso al panel de control del sistema.
-
-En ese escenario, la recuperación podría requerir intervención mediante ADB.
-
-En el peor de los casos, y como situación extrema e improbable, podría llegar a ser necesario restablecer el dispositivo de fábrica.
-
-### ¿Cómo evitar este problema?
-
-Antes de desinstalar ZC Control, debes restaurar el panel original.
-
-**Procedimiento de recuperación:**
-
-1. Si ya desinstalaste la aplicación y perdiste el panel original, vuelve a instalar ZC Control.
-2. Abre la aplicación.
-3. Busca el botón **«Restaurar / Restablecer sistema»**.
-4. Ejecuta la restauración del panel original.
-5. Comprueba que el panel de control de Android vuelva a funcionar.
-6. Una vez restaurado, podrás desinstalar ZC Control sin inconvenientes.
-
-> **Regla fundamental: nunca desinstales ZC Control sin restaurar previamente el panel de control original.**
-
-La función de restauración existe precisamente para permitir revertir los cambios realizados por la herramienta.
-
----
-
-## Compilación
-
-ZC Control puede compilarse directamente desde cualquier entorno Linux o Android mediante Termux, siempre que se disponga de las herramientas necesarias para ejecutar Gradle y ADB.
-
-El proyecto utiliza Gradle instalado en el entorno, sin necesidad de utilizar Gradle Wrapper.
-
-### Compilar desde Termux o Linux
-
-**1. Clonar el repositorio**
-
-```bash
-git clone https://github.com/LexusYTG/zc-control.git
-```
-
-**2. Entrar al directorio del proyecto**
-
-```bash
-cd zc-control
-```
-
-**3. Compilar el APK**
-
-```bash
-gradle assembleDebug
-```
-
-Espera a que Gradle finalice el proceso de compilación.
-
-El tiempo necesario dependerá del dispositivo, del entorno de ejecución y de si las dependencias ya se encuentran descargadas.
-
-**4. Instalar la aplicación**
-
-Con el dispositivo conectado y ADB disponible, ejecuta:
-
-```bash
-adb install app/build/outputs/apk/debug/app-debug.apk
-```
-
-¡Listo! ZC Control estará instalado en el dispositivo.
-
-### Ubicación del APK generado
-
-Una vez finalizada correctamente la compilación, el APK de depuración se encuentra en:
-
-```text
-app/build/outputs/apk/debug/app-debug.apk
-```
-
-### Sobre las compilaciones de depuración
-
-ZC Control utiliza compilaciones de tipo `debug`.
-
-Esto permite que los usuarios puedan obtener y compilar el proyecto sin necesidad de disponer de una infraestructura propia de firma para versiones de producción.
-
----
-
-## Reporte de errores y problemas
-
-ZC Control es un proyecto que se encuentra en pleno desarrollo.
-
-Si encuentras errores, comportamientos inesperados, incompatibilidades o problemas durante la instalación y utilización, te invitamos a reportarlos.
-
-Los informes de errores ayudan a identificar problemas, mejorar la compatibilidad y perfeccionar el funcionamiento de la herramienta.
-
-Al reportar un problema, procura incluir:
-
-- Modelo del dispositivo.
-- Versión de Android.
-- Descripción del problema.
-- Pasos necesarios para reproducirlo.
-- Capturas de pantalla o registros, cuando estén disponibles.
-
-**Los errores reportados serán revisados y corregidos durante el desarrollo del proyecto.**
-
-### Reportar un problema
-
-Puedes utilizar el sistema de seguimiento de errores de GitHub:
-
-[ZC Control - Issues](https://github.com/LexusYTG/zc-control/issues)
-
----
-
-## Estado del proyecto
-
-ZC Control es un desarrollo en evolución.
-
-La herramienta continúa en proceso de desarrollo, por lo que algunas funciones pueden experimentar cambios, mejoras o correcciones a medida que avance el proyecto.
-
-Se agradecen los reportes, las pruebas y la colaboración de quienes deseen contribuir a mejorar su funcionamiento.
-
----
-
-## Licencia
-
-Copyright (C) 2025-2026 LexusYTG
-
-Este programa es software libre: puedes redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU, publicada por la Free Software Foundation, ya sea la versión 3 de la Licencia, o (a tu elección) cualquier versión posterior.
-
-Este programa se distribuye con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR. Consulta la Licencia Pública General de GNU para más detalles.
-
-Deberías haber recibido una copia de la Licencia Pública General de GNU junto con este programa. Si no, consulta <https://www.gnu.org/licenses/>.
-
-El texto completo de la licencia está en el archivo [LICENSE](LICENSE).
-
-### Términos adicionales (Sección 7 de la GPLv3)
-
-De conformidad con la Sección 7 de la GPLv3, se aplican los siguientes términos adicionales:
-
-1. **Exención de garantía y limitación de responsabilidad:** además de lo dispuesto en las secciones 15 y 16 de la GPLv3, el autor no ofrece ninguna garantía y no asume ninguna responsabilidad por daños derivados del uso, modificación o redistribución de este software.
-
-2. **Preservación de avisos legales:** cualquier redistribuidor debe preservar los avisos de copyright y las atribuciones de autoría presentes en los archivos originales.
-
-3. **Prohibición de tergiversar el origen:** las versiones modificadas deben estar claramente identificadas como distintas del software original ZC Control (antes «Centro de control»), y no deben presentarse como la versión original.
-
+1. **Exención de garantía y limitación de responsabilidad:** además de las secciones 15 y 16 de la GPLv3, el autor no ofrece ninguna garantía y no asume responsabilidad por daños derivados del uso, modificación o redistribución de este software.
+2. **Preservación de avisos legales:** cualquier redistribuidor debe preservar los avisos de copyright y las atribuciones de autoría de los archivos originales.
+3. **Prohibición de tergiversar el origen:** las versiones modificadas deben estar claramente identificadas como distintas del software original ZC Control (antes «Centro de control») y no deben presentarse como la versión original.
 4. **Limitación de uso del nombre con fines publicitarios:** los nombres «LexusYTG» y «ZC Control (antes «Centro de control»)» no pueden usarse para respaldar o promocionar versiones modificadas sin permiso previo por escrito.
-
 5. **Renuncia a derechos de marca:** no se concede ningún derecho de marca sobre «ZC Control (antes «Centro de control»)» ni sobre los logotipos asociados.
-
 6. **Indemnización:** quien distribuya el software (o versiones modificadas) asumiendo responsabilidades contractuales frente al receptor debe indemnizar a los licenciantes y autores por cualquier responsabilidad derivada de dichas asunciones.
 
+</details>
+
 ---
 
-**ZC Control — Una experiencia de control diferente para Android.**
+<div align="center">
 
-Copyright © 2025-2026 LexusYTG.
+**🦢 ZC Control — Una experiencia de control diferente para Android.**
+
+Copyright © 2025-2026 LexusYTG
+
+</div>
