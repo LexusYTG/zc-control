@@ -116,6 +116,9 @@ public final class Privileged {
         String cur = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
         if (cur == null) cur = "";
         String list = cur.contains(svc) ? cur : cur.isEmpty() ? svc : cur + ":" + svc;
+        // Si el servicio no está conectado, escribir el mismo valor no hace nada: hay que apagarlo y encenderlo de verdad.
+        String acc = ControlService.instance == null ? reviveCmd(ctx)
+                : "settings put secure enabled_accessibility_services '" + list + "'; settings put secure accessibility_enabled 1";
         String cmd = String.join("; ",
                 "pm grant " + pkg + " android.permission.WRITE_SECURE_SETTINGS",
                 "appops set " + pkg + Lang.t(504),
@@ -123,9 +126,60 @@ public final class Privileged {
                 "cmd notification allow_dnd " + pkg,
                 "cmd notification allow_listener " + pkg + "/com.lexus2026.cdc.MediaListener",
                 "dumpsys deviceidle whitelist +" + pkg,
-                "settings put secure enabled_accessibility_services '" + list + "'",
-                "settings put secure accessibility_enabled 1"
+                acc
         );
         run(cmd, done);
+    }
+
+    /** Comandos que quitan y vuelven a dar el permiso de accesibilidad y el de notificaciones (fuerza al sistema a reconectar). */
+    private static String reviveCmd(Context ctx) {
+        String pkg = ctx.getPackageName();
+        android.content.ComponentName svcName = new android.content.ComponentName(pkg, "com.lexus2026.cdc.ControlService");
+        String svc = svcName.flattenToString();
+        String lis = pkg + "/com.lexus2026.cdc.MediaListener";
+        String cur = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        StringBuilder without = new StringBuilder();
+        if (cur != null) {
+            for (String e : cur.split(":")) {
+                if (e.isEmpty() || svcName.equals(android.content.ComponentName.unflattenFromString(e))) continue;
+                if (without.length() > 0) without.append(':');
+                without.append(e);
+            }
+        }
+        String with = without.length() == 0 ? svc : without + ":" + svc;
+        return String.join("; ",
+                "settings put secure enabled_accessibility_services '" + without + "'",
+                "sleep 1",
+                "settings put secure enabled_accessibility_services '" + with + "'",
+                "settings put secure accessibility_enabled 1",
+                "cmd notification disallow_listener " + lis,
+                "cmd notification allow_listener " + lis);
+    }
+
+    /**
+     * Vigilante que vive fuera de la app (en el shell de Shizuku): si el proceso de la app muere, por ejemplo al
+     * "cerrar todo" en recientes, quita y vuelve a dar el permiso de accesibilidad. Eso hace que el sistema relance el
+     * servicio, y con él el proceso, sin tener que abrir la app a mano. Solo se inicia una vez (archivo con el pid).
+     */
+    public static void startWatcher(Context ctx) {
+        String pkg = ctx.getPackageName();
+        String svc = new android.content.ComponentName(pkg, "com.lexus2026.cdc.ControlService").flattenToString();
+        String loop = "echo $$ > /data/local/tmp/zcw.pid; while true; do "
+                + "if [ -z \"$(pidof " + pkg + ")\" ]; then "
+                + "cur=$(settings get secure enabled_accessibility_services); [ \"$cur\" = null ] && cur=; "
+                + "wo=$(echo \"$cur\" | sed -e \"s#" + pkg + "/[^:]*ControlService##g\" -e \"s#::*#:#g\" -e \"s#^:##\" -e \"s#:\\$##\"); "
+                + "settings put secure enabled_accessibility_services \"$wo\"; sleep 1; "
+                + "if [ -n \"$wo\" ]; then n=\"$wo:" + svc + "\"; else n=\"" + svc + "\"; fi; "
+                + "settings put secure enabled_accessibility_services \"$n\"; settings put secure accessibility_enabled 1; sleep 8; "
+                + "fi; sleep 2; done";
+        String cmd = "p=$(cat /data/local/tmp/zcw.pid 2>/dev/null); "
+                + "if [ -n \"$p\" ] && [ -d /proc/$p ]; then exit 0; fi; "
+                + "setsid nohup sh -c '" + loop + "' >/dev/null 2>&1 &";
+        run(cmd, null);
+    }
+
+    /** Reconecta los servicios cuando el proceso murió y el sistema no los volvió a lanzar. */
+    public static void revive(Context ctx, Runnable done) {
+        run(reviveCmd(ctx), done);
     }
 }

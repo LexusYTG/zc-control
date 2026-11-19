@@ -1170,9 +1170,9 @@ public class SettingsPageActivity extends Activity {
                     }
                     buildControls();
                 });
-                note("Los dos modos usan los mismos accesos, ventanas y notificaciones; solo cambia cómo se abre el panel: tocando la burbuja o deslizando desde el borde derecho.");
-                note(Lang.t(29) + (ControlService.instance != null ? "activo" : "inactivo")
-                    + Lang.t(30) + (MediaListener.instance != null ? "activo" : "pendiente")
+                note(Lang.t(918));
+                note(Lang.t(29) + (ControlService.instance != null ? Lang.t(914) : Lang.t(915))
+                    + Lang.t(30) + (MediaListener.instance != null ? Lang.t(914) : Lang.t(916))
                     + Lang.t(31) + (threeBtn ? Lang.t(837) : Lang.t(32)));
                 break;
             }
@@ -1207,7 +1207,7 @@ public class SettingsPageActivity extends Activity {
                     if (h == null || !h.test()) Toast.makeText(this, Lang.t(39), Toast.LENGTH_SHORT).show();
                     else moveTaskToBack(true);
                 });
-                note("Solo avisa de notificaciones normales: no muestra las silenciosas, las fijas, las de progreso ni las de la propia app. Tocá la tarjeta para abrir la app; deslizala hacia arriba para descartarla.");
+                note(Lang.t(919));
                 break;
             case "vt_open":
                 sideToggle(Lang.t(46), "floatWin");
@@ -1299,7 +1299,7 @@ public class SettingsPageActivity extends Activity {
                 changed();
             });
             textEdit(Lang.t(854), f[2], v -> { f[2] = v; Skin.saveCustomTiles(this, cts); changed(); });
-            textEdit("Destino (paquete, enlace o comando; interruptor: encendido&&&apagado)", f[3], v -> {
+            textEdit(Lang.t(920), f[3], v -> {
                 f[3] = v;
                 Skin.saveCustomTiles(this, cts);
                 changed();

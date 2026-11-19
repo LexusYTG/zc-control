@@ -203,7 +203,7 @@ public class ControlService extends AccessibilityService {
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         registerGuard();
         if (!locked() && !screenOff()) addHandle();
-        reapplyLock(0);
+        if (Features.controlCenter(this)) reapplyLock(0);
         Skin.prefs(this).registerOnSharedPreferenceChangeListener(prefListener);
         prewarm();
         // Interfaz lateral: se inicia sola (si está bloqueada la pantalla queda en pausa hasta desbloquear)
@@ -224,6 +224,7 @@ public class ControlService extends AccessibilityService {
 
     private void addHandle() {
         if (handle != null) return;
+        if (!Features.controlCenter(this)) return;   // módulo apagado: no hay zona táctil ni barrita
         final DisplayMetrics d = getResources().getDisplayMetrics();
         final float dp = d.density;
         FrameLayout v = new FrameLayout(this);
@@ -323,7 +324,7 @@ public class ControlService extends AccessibilityService {
     }
 
     private final Runnable prewarmR = () -> {
-        if (warm == null && panel == null && wm != null && !locked() && !screenOff()) warm = new PanelView(this, this::hidePanel);
+        if (warm == null && panel == null && wm != null && !locked() && !screenOff() && Features.controlCenter(this)) warm = new PanelView(this, this::hidePanel);
     };
 
     private void prewarm() {

@@ -7,5 +7,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Lang.init(this);
+        Heal.start(this);
     }
 }

@@ -95,9 +95,15 @@ public final class Lang {
             .show();
     }
 
+    /** Cambia el idioma al instante, sin reiniciar: lo usa el asistente inicial, que vuelve a dibujarse solo. */
+    public static synchronized void setLanguage(Context c, String id) {
+        c.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, id).commit();
+        init(c);
+    }
+
     private static void apply(Activity a, String id) {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, id).commit();
-        Intent i = new Intent(a, SettingsHomeActivity.class);
+        Intent i = new Intent(a, HomeActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         a.startActivity(i);
         a.finishAffinity();

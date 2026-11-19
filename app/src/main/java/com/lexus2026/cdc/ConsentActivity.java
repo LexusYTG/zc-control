@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ import android.window.OnBackInvokedDispatcher;
 /** Pantalla de inicio: sin consentimiento expreso la app no hace nada y se cierra sin dejar rastros. */
 public class ConsentActivity extends Activity {
     private boolean home, decided;
+    private CheckBox c1, c2;
+    private TextView yes;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -29,42 +32,83 @@ public class ConsentActivity extends Activity {
 
         LinearLayout body = ZUi.box(this, LinearLayout.VERTICAL);
         body.setPadding(ZUi.dp(this, 20), ZUi.dp(this, 24), ZUi.dp(this, 20), ZUi.dp(this, 16));
-        body.addView(ZUi.text(this, Lang.t(247), 20f, ZUi.WARN, true));
-        body.addView(p("Este software ha sido desarrollado y se mantiene bajo el marco de la legislación vigente de la República Argentina a la fecha de su publicación y mantenimiento.", 14));
-        body.addView(p(Lang.t(248), 10));
+        body.addView(ZUi.text(this, Lang.t(1201), 20f, ZUi.WARN, true));
+        body.addView(p(Lang.t(1202), 8));
+        body.addView(p(Lang.t(1203), 10));
+        body.addView(p(Lang.t(1204), 8));
 
-        body.addView(h(Lang.t(249)));
-        body.addView(p(Lang.t(250), 6));
-        body.addView(p(Lang.t(251), 4));
-        body.addView(p(Lang.t(252), 4));
-        body.addView(p(Lang.t(253), 4));
-        body.addView(p(Lang.t(254), 4));
-        body.addView(p(Lang.t(255), 10));
+        body.addView(h(Lang.t(1210)));
+        body.addView(p(Lang.t(1211), 6));
+        body.addView(p(Lang.t(1213), 4));
+        body.addView(p(Lang.t(1214), 4));
+        body.addView(p(Lang.t(1215), 4));
+        body.addView(p(Lang.t(1216), 8));
 
-        body.addView(h(Lang.t(256)));
-        body.addView(p(Lang.t(257), 6));
-        body.addView(p(Lang.t(258), 10));
+        body.addView(h(Lang.t(1220)));
+        body.addView(p(Lang.t(1221), 6));
+        body.addView(p(Lang.t(1222), 8));
+        body.addView(p(Lang.t(1223), 8));
+
+        body.addView(h(Lang.t(1230)));
+        body.addView(p(Lang.t(1231), 6));
+        body.addView(p(Lang.t(1232), 6));
+        body.addView(p(Lang.t(1233), 4));
+        body.addView(p(Lang.t(1234), 4));
+        body.addView(p(Lang.t(1235), 4));
+        body.addView(p(Lang.t(1236), 4));
+        body.addView(p(Lang.t(1237), 8));
+
+        body.addView(h(Lang.t(1240)));
+        body.addView(p(Lang.t(1241), 6));
+        body.addView(p(Lang.t(1242), 8));
+        body.addView(p(Lang.t(1243), 8));
+
+        body.addView(h(Lang.t(1250)));
+        body.addView(p(Lang.t(1251), 6));
+        body.addView(p(Lang.t(1252), 8));
+        body.addView(p(Lang.t(1253), 8));
+        body.addView(p(Lang.t(1254), 8));
+
+        body.addView(h(Lang.t(1260)));
+        body.addView(p(Lang.t(1261), 6));
+
+        body.addView(h(Lang.t(1270)));
+        body.addView(p(Lang.t(1271), 6));
+
+        body.addView(h(Lang.t(1280)));
+        body.addView(p(Lang.t(1281), 6));
+        body.addView(p(Lang.t(1282), 8));
+        body.addView(p(Lang.t(1283), 8));
+        body.addView(p(Lang.t(1284), 8));
+        body.addView(p(Lang.t(1285), 8));
+
+        body.addView(h(Lang.t(1290)));
+        body.addView(p(Lang.t(1291), 6));
+        body.addView(p(Lang.t(1292), 8));
+
+        body.addView(h(Lang.t(1300)));
+        body.addView(p(Lang.t(1301), 6));
+
+        body.addView(h(Lang.t(1310)));
+        body.addView(p(Lang.t(1311), 6));
         TextView decl = p(Lang.t(604), 10);
         decl.setTextColor(ZUi.ACC);
         decl.setTextIsSelectable(true);
         body.addView(decl);
-        body.addView(p(Lang.t(259), 10));
-        body.addView(p(Lang.t(260), 4));
-        body.addView(p(Lang.t(605), 4));
-        body.addView(p(Lang.t(261), 4));
-        body.addView(p(Lang.t(262), 12));
-        body.addView(p(Lang.t(263), 4));
-        body.addView(p(Lang.t(264), 4));
-        body.addView(p(Lang.t(265), 4));
-        body.addView(p(Lang.t(266), 10));
-        body.addView(p(Lang.t(267), 6));
+        body.addView(p(Lang.t(1312), 8));
+        body.addView(p(Lang.t(1313), 8));
 
-        body.addView(h(Lang.t(268)));
-        body.addView(p("En cumplimiento de las obligaciones aplicables en materia de protección de datos personales y transparencia sobre su tratamiento, solicitamos su consentimiento expreso antes de habilitar las funciones que requieran acceder a datos de uso.", 6));
-        TextView q = ZUi.text(this, Lang.t(269), 15f, ZUi.TXT, true);
-        q.setPadding(0, ZUi.dp(this, 14), 0, 0);
-        body.addView(q);
-        body.addView(p(Lang.t(270), 10));
+        body.addView(h(Lang.t(1320)));
+        body.addView(p(Lang.t(1321), 6));
+        body.addView(p(Lang.t(1322), 8));
+
+        body.addView(h(Lang.t(1330)));
+        body.addView(p(Lang.t(1331), 6));
+        c1 = chk(Lang.t(1332));
+        c2 = chk(Lang.t(1333));
+        body.addView(c1);
+        body.addView(c2);
+        body.addView(p(Lang.t(1334), 6));
 
         ScrollView sv = new ScrollView(this);
         sv.addView(body);
@@ -75,7 +119,10 @@ public class ConsentActivity extends Activity {
         bar.setBackgroundColor(ZUi.CARD);
         TextView no = btn(Lang.t(271), ZUi.CARD_HI, ZUi.TXT);
         no.setOnClickListener(v -> reject());
-        TextView yes = btn(Lang.t(272), ZUi.OK, 0xFF06281C);
+        yes = btn(Lang.t(272), ZUi.OK, 0xFF06281C);
+        c1.setOnCheckedChangeListener((v, on) -> refresh());
+        c2.setOnCheckedChangeListener((v, on) -> refresh());
+        refresh();
         yes.setOnClickListener(v -> accept());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, -2, 1f);
         lp.rightMargin = ZUi.dp(this, 8);
@@ -106,6 +153,19 @@ public class ConsentActivity extends Activity {
         return t;
     }
 
+    private CheckBox chk(String s) {
+        CheckBox c = new CheckBox(this);
+        c.setText(s);
+        c.setTextColor(ZUi.TXT);
+        c.setTextSize(14f);
+        c.setPadding(ZUi.dp(this, 8), ZUi.dp(this, 10), 0, ZUi.dp(this, 10));
+        return c;
+    }
+
+    private void refresh() {
+        yes.setAlpha(c1.isChecked() && c2.isChecked() ? 1f : 0.4f);
+    }
+
     private TextView btn(String s, int bg, int fg) {
         TextView t = ZUi.text(this, s, 15f, fg, true);
         t.setGravity(Gravity.CENTER);
@@ -115,14 +175,14 @@ public class ConsentActivity extends Activity {
     }
 
     private void accept() {
-        if (decided) return;
+        if (decided || !c1.isChecked() || !c2.isChecked()) return;
         decided = true;
         Consent.accept(this);
         go();
     }
 
     private void go() {
-        startActivity(new Intent(this, home ? LauncherActivity.class : SettingsHomeActivity.class));
+        startActivity(new Intent(this, home ? LauncherActivity.class : HomeActivity.class));
         finish();
     }
 
@@ -134,7 +194,7 @@ public class ConsentActivity extends Activity {
         t.setBackgroundColor(ZUi.BG);
         t.setGravity(Gravity.CENTER);
         t.setPadding(ZUi.dp(this, 28), ZUi.dp(this, 28), ZUi.dp(this, 28), ZUi.dp(this, 28));
-        TextView a = ZUi.text(this, "Gracias por su comprensión", 22f, ZUi.TXT, true);
+        TextView a = ZUi.text(this, Lang.t(923), 22f, ZUi.TXT, true);
         a.setGravity(Gravity.CENTER);
         TextView c = ZUi.text(this, Lang.t(273), 14f, ZUi.SUB, false);
         c.setGravity(Gravity.CENTER);

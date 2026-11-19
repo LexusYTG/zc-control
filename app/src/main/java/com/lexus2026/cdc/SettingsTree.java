@@ -228,7 +228,7 @@ public final class SettingsTree {
 
         // ───────────────────────────── Administración ─────────────────────────────
         B("administracion", Lang.t(751),
-            A("permisos", Lang.t(752), act(MainActivity.class)),
+            A("permisos", Lang.t(752), act(PermissionCenterActivity.class)),
             A("servicios", Lang.t(756), a -> a.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))),
             A("acerca", Lang.t(758), a -> SettingsAbout.show(a))));
 

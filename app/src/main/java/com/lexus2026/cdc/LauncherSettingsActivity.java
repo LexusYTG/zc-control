@@ -109,14 +109,14 @@ public class LauncherSettingsActivity extends Activity {
     }
 
     private String deskLabel() {
-        return Lang.t(626) + (st.get(LauncherSettings.DESKTOP) == 1 ? Lang.t(627) : "no");
+        return Lang.t(626) + (st.get(LauncherSettings.DESKTOP) == 1 ? Lang.t(627) : Lang.t(917));
     }
 
     private String newLabel() {
         return Lang.t(628) + (st.get(LauncherSettings.NEW_MODE) == 1 ? Lang.t(629) : Lang.t(630));
     }
 
-    private String fitLabel() { return Lang.t(631) + (st.get(LauncherSettings.FIT) == 1 ? Lang.t(627) : "no"); }
+    private String fitLabel() { return Lang.t(631) + (st.get(LauncherSettings.FIT) == 1 ? Lang.t(627) : Lang.t(917)); }
 
     private String bgLabel() { return Lang.t(632) + (st.get(LauncherSettings.BG) == 1 ? Lang.t(633) : Lang.t(634)); }
 

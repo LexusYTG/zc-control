@@ -904,6 +904,256 @@ id=es_ar{
 904,{Invertir colores}
 905,{Ahorro de datos}
 906,{Pantalla activa}
+907,{hoja color degradado redondeo borde ancho margen superior lateral}
+908,{fuente sans serif mono negrita cursiva espaciado letras escala texto}
+909,{primera bajada compacta accesos visibles acotada}
+910,{gestos toque doble toque mantener apretado barrita acciones}
+911,{presets temas ranuras guardar cargar estilo}
+912,{accesos panel lateral apps agregar quitar ordenar}
+913,{servicios accesibilidad activar}
+914,{activo}
+915,{inactivo}
+916,{pendiente}
+917,{no}
+918,{Los dos modos usan los mismos accesos, ventanas y notificaciones; solo cambia cómo se abre el panel: tocando la burbuja o deslizando desde el borde derecho.}
+919,{Solo avisa de notificaciones normales: no muestra las silenciosas, las fijas, las de progreso ni las de la propia app. Tocá la tarjeta para abrir la app; deslizala hacia arriba para descartarla.}
+920,{Destino (paquete, enlace o comando; interruptor: encendido&&&apagado)}
+921,{Este software ha sido desarrollado y se mantiene bajo el marco de la legislación vigente de la República Argentina a la fecha de su publicación y mantenimiento.}
+922,{En cumplimiento de las obligaciones aplicables en materia de protección de datos personales y transparencia sobre su tratamiento, solicitamos su consentimiento expreso antes de habilitar las funciones que requieran acceder a datos de uso.}
+923,{Gracias por su comprensión}
+924,{Error inesperado; se restauró el estado original.}
+925,{No se pudo registrar el estado original; no se modificó nada.}
+926,{Tocá un elemento para editarlo. Arrastralo para moverlo y usá el cuadrito de la esquina para cambiar su tamaño.}
+927,{Ya hay uno; solo puede haber uno}
+928,{Uso: arrastrá hacia abajo desde la barrita blanca del borde superior. Primera bajada: notificaciones; bajá de nuevo para expandir los accesos. Deslizá a los costados para cambiar de pestaña. Mantené apretado un acceso para abrir sus ajustes; para agregar, quitar u ordenar accesos usá el botón ✎ o el botón de la pestaña de controles.}
+1000,{Elegí qué querés usar. Cada módulo funciona por separado.}
+1001,{ZC Control Center}
+1002,{Tu panel de ajustes rápidos y notificaciones, en lugar del del sistema.}
+1003,{ZC Action Hub}
+1004,{Burbuja flotante (o gesto de borde) con tus apps y accesos a mano.}
+1005,{ZC Game Center}
+1006,{Modo juego: libera recursos, ajusta la pantalla y restaura todo al salir.}
+1007,{ZC Launcher}
+1008,{Pantalla de inicio con dock, categorías y navegación radial.}
+1009,{ZC Permission Control}
+1010,{Permisos, Shizuku y estado de los servicios}
+1011,{Ajustes del sistema}
+1012,{Abrir los ajustes de Android}
+1013,{Activo}
+1014,{Inactivo}
+1015,{Requiere atención}
+1016,{Faltan permisos para que todo funcione. Tocá para resolverlo.}
+1017,{¿Cómo empezar?}
+1018,{1. Tocá un módulo para activarlo y configurarlo.\n2. Si algo dice «Requiere atención», entrá a ZC Permission Control.\n3. Podés cambiar tu elección cuando quieras: cada módulo tiene su propio interruptor.}
+1019,{Volver}
+1020,{Idioma}
+1021,{Siguiente}
+1022,{Atrás}
+1023,{Finalizar}
+1024,{Cancelar}
+1025,{Quitar}
+1026,{Paso %1$d de %2$d}
+1027,{Bienvenido a ZC Control}
+1028,{¿Qué idioma preferís?}
+1029,{Podés cambiarlo después desde la pantalla principal.}
+1030,{¿Cómo querés configurarla?}
+1031,{Paquete completo}
+1032,{Activa y configura todo por vos. Requiere Shizuku para el 100 %.}
+1033,{• ZC Launcher pasa a ser tu pantalla de inicio.\n• La barra de estado del sistema se suspende y la reemplaza ZC Control Center.\n• La burbuja de ZC Action Hub aparece en pantalla (no como gesto).\n• ZC Game Center queda activado.\n• Los permisos se conceden con Shizuku.}
+1034,{Elegir yo}
+1035,{Decidí módulo por módulo cuáles querés usar.}
+1036,{¿Qué módulos querés usar?}
+1037,{Quizás solo te interesa la burbuja y el centro de juegos. Podés cambiarlo cuando quieras.}
+1038,{Shizuku está listo: los permisos se concederán solos.}
+1039,{Shizuku no está activo. Podés continuar, pero algunas funciones quedarán pendientes hasta activarlo (en ZC Permission Control).}
+1040,{Dar permiso a Shizuku}
+1041,{Resumen}
+1042,{Esto es lo que se va a activar:}
+1043,{No elegiste ningún módulo. Podés activarlos después desde la pantalla principal.}
+1044,{Configurando…}
+1045,{Empezar}
+1046,{Habilitar}
+1047,{Estado}
+1048,{Personalización avanzada}
+1049,{Todas las opciones de apariencia y comportamiento}
+1050,{Guía rápida}
+1051,{Esto necesita Shizuku activo.}
+1052,{Falta activar el servicio de accesibilidad. Abrí ZC Permission Control.}
+1053,{Ir a permisos}
+1054,{Servicio de accesibilidad}
+1055,{Ajustes}
+1056,{Si lo desactivás, el panel propio no se abre y volvés al del sistema.}
+1057,{Reemplazar el panel del sistema}
+1058,{Bloquea el panel original para que solo se abra el de ZC. Requiere Shizuku.}
+1059,{Probar el panel ahora}
+1060,{Zona de apertura}
+1061,{Izquierda}
+1062,{Centro}
+1063,{Derecha}
+1064,{Toda}
+1065,{Visibilidad de la barrita}
+1066,{Deslizá hacia abajo desde la barrita blanca del borde superior. Primera bajada: notificaciones y accesos. Segunda bajada: centro de control completo.}
+1067,{Panel del sistema: bloqueado}
+1068,{Panel del sistema: disponible}
+1069,{Mostrar la burbuja}
+1070,{La burbuja queda flotando en pantalla con tus accesos.}
+1071,{Modo}
+1072,{Burbuja}
+1073,{Gestos (experimental)}
+1074,{El modo gestos es experimental y solo funciona con navegación de tres botones.}
+1075,{Tamaño de la burbuja}
+1076,{Opacidad de la burbuja}
+1077,{Avisos de notificaciones sobre la burbuja}
+1078,{Abrir apps en ventana flotante}
+1079,{Mover la burbuja}
+1080,{Restablecer la posición}
+1081,{Abrir los accesos ahora}
+1082,{Tocá la burbuja para abrir tus accesos. Mantenela apretada para moverla. Las apps que aparecen se eligen en Personalización avanzada.}
+1083,{Primero habilitá la burbuja.}
+1084,{El servicio todavía no está activo.}
+1085,{Activar el modo juego}
+1086,{Al abrir un juego de la lista, ZC prepara el sistema y lo restaura cuando salís. Necesita Shizuku.}
+1087,{Perfil por defecto}
+1088,{Se aplica a todos los juegos que no tengan perfil propio.}
+1089,{Cerrar otras apps al jugar}
+1090,{Nivel de limpieza}
+1091,{Optimizar el juego antes de iniciar}
+1092,{Mostrar medidor (CPU, RAM, GPU, FPS)}
+1093,{Ahorro de batería}
+1094,{No conservar actividades}
+1095,{Limitar procesos en segundo plano}
+1096,{Mis juegos}
+1097,{No se detectó ningún juego. Agregalo a mano.}
+1098,{Agregar un juego a mano}
+1099,{Elegí la app}
+1100,{Perfil propio}
+1101,{Perfil por defecto}
+1102,{¿Quitar de la lista?}
+1103,{Tocá un juego para jugarlo con el modo juego. Tocá la flecha para darle un perfil propio. Mantené apretado un juego agregado a mano para quitarlo.}
+1104,{Modo de compilación y excepciones}
+1105,{Usar como pantalla de inicio}
+1106,{Establece ZC Launcher como inicio de Android. Al desactivarlo vuelve el launcher anterior.}
+1107,{Inicio actual: %1$s}
+1108,{Abrir ZC Launcher}
+1109,{Elegir inicio en Ajustes del sistema}
+1110,{Forma de las burbujas}
+1111,{Círculo}
+1112,{Cuadrado suave}
+1113,{Cuadrado}
+1114,{Rombo}
+1115,{Tamaño de las burbujas}
+1116,{Duración de las animaciones}
+1117,{Oscurecer el fondo}
+1118,{Modo escritorio (pantalla horizontal)}
+1119,{Apps recién instaladas}
+1120,{Sueltas en el escritorio}
+1121,{En la carpeta «Nuevas»}
+1122,{ZC Launcher ordena tus apps con un dock, cajones por categoría y navegación radial de dos etapas. Con el interruptor activado, el botón Home abre ZC Launcher.}
+1123,{Categorías y radial}
+1124,{Posiciones, arcos, categorías y apps ocultas}
+1125,{Sin Shizuku se abre el selector de Android para que lo confirmes vos.}
+1126,{Conceder todo con Shizuku}
+1127,{Da los permisos, activa los servicios y deja todo listo de una vez.}
+1128,{Todo está en orden.}
+1129,{Hay permisos pendientes.}
+1130,{Concedido}
+1131,{Falta}
+1132,{Abrir}
+1133,{Conceder}
+1134,{Shizuku}
+1135,{Permite cambiar ajustes y ejecutar comandos del sistema sin root.}
+1136,{Shizuku no está en ejecución. Abrilo y activalo.}
+1137,{Servicio de accesibilidad}
+1138,{Dibuja el panel y la burbuja por encima de otras apps.}
+1139,{Acceso a notificaciones}
+1140,{Muestra y descarta tus notificaciones dentro del panel.}
+1141,{Modificar ajustes del sistema}
+1142,{Brillo, volumen y otros controles rápidos.}
+1143,{No molestar}
+1144,{Permite controlar el modo No molestar desde el panel.}
+1145,{Ajustes seguros}
+1146,{Se concede por Shizuku. Permite activar servicios y bloquear el panel original.}
+1147,{Pantalla de inicio}
+1148,{Indica si ZC Launcher es tu inicio actual.}
+1149,{ZC Launcher}
+1150,{Otro}
+1151,{¿Qué se ejecuta y con qué?}
+1152,{ZC Control Center: servicio de accesibilidad + acceso a notificaciones. El bloqueo del panel original usa Shizuku.}
+1153,{ZC Action Hub: servicio de accesibilidad. Las ventanas flotantes usan Shizuku y ajustes del sistema.}
+1154,{ZC Game Center: Shizuku (cerrar apps, resolución, batería) + servicio de accesibilidad.}
+1155,{ZC Launcher: rol de pantalla de inicio. Shizuku solo sirve para fijarlo sin preguntar.}
+1156,{Reconectar servicios}
+1157,{Si el panel o la burbuja no responden, esto los reinicia.}
+1158,{Abrir ajustes de accesibilidad}
+1159,{Necesita Shizuku activo}
+1160,{Listo}
+1201,{CONTRATO DE LICENCIA DE USUARIO FINAL (EULA) Y POLÍTICA DE TRATAMIENTO DE DATOS PERSONALES}
+1202,{Versión 2.0 · Vigente desde el 19 de noviembre de 2026 · Redactado conforme a la legislación de la República Argentina.}
+1203,{Lea este documento completo antes de continuar. Al aceptarlo celebra un contrato de adhesión con el desarrollador (arts. 984 a 989 del Código Civil y Comercial de la Nación). Si no está de acuerdo, pulse «NO ACEPTO»: la aplicación no hará nada y se cerrará.}
+1204,{Este documento se redacta en español. Las traducciones son de cortesía y, ante cualquier diferencia, prevalece el texto en español.}
+1210,{1. Identificación del desarrollador y responsable del tratamiento}
+1211,{Desarrollador, licenciante y responsable del tratamiento: Leonardo Sebastian Nivoida.}
+1213,{Domicilio legal: Concepción de la Sierra, provincia de Misiones, República Argentina.}
+1214,{Correo electrónico para consultas y ejercicio de derechos: leonpackpro@gmail.com}
+1215,{Aplicación: «Settings» (zc-control), paquete com.lexus2026.cdc, en adelante «la aplicación».}
+1216,{«Usted» es la persona que instala y usa la aplicación y titular de los datos personales que se traten. El uso está destinado a personas mayores de 18 años.}
+1220,{2. Objeto y licencia de uso}
+1221,{La aplicación es una herramienta de personalización y control del dispositivo (paneles, accesos, modo de juego, lanzador y ajustes relacionados). El desarrollador le otorga una licencia personal, revocable, no exclusiva e intransferible para instalarla y usarla en dispositivos de su propiedad o bajo su control legítimo.}
+1222,{Queda prohibido usarla para vigilar, acceder o interferir con dispositivos o datos de terceros sin su consentimiento, y para cualquier fin contrario a la ley.}
+1223,{La aplicación, su código, diseño y textos están protegidos por la Ley 11.723 de Propiedad Intelectual. Esta licencia no le transfiere ningún derecho de propiedad sobre ellos.}
+1230,{3. Qué datos trata la aplicación}
+1231,{Para funcionar, la aplicación puede acceder a los siguientes datos, solo cuando usted le concede el permiso correspondiente del sistema Android:}
+1232,{•  Servicio de accesibilidad: eventos de la interfaz del dispositivo (por ejemplo, qué aplicación está en primer plano y los gestos sobre las zonas del panel) para mostrar paneles, detectar la apertura de juegos y ejecutar sus accesos.}
+1233,{•  Acceso a notificaciones: contenido de las notificaciones recibidas (título, texto, aplicación de origen y controles multimedia) para mostrarlas en el panel y en la burbuja. Pueden contener datos personales suyos o de terceros que le escriben.}
+1234,{•  Lista de aplicaciones instaladas: nombres y paquetes, para armar accesos, categorías y el modo de juego.}
+1235,{•  Ajustes del sistema: lectura y modificación de ajustes (red, brillo, modos, banderas de la barra de estado, entre otros), incluido el estado activado o desactivado de funciones como la ubicación (no su posición), con los permisos que usted otorgue, incluido Shizuku si decide activarlo.}
+1236,{•  Datos propios de la aplicación: sus preferencias, accesos, categorías, imágenes o videos que elija colocar, el idioma y el registro de esta aceptación. El portapapeles solo se usa cuando usted copia o pega una configuración.}
+1237,{La aplicación no busca ni clasifica a propósito datos sensibles (art. 2 de la Ley 25.326). Si una notificación los contiene, la aplicación no la guarda: solo se muestra mientras está activa.}
+1240,{4. Finalidad, base del tratamiento y consentimiento}
+1241,{Finalidad única: hacer funcionar las características de la aplicación que usted active. Los datos no se usan con fines comerciales, publicitarios, de perfilado, estadísticos ni de entrenamiento de sistemas automatizados.}
+1242,{Base del tratamiento: su consentimiento libre, expreso e informado (art. 5 de la Ley 25.326), prestado al final de este documento mediante una casilla propia, separada de la aceptación del contrato. Puede retirarlo en cualquier momento (punto 8).}
+1243,{Carácter facultativo (art. 6 de la Ley 25.326): aceptar es facultativo. Si no acepta, no podrá usar la aplicación, que no leerá ni modificará nada y se cerrará borrando sus propios datos. Si luego retira un permiso, la función que dependa de él dejará de funcionar.}
+1250,{5. Destinatarios, cesión y transferencias internacionales}
+1251,{No hay destinatarios: ningún dato personal se cede, vende, comparte ni transmite a terceros ni al desarrollador (arts. 11 y 12 de la Ley 25.326).}
+1252,{La aplicación no declara el permiso INTERNET en su manifiesto y su código fuente no usa conexiones de red, por lo que no puede enviar datos fuera del dispositivo por sí misma. Usted puede comprobarlo (punto 11).}
+1253,{Archivo o base de datos: los datos se guardan únicamente en el almacenamiento privado de la aplicación, dentro de su propio dispositivo. El desarrollador no recibe, no accede ni mantiene ninguna base de datos con información suya.}
+1254,{Copias de seguridad: si usted activó las copias de seguridad de Android, el sistema operativo o su proveedor (por ejemplo, Google) podrían incluir los datos propios de la aplicación en esas copias, bajo sus propias políticas. Eso lo decide y controla usted desde los ajustes de su dispositivo.}
+1260,{6. Conservación y supresión}
+1261,{Los datos se conservan solo mientras la aplicación está instalada. Al desinstalarla o borrar sus datos desde los ajustes del dispositivo, se destruyen (art. 4, inc. 7). Si pulsa «NO ACEPTO», la aplicación borra sus propios datos y se cierra.}
+1270,{7. Seguridad y confidencialidad}
+1271,{Los datos se almacenan en modo privado en el espacio de la aplicación, aislado por el sistema Android. El desarrollador adopta medidas técnicas razonables para evitar su pérdida, adulteración o acceso no autorizado (art. 9 de la Ley 25.326), pero ningún sistema es infalible: la seguridad del dispositivo (bloqueo de pantalla, actualizaciones, origen de las aplicaciones) depende de usted.}
+1280,{8. Sus derechos como titular de los datos}
+1281,{Usted tiene derecho de información, acceso, rectificación, actualización y supresión de sus datos personales (arts. 13 a 16 de la Ley 25.326 y Decreto 1558/2001) y puede retirar su consentimiento cuando quiera.}
+1282,{Ejercicio inmediato y sin intermediarios: use el botón «Retirar consentimiento y borrar todo» del centro de permisos de la aplicación (quita los permisos, restaura la barra del sistema, borra los datos y cierra la aplicación), o bien revoque los permisos desde los ajustes del dispositivo, borre los datos de la aplicación o desinstálela. Eso elimina todo dato tratado por la aplicación.}
+1283,{También puede dirigir su solicitud al desarrollador al correo indicado en el punto 1. Plazos legales: acceso, 10 días corridos desde el requerimiento; rectificación, actualización o supresión, 5 días hábiles (arts. 14 y 16).}
+1284,{El acceso es gratuito a intervalos no inferiores a seis meses, salvo que se acredite un interés legítimo (art. 14, inc. 3).}
+1285,{La AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, en su carácter de Órgano de Control de la Ley 25.326, tiene la atribución de atender las denuncias y reclamos que se interpongan con relación al incumplimiento de las normas sobre protección de datos personales. Sitio: argentina.gob.ar/aaip. También le asiste la acción de habeas data (art. 43 de la Constitución Nacional).}
+1290,{9. Funciones sensibles, riesgos y responsabilidad}
+1291,{La aplicación usa permisos de alto nivel (accesibilidad, ajustes seguros del sistema, Shizuku) que pueden modificar el comportamiento del dispositivo, incluida la ocultación de paneles y botones del sistema mediante banderas que pueden persistir tras reiniciar. Active esas funciones solo si comprende lo que hacen y sabe revertirlas.}
+1292,{La aplicación se ofrece «tal como está». En la medida que la ley lo permita, el desarrollador no responde por daños derivados de un uso contrario a este contrato, ni por fallas del dispositivo, del sistema operativo o de software de terceros (Shizuku, Android, otras aplicaciones). Nada de este contrato limita los derechos irrenunciables que le correspondan por la Ley 24.240 de Defensa del Consumidor ni por el Código Civil y Comercial.}
+1300,{10. Modificaciones}
+1301,{Si el desarrollador modifica este documento de modo que afecte el tratamiento de sus datos o sus derechos, la aplicación volverá a pedir su aceptación antes de seguir funcionando. El texto vigente es el de esta pantalla.}
+1310,{11. Verificación independiente}
+1311,{No tiene por qué creer lo anterior: puede comprobarlo. Con una herramienta que muestre el AndroidManifest.xml de la aplicación, verifique que NO exista la siguiente declaración:}
+1312,{Si la encuentra, desinstale la aplicación, no la vuelva a ejecutar y analice el dispositivo en busca de software malicioso o modificaciones no autorizadas.}
+1313,{Sin herramientas: mantenga pulsado el icono de la aplicación, elija «Información de la aplicación» y, en «Uso de datos» (si existe), compruebe que no haya tráfico de red atribuible a ella. Android también lista los permisos concedidos en «Permisos».}
+1320,{12. Ley aplicable y jurisdicción}
+1321,{Este contrato se rige por las leyes de la República Argentina, en particular las Leyes 25.326 (Protección de los Datos Personales), 11.723 (Propiedad Intelectual) y 24.240 (Defensa del Consumidor) y el Código Civil y Comercial de la Nación.}
+1322,{Para toda controversia serán competentes los tribunales ordinarios de la República Argentina del domicilio del desarrollador, sin perjuicio de los derechos que la normativa de defensa del consumidor le reconozca.}
+1330,{13. Aceptación}
+1331,{Para continuar debe marcar las dos casillas siguientes. Son declaraciones distintas e independientes.}
+1332,{Leí y acepto este contrato de licencia (EULA) completo.}
+1333,{Doy mi consentimiento libre, expreso e informado para que la aplicación acceda a los datos descritos en el punto 3 y los trate de forma exclusivamente local, sin fines comerciales ni transmisión a terceros.}
+1334,{Se registrará en este dispositivo la versión del documento y la fecha y hora de su aceptación.}
+1340,{Retirar consentimiento}
+1341,{Se quitarán los permisos de la aplicación (accesibilidad, notificaciones y los otorgados por Shizuku), se restaurará el panel y la barra del sistema, se borrarán todos los datos de la aplicación y esta se cerrará. No se puede deshacer. Para volver a usarla deberá aceptar de nuevo el contrato.}
+1342,{ACEPTAR}
+1343,{CANCELAR}
+1344,{Retirando el consentimiento}
+1345,{Se están quitando los permisos, restaurando la barra del sistema y borrando los datos. La aplicación se cerrará sola.}
+1346,{Retirar consentimiento y borrar todo}
+1347,{Quita los permisos, restaura la barra del sistema, borra los datos de la aplicación y la cierra.}
+1348,{Aviso: el panel del sistema está bloqueado y Shizuku no está activo, así que no se podrá restaurar desde aquí. Active Shizuku antes de continuar, o restáurelo después con: adb shell cmd statusbar send-disable-flag none}
 ..end..}
 id=en_us{
 1,{Solid}
@@ -1807,4 +2057,254 @@ id=en_us{
 904,{Invert colors}
 905,{Data saver}
 906,{Keep screen on}
+907,{sheet color gradient rounding border width margin top side}
+908,{font sans serif mono bold italic spacing letters scale text}
+909,{first pull-down compact shortcuts visible bounded}
+910,{gestures tap double tap press hold bar actions}
+911,{presets themes slots save load style}
+912,{shortcuts side panel apps add remove reorder}
+913,{services accessibility enable}
+914,{active}
+915,{inactive}
+916,{pending}
+917,{no}
+918,{Both modes use the same shortcuts, windows and notifications; only how the panel is opened changes: tapping the bubble or swiping from the right edge.}
+919,{It only alerts for regular notifications: it doesn't show silent, ongoing, progress or the app's own ones. Tap the card to open the app; swipe it up to dismiss it.}
+920,{Target (package, link or command; switch: on&&&off)}
+921,{This software has been developed and is maintained under the framework of the legislation in force in the Argentine Republic as of the date of its publication and maintenance.}
+922,{In compliance with the applicable obligations regarding personal data protection and transparency about its processing, we request your express consent before enabling the features that require access to usage data.}
+923,{Thank you for your understanding}
+924,{Unexpected error; the original state was restored.}
+925,{Could not record the original state; nothing was changed.}
+926,{Tap an element to edit it. Drag it to move it and use the small square in the corner to resize it.}
+927,{There is already one; only one is allowed}
+928,{Usage: drag down from the thin white bar on the top edge. First pull: notifications; pull again to expand the controls. Swipe sideways to switch tabs. Press and hold a control to open its settings; to add, remove or reorder controls use the ✎ button or the button on the controls tab.}
+1000,{Choose what you want to use. Each module works on its own.}
+1001,{ZC Control Center}
+1002,{Your own quick settings and notifications panel, instead of the system one.}
+1003,{ZC Action Hub}
+1004,{Floating bubble (or edge gesture) with your apps and shortcuts at hand.}
+1005,{ZC Game Center}
+1006,{Game mode: frees resources, tunes the display and restores everything on exit.}
+1007,{ZC Launcher}
+1008,{Home screen with a dock, categories and radial navigation.}
+1009,{ZC Permission Control}
+1010,{Permissions, Shizuku and service status}
+1011,{System settings}
+1012,{Open Android settings}
+1013,{On}
+1014,{Off}
+1015,{Needs attention}
+1016,{Some permissions are missing. Tap to fix them.}
+1017,{How to start}
+1018,{1. Tap a module to turn it on and set it up.\n2. If something says “Needs attention”, open ZC Permission Control.\n3. You can change your mind any time: each module has its own switch.}
+1019,{Back}
+1020,{Language}
+1021,{Next}
+1022,{Back}
+1023,{Finish}
+1024,{Cancel}
+1025,{Remove}
+1026,{Step %1$d of %2$d}
+1027,{Welcome to ZC Control}
+1028,{Which language do you prefer?}
+1029,{You can change it later from the home screen.}
+1030,{How do you want to set it up?}
+1031,{Full package}
+1032,{Turns on and sets up everything for you. Needs Shizuku for the full effect.}
+1033,{• ZC Launcher becomes your home screen.\n• The system status bar is suspended and replaced by ZC Control Center.\n• The ZC Action Hub bubble appears on screen (not as a gesture).\n• ZC Game Center is turned on.\n• Permissions are granted through Shizuku.}
+1034,{Choose myself}
+1035,{Decide module by module which ones you want.}
+1036,{Which modules do you want?}
+1037,{Maybe you only want the bubble and the game center. You can change this any time.}
+1038,{Shizuku is ready: permissions will be granted automatically.}
+1039,{Shizuku is not active. You can continue, but some features will stay pending until you enable it (in ZC Permission Control).}
+1040,{Allow Shizuku}
+1041,{Summary}
+1042,{This is what will be turned on:}
+1043,{You did not pick any module. You can turn them on later from the home screen.}
+1044,{Setting up…}
+1045,{Start}
+1046,{Enable}
+1047,{Status}
+1048,{Advanced customization}
+1049,{All appearance and behavior options}
+1050,{Quick guide}
+1051,{This needs Shizuku to be active.}
+1052,{The accessibility service is not on yet. Open ZC Permission Control.}
+1053,{Go to permissions}
+1054,{Accessibility service}
+1055,{Settings}
+1056,{If you turn it off, the custom panel stays closed and the system one comes back.}
+1057,{Replace the system panel}
+1058,{Blocks the original panel so only the ZC one opens. Needs Shizuku.}
+1059,{Try the panel now}
+1060,{Opening zone}
+1061,{Left}
+1062,{Center}
+1063,{Right}
+1064,{Full}
+1065,{Handle bar visibility}
+1066,{Swipe down from the white bar at the top edge. First pull: notifications and shortcuts. Second pull: the full control center.}
+1067,{System panel: blocked}
+1068,{System panel: available}
+1069,{Show the bubble}
+1070,{The bubble floats on screen with your shortcuts.}
+1071,{Mode}
+1072,{Bubble}
+1073,{Gestures (experimental)}
+1074,{Gesture mode is experimental and only works with three-button navigation.}
+1075,{Bubble size}
+1076,{Bubble opacity}
+1077,{Notification pop-ups on the bubble}
+1078,{Open apps in a floating window}
+1079,{Move the bubble}
+1080,{Reset position}
+1081,{Open shortcuts now}
+1082,{Tap the bubble to open your shortcuts. Hold it to move it. Pick which apps appear in Advanced customization.}
+1083,{Turn the bubble on first.}
+1084,{The service is not active yet.}
+1085,{Turn on game mode}
+1086,{When you open a game from the list, ZC prepares the system and restores it when you leave. Needs Shizuku.}
+1087,{Default profile}
+1088,{Applies to every game without its own profile.}
+1089,{Close other apps while playing}
+1090,{Cleanup level}
+1091,{Optimize the game before starting}
+1092,{Show meter (CPU, RAM, GPU, FPS)}
+1093,{Battery saver}
+1094,{Do not keep activities}
+1095,{Limit background processes}
+1096,{My games}
+1097,{No game detected. Add one manually.}
+1098,{Add a game manually}
+1099,{Pick the app}
+1100,{Own profile}
+1101,{Default profile}
+1102,{Remove from the list?}
+1103,{Tap a game to play it with game mode. Tap the arrow to give it its own profile. Hold a manually added game to remove it.}
+1104,{Compile mode and exceptions}
+1105,{Use as home screen}
+1106,{Sets ZC Launcher as Android home. Turning it off brings back the previous launcher.}
+1107,{Current home: %1$s}
+1108,{Open ZC Launcher}
+1109,{Pick home in system settings}
+1110,{Bubble shape}
+1111,{Circle}
+1112,{Soft square}
+1113,{Square}
+1114,{Diamond}
+1115,{Bubble size}
+1116,{Animation length}
+1117,{Dim the background}
+1118,{Desktop mode (landscape)}
+1119,{Newly installed apps}
+1120,{Loose on the desktop}
+1121,{In the “New” folder}
+1122,{ZC Launcher organizes your apps with a dock, category drawers and two-stage radial navigation. With the switch on, the Home button opens ZC Launcher.}
+1123,{Categories and radial}
+1124,{Positions, arcs, categories and hidden apps}
+1125,{Without Shizuku, Android’s own picker opens so you can confirm it.}
+1126,{Grant everything with Shizuku}
+1127,{Grants the permissions, turns on the services and gets everything ready at once.}
+1128,{Everything is in order.}
+1129,{Some permissions are pending.}
+1130,{Granted}
+1131,{Missing}
+1132,{Open}
+1133,{Grant}
+1134,{Shizuku}
+1135,{Lets the app change settings and run system commands without root.}
+1136,{Shizuku is not running. Open it and start it.}
+1137,{Accessibility service}
+1138,{Draws the panel and the bubble above other apps.}
+1139,{Notification access}
+1140,{Shows and dismisses your notifications inside the panel.}
+1141,{Modify system settings}
+1142,{Brightness, volume and other quick controls.}
+1143,{Do not disturb}
+1144,{Lets you control Do Not Disturb from the panel.}
+1145,{Secure settings}
+1146,{Granted through Shizuku. Lets the app turn services on and block the original panel.}
+1147,{Home screen}
+1148,{Shows whether ZC Launcher is your current home.}
+1149,{ZC Launcher}
+1150,{Other}
+1151,{What runs, and with what?}
+1152,{ZC Control Center: accessibility service + notification access. Blocking the original panel uses Shizuku.}
+1153,{ZC Action Hub: accessibility service. Floating windows use Shizuku and system settings.}
+1154,{ZC Game Center: Shizuku (close apps, resolution, battery) + accessibility service.}
+1155,{ZC Launcher: home screen role. Shizuku is only used to set it without asking.}
+1156,{Reconnect services}
+1157,{If the panel or the bubble stop responding, this restarts them.}
+1158,{Open accessibility settings}
+1159,{Needs Shizuku to be active}
+1160,{Done}
+1201,{END USER LICENSE AGREEMENT (EULA) AND PERSONAL DATA PROCESSING POLICY}
+1202,{Version 2.0 · Effective November 19, 2026 · Drafted under the laws of the Argentine Republic.}
+1203,{Read this entire document before continuing. By accepting it you enter into an adhesion contract with the developer (arts. 984 to 989 of the Argentine Civil and Commercial Code). If you do not agree, tap «I DO NOT ACCEPT»: the app will do nothing and will close.}
+1204,{This document is written in Spanish. Translations are provided as a courtesy and, in case of any difference, the Spanish text prevails.}
+1210,{1. Identification of the developer and data controller}
+1211,{Developer, licensor and data controller: Leonardo Sebastian Nivoida.}
+1213,{Legal address: Concepción de la Sierra, Misiones Province, Argentine Republic.}
+1214,{Email for inquiries and exercise of rights: leonpackpro@gmail.com}
+1215,{Application: «Settings» (zc-control), package com.lexus2026.cdc, hereinafter «the app».}
+1216,{«You» is the person who installs and uses the app and the holder of any personal data processed. Use is intended for persons over 18 years of age.}
+1220,{2. Purpose and license}
+1221,{The app is a device customization and control tool (panels, shortcuts, game mode, launcher and related settings). The developer grants you a personal, revocable, non-exclusive, non-transferable license to install and use it on devices you own or legitimately control.}
+1222,{You may not use it to monitor, access or interfere with third parties' devices or data without their consent, or for any unlawful purpose.}
+1223,{The app, its code, design and texts are protected by Argentine Law 11.723 on Intellectual Property. This license does not transfer any ownership rights to you.}
+1230,{3. What data the app processes}
+1231,{To work, the app may access the following data, only when you grant the corresponding Android permission:}
+1232,{•  Accessibility service: device interface events (for example, which app is in the foreground and gestures over the panel areas) to display panels, detect game launches and run your shortcuts.}
+1233,{•  Notification access: content of received notifications (title, text, source app and media controls) to display them in the panel and bubble. They may contain personal data of yours or of third parties who write to you.}
+1234,{•  List of installed apps: names and packages, to build shortcuts, categories and game mode.}
+1235,{•  System settings: reading and changing settings (network, brightness, modes, status bar flags, among others), including the on/off state of features such as location (not your position), using the permissions you grant, including Shizuku if you choose to enable it.}
+1236,{•  The app's own data: your preferences, shortcuts, categories, images or videos you choose to place, language, and the record of this acceptance. The clipboard is only used when you copy or paste a configuration.}
+1237,{The app does not deliberately seek or classify sensitive data (art. 2 of Law 25.326). If a notification contains such data, the app does not store it: it is only displayed while active.}
+1240,{4. Purpose, legal basis and consent}
+1241,{Sole purpose: to make the app features you enable work. Data is not used for commercial, advertising, profiling or statistical purposes, nor to train automated systems.}
+1242,{Legal basis: your free, express and informed consent (art. 5 of Law 25.326), given at the end of this document through its own checkbox, separate from the acceptance of the contract. You may withdraw it at any time (section 8).}
+1243,{Optional nature (art. 6 of Law 25.326): accepting is optional. If you do not accept, you will not be able to use the app, which will not read or modify anything and will close, deleting its own data. If you later withdraw a permission, the feature that depends on it will stop working.}
+1250,{5. Recipients, disclosure and international transfers}
+1251,{There are no recipients: no personal data is disclosed, sold, shared or transmitted to third parties or to the developer (arts. 11 and 12 of Law 25.326).}
+1252,{The app does not declare the INTERNET permission in its manifest and its source code does not use network connections, so it cannot send data out of the device by itself. You can verify this (section 11).}
+1253,{File or database: data is stored only in the app's private storage, inside your own device. The developer does not receive, access or maintain any database with your information.}
+1254,{Backups: if you enabled Android backups, the operating system or its provider (for example, Google) may include the app's own data in those backups, under their own policies. You decide and control this from your device settings.}
+1260,{6. Retention and deletion}
+1261,{Data is kept only while the app is installed. Uninstalling it or clearing its data from the device settings destroys it (art. 4, para. 7). If you tap «I DO NOT ACCEPT», the app deletes its own data and closes.}
+1270,{7. Security and confidentiality}
+1271,{Data is stored privately in the app's space, isolated by Android. The developer takes reasonable technical measures to prevent loss, alteration or unauthorized access (art. 9 of Law 25.326), but no system is infallible: device security (screen lock, updates, source of apps) is your responsibility.}
+1280,{8. Your rights as a data subject}
+1281,{You have the right to information, access, rectification, updating and deletion of your personal data (arts. 13 to 16 of Law 25.326 and Decree 1558/2001) and may withdraw your consent whenever you wish.}
+1282,{Immediate exercise without intermediaries: use the «Withdraw consent and delete everything» button in the app permission center (it removes the permissions, restores the system bar, deletes the data and closes the app), or revoke the permissions from your device settings, clear the app data or uninstall it. That removes all data processed by the app.}
+1283,{You may also send your request to the developer at the email given in section 1. Legal deadlines: access, 10 calendar days from the request; rectification, updating or deletion, 5 business days (arts. 14 and 16).}
+1284,{Access is free of charge at intervals of no less than six months, unless a legitimate interest is shown (art. 14, para. 3).}
+1285,{The AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, as the Control Authority of Law 25.326, has the power to handle complaints and claims regarding non-compliance with personal data protection rules. Website: argentina.gob.ar/aaip. You may also file a habeas data action (art. 43 of the National Constitution).}
+1290,{9. Sensitive functions, risks and liability}
+1291,{The app uses high-level permissions (accessibility, secure system settings, Shizuku) that can change device behavior, including hiding system panels and buttons through flags that may persist after a reboot. Enable those functions only if you understand what they do and know how to revert them.}
+1292,{The app is provided «as is». To the extent permitted by law, the developer is not liable for damages arising from use contrary to this contract, or from failures of the device, the operating system or third-party software (Shizuku, Android, other apps). Nothing in this contract limits any non-waivable rights you have under Law 24.240 on Consumer Protection or the Civil and Commercial Code.}
+1300,{10. Changes}
+1301,{If the developer changes this document in a way that affects the processing of your data or your rights, the app will ask for your acceptance again before continuing to work. The text in force is the one on this screen.}
+1310,{11. Independent verification}
+1311,{You do not have to take the above on faith: you can check it. With a tool that shows the app's AndroidManifest.xml, verify that the following declaration does NOT exist:}
+1312,{If you find it, uninstall the app, do not run it again and scan the device for malware or unauthorized changes.}
+1313,{Without tools: long-press the app icon, choose «App info» and, under «Data usage» (if available), check that there is no network traffic attributable to it. Android also lists the granted permissions under «Permissions».}
+1320,{12. Governing law and jurisdiction}
+1321,{This contract is governed by the laws of the Argentine Republic, in particular Laws 25.326 (Personal Data Protection), 11.723 (Intellectual Property) and 24.240 (Consumer Protection) and the Civil and Commercial Code.}
+1322,{For any dispute, the ordinary courts of the Argentine Republic of the developer's domicile shall be competent, without prejudice to the rights granted to you by consumer protection rules.}
+1330,{13. Acceptance}
+1331,{To continue you must tick the two boxes below. They are separate, independent statements.}
+1332,{I have read and accept this entire license agreement (EULA).}
+1333,{I give my free, express and informed consent for the app to access the data described in section 3 and process it exclusively locally, without commercial purposes or transmission to third parties.}
+1334,{The document version and the date and time of your acceptance will be recorded on this device.}
+1340,{Withdraw consent}
+1341,{The app's permissions (accessibility, notifications and those granted through Shizuku) will be removed, the system panel and bar will be restored, all of the app's data will be deleted and the app will close. This cannot be undone. To use it again you will have to accept the agreement again.}
+1342,{ACCEPT}
+1343,{CANCEL}
+1344,{Withdrawing consent}
+1345,{Permissions are being removed, the system bar restored and the data deleted. The app will close by itself.}
+1346,{Withdraw consent and delete everything}
+1347,{Removes the permissions, restores the system bar, deletes the app's data and closes it.}
+1348,{Warning: the system panel is blocked and Shizuku is not active, so it cannot be restored from here. Enable Shizuku before continuing, or restore it afterwards with: adb shell cmd statusbar send-disable-flag none}
 ..end..}

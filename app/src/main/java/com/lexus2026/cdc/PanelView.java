@@ -269,14 +269,14 @@ public class PanelView extends FrameLayout {
     }
 
     private final List<Tile> tiles = Arrays.asList(
-        new Tile("Internet", R.drawable.ic_wifi, () -> wifi().isWifiEnabled(), Lang.t(479), Lang.t(614), () ->
+        new Tile("Internet", Icons.WIFI, () -> wifi().isWifiEnabled(), Lang.t(479), Lang.t(614), () ->
             priv("svc wifi " + (wifi().isWifiEnabled() ? "disable" : "enable"), Settings.Panel.ACTION_INTERNET_CONNECTIVITY)),
-        new Tile("Bluetooth", R.drawable.ic_bt, () -> btOn(), Lang.t(617), Lang.t(614), () ->
+        new Tile("Bluetooth", Icons.BT, () -> btOn(), Lang.t(617), Lang.t(614), () ->
             priv("svc bluetooth " + (btOn() ? "disable" : "enable"), Settings.ACTION_BLUETOOTH_SETTINGS)),
-        new Tile("Linterna", R.drawable.ic_torch, () -> torch, Lang.t(480), Lang.t(26), () -> {
+        new Tile("Linterna", Icons.TORCH, () -> torch, Lang.t(480), Lang.t(26), () -> {
             try { if (camId != null) cam.setTorchMode(camId, !torch); } catch (Exception e) {}
         }),
-        new Tile("Giro automático", R.drawable.ic_rotate,
+        new Tile("Giro automático", Icons.ROTATE,
             () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1,
             Lang.t(617), Lang.t(614), () -> {
             if (Settings.System.canWrite(ctx)) {
@@ -285,13 +285,13 @@ public class PanelView extends FrameLayout {
                 refresh();
             } else open(Settings.ACTION_MANAGE_WRITE_SETTINGS, true);
         }),
-        new Tile("Ahorro de batería", R.drawable.ic_battery,
+        new Tile("Ahorro de batería", Icons.BATTERY,
             () -> ((PowerManager) ctx.getSystemService(Context.POWER_SERVICE)).isPowerSaveMode(),
             Lang.t(617), Lang.t(614), () -> {
             boolean on = ((PowerManager) ctx.getSystemService(Context.POWER_SERVICE)).isPowerSaveMode();
             priv("settings put global low_power " + (on ? 0 : 1), Settings.ACTION_BATTERY_SAVER_SETTINGS);
         }),
-        new Tile("No molestar", R.drawable.ic_dnd,
+        new Tile("No molestar", Icons.DND,
             () -> nm.getCurrentInterruptionFilter() != NotificationManager.INTERRUPTION_FILTER_ALL,
             Lang.t(617), Lang.t(614), () -> {
             if (nm.isNotificationPolicyAccessGranted()) {
@@ -303,25 +303,25 @@ public class PanelView extends FrameLayout {
                 postDelayed(() -> refresh(), 300);
             } else open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         }),
-        new Tile("Modo avión", R.drawable.ic_airplane, () -> settingsOn(Settings.Global.AIRPLANE_MODE_ON), Lang.t(617), Lang.t(614), () -> {
+        new Tile("Modo avión", Icons.AIRPLANE, () -> settingsOn(Settings.Global.AIRPLANE_MODE_ON), Lang.t(617), Lang.t(614), () -> {
             boolean on = settingsOn(Settings.Global.AIRPLANE_MODE_ON);
             priv("cmd connectivity airplane-mode " + (on ? "disable" : "enable"), Settings.ACTION_AIRPLANE_MODE_SETTINGS);
         }),
-        new Tile("Tema oscuro", R.drawable.ic_dark, () -> night, Lang.t(617), Lang.t(614), () -> {
+        new Tile("Tema oscuro", Icons.DARK, () -> night, Lang.t(617), Lang.t(614), () -> {
             priv("cmd uimode night " + (night ? "no" : "yes"), Settings.ACTION_DISPLAY_SETTINGS);
             onClose.run();
         }),
-        new Tile("Ubicación", R.drawable.ic_location,
+        new Tile("Ubicación", Icons.LOCATION,
             () -> ((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).isLocationEnabled(),
             Lang.t(481), Lang.t(482), () -> {
             boolean on = ((LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE)).isLocationEnabled();
             priv("cmd location set-location-enabled " + (on ? "false" : "true"), Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         }),
-        new Tile("Datos móviles", R.drawable.ic_data, () -> mobileData(), Lang.t(483), Lang.t(484), () ->
+        new Tile("Datos móviles", Icons.DATA, () -> mobileData(), Lang.t(483), Lang.t(484), () ->
             priv("svc data " + (mobileData() ? "disable" : "enable"), Settings.ACTION_DATA_ROAMING_SETTINGS)),
-        new Tile("NFC", R.drawable.ic_nfc, () -> nfcOn(), Lang.t(617), Lang.t(614), () ->
+        new Tile("NFC", Icons.NFC, () -> nfcOn(), Lang.t(617), Lang.t(614), () ->
             priv("svc nfc " + (nfcOn() ? "disable" : "enable"), Settings.ACTION_NFC_SETTINGS)),
-        new Tile("Sonido", R.drawable.ic_sound, () -> audio.getRingerMode() != AudioManager.RINGER_MODE_NORMAL, "", "",
+        new Tile("Sonido", Icons.SOUND, () -> audio.getRingerMode() != AudioManager.RINGER_MODE_NORMAL, "", "",
             () -> ringerLabel(), () -> {
             if (nm.isNotificationPolicyAccessGranted()) {
                 int cur = audio.getRingerMode();
@@ -332,7 +332,7 @@ public class PanelView extends FrameLayout {
                 postDelayed(() -> refresh(), 200);
             } else open(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         }),
-        new Tile("Brillo automático", R.drawable.ic_brightness,
+        new Tile("Brillo automático", Icons.BRIGHTNESS,
             () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0) == 1, Lang.t(617), Lang.t(614), () -> {
             if (Settings.System.canWrite(ctx)) {
                 int cur = Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
@@ -340,23 +340,23 @@ public class PanelView extends FrameLayout {
                 refresh();
             } else open(Settings.ACTION_MANAGE_WRITE_SETTINGS, true);
         }),
-        new Tile("Luz nocturna", R.drawable.ic_night, () -> secureOn("night_display_activated"), Lang.t(481), Lang.t(482), () ->
+        new Tile("Luz nocturna", Icons.NIGHT, () -> secureOn("night_display_activated"), Lang.t(481), Lang.t(482), () ->
             toggleSecure("night_display_activated", Settings.ACTION_DISPLAY_SETTINGS)),
-        new Tile("Atenuar extra", R.drawable.ic_dim, () -> secureOn("reduce_bright_colors_activated"), Lang.t(617), Lang.t(614), () ->
+        new Tile("Atenuar extra", Icons.DIM, () -> secureOn("reduce_bright_colors_activated"), Lang.t(617), Lang.t(614), () ->
             toggleSecure("reduce_bright_colors_activated", Settings.ACTION_DISPLAY_SETTINGS)),
-        new Tile("Invertir colores", R.drawable.ic_invert, () -> secureOn("accessibility_display_inversion_enabled"), Lang.t(617), Lang.t(614), () ->
+        new Tile("Invertir colores", Icons.INVERT, () -> secureOn("accessibility_display_inversion_enabled"), Lang.t(617), Lang.t(614), () ->
             toggleSecure("accessibility_display_inversion_enabled", Settings.ACTION_ACCESSIBILITY_SETTINGS)),
-        new Tile("Ahorro de datos", R.drawable.ic_datasaver, () -> dataSaver(), Lang.t(617), Lang.t(614), () ->
+        new Tile("Ahorro de datos", Icons.DATASAVER, () -> dataSaver(), Lang.t(617), Lang.t(614), () ->
             priv("cmd netpolicy set restrict-background " + (dataSaver() ? "false" : "true"), Settings.ACTION_DATA_ROAMING_SETTINGS)),
-        new Tile("Pantalla activa", R.drawable.ic_screen,
+        new Tile("Pantalla activa", Icons.SCREEN,
             () -> Settings.Global.getInt(ctx.getContentResolver(), "stay_on_while_plugged_in", 0) != 0, Lang.t(652), Lang.t(561), () -> {
             boolean on = Settings.Global.getInt(ctx.getContentResolver(), "stay_on_while_plugged_in", 0) != 0;
             priv("settings put global stay_on_while_plugged_in " + (on ? 0 : 7), Settings.ACTION_DISPLAY_SETTINGS);
         }),
-        new Tile("Captura", R.drawable.ic_screenshot, () -> false, "", Lang.t(485), () -> svc(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT)),
-        new Tile("Bloquear", R.drawable.ic_padlock, () -> false, "", Lang.t(486), () -> svc(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)),
-        new Tile("Apagar", R.drawable.ic_power, () -> false, "", Lang.t(487), () -> svc(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG)),
-        new Tile("Panel del sistema", R.drawable.ic_lock, () -> prefs.getBoolean("lock", false), Lang.t(653), Lang.t(654), () -> {
+        new Tile("Captura", Icons.SCREENSHOT, () -> false, "", Lang.t(485), () -> svc(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT)),
+        new Tile("Bloquear", Icons.PADLOCK, () -> false, "", Lang.t(486), () -> svc(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)),
+        new Tile("Apagar", Icons.POWER, () -> false, "", Lang.t(487), () -> svc(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG)),
+        new Tile("Panel del sistema", Icons.LOCK, () -> prefs.getBoolean("lock", false), Lang.t(653), Lang.t(654), () -> {
             if (Privileged.available()) {
                 final boolean locked = prefs.getBoolean("lock", false);
                 Privileged.run("cmd statusbar send-disable-flag " + (locked ? "none" : "statusbar-expansion"), () -> {
@@ -588,11 +588,11 @@ public class PanelView extends FrameLayout {
     private java.util.Map<String, Tile> tmapCache = new java.util.HashMap<>();
     private android.appwidget.AppWidgetHost widgetHost = null;
 
-    public static final int[] TILE_ICONS = {R.drawable.ic_wifi, R.drawable.ic_bt, R.drawable.ic_torch, R.drawable.ic_rotate,
-        R.drawable.ic_battery, R.drawable.ic_dnd, R.drawable.ic_airplane, R.drawable.ic_dark, R.drawable.ic_location,
-        R.drawable.ic_data, R.drawable.ic_nfc, R.drawable.ic_sound, R.drawable.ic_brightness, R.drawable.ic_night,
-        R.drawable.ic_dim, R.drawable.ic_invert, R.drawable.ic_datasaver, R.drawable.ic_screen, R.drawable.ic_screenshot,
-        R.drawable.ic_padlock, R.drawable.ic_power, R.drawable.ic_lock};
+    public static final int[] TILE_ICONS = {Icons.WIFI, Icons.BT, Icons.TORCH, Icons.ROTATE,
+        Icons.BATTERY, Icons.DND, Icons.AIRPLANE, Icons.DARK, Icons.LOCATION,
+        Icons.DATA, Icons.NFC, Icons.SOUND, Icons.BRIGHTNESS, Icons.NIGHT,
+        Icons.DIM, Icons.INVERT, Icons.DATASAVER, Icons.SCREEN, Icons.SCREENSHOT,
+        Icons.PADLOCK, Icons.POWER, Icons.LOCK};
 
     private android.appwidget.AppWidgetHost widgetHost() {
         if (widgetHost == null) widgetHost = new android.appwidget.AppWidgetHost(ctx.getApplicationContext(), 1337);
@@ -695,13 +695,13 @@ public class PanelView extends FrameLayout {
             }
             case "bright":
                 if (wPx > hPx * 1.3f) {
-                    return sliderRow(R.drawable.ic_brightness, 255,
+                    return sliderRow(Icons.BRIGHTNESS, 255,
                         () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128), v -> setBrightness(v));
                 }
                 return vBright();
             case "volume": {
                 if (wPx > hPx * 1.3f) {
-                    return sliderRow(R.drawable.ic_volume, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                    return sliderRow(Icons.VOLUME, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
                         () -> audio.getStreamVolume(AudioManager.STREAM_MUSIC), v -> audio.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0));
                 }
                 return vVol();
@@ -1099,7 +1099,7 @@ public class PanelView extends FrameLayout {
         row.setPadding(dp(18), 0, dp(18), 0);
         row.setBackground(cardBg());
         ImageView ic = new ImageView(ctx);
-        ic.setImageResource(icon);
+        ic.setImageDrawable(Icons.get(icon));
         ic.setImageTintList(tint(cSub));
         row.addView(ic, new LinearLayout.LayoutParams(dp(24), dp(24)));
         SeekBar sb = new SeekBar(ctx);
@@ -1123,7 +1123,7 @@ public class PanelView extends FrameLayout {
     }
 
     private View vBright() {
-        VSlider s = new VSlider(ctx, R.drawable.ic_brightness, 255, cOff, cAccent,
+        VSlider s = new VSlider(ctx, Icons.BRIGHTNESS, 255, cOff, cAccent,
             () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128),
             v -> setBrightness(v),
             cOnAccent, cText);
@@ -1133,7 +1133,7 @@ public class PanelView extends FrameLayout {
     }
 
     private View vVol() {
-        VSlider s = new VSlider(ctx, R.drawable.ic_volume, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC), cOff, cAccent,
+        VSlider s = new VSlider(ctx, Icons.VOLUME, audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC), cOff, cAccent,
             () -> audio.getStreamVolume(AudioManager.STREAM_MUSIC),
             v -> audio.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0),
             cOnAccent, cText);
@@ -1175,15 +1175,15 @@ public class PanelView extends FrameLayout {
         } else {
             mediaArt.setPadding(dp(9), dp(9), dp(9), dp(9));
             mediaArt.setImageTintList(tint(cText));
-            mediaArt.setImageResource(R.drawable.ic_music);
+            mediaArt.setImageDrawable(Icons.get(Icons.MUSIC));
         }
         PlaybackState ps = c != null ? c.getPlaybackState() : null;
-        mediaPlay.setImageResource(ps != null && ps.getState() == PlaybackState.STATE_PLAYING ? R.drawable.ic_pause : R.drawable.ic_play);
+        mediaPlay.setImageDrawable(Icons.get(ps != null && ps.getState() == PlaybackState.STATE_PLAYING ? Icons.PAUSE : Icons.PLAY));
     }
 
     private ImageView cbtn(int ic, final int code) {
         ImageView v = new ImageView(ctx);
-        v.setImageResource(ic);
+        v.setImageDrawable(Icons.get(ic));
         v.setImageTintList(tint(cText));
         v.setPadding(dp(8), dp(8), dp(8), dp(8));
         v.setOnClickListener(x -> mediaKey(code));
@@ -1212,13 +1212,13 @@ public class PanelView extends FrameLayout {
         box.addView(new View(ctx), new LinearLayout.LayoutParams(1, 0, 1f));
         LinearLayout ctrl = hrow();
         ctrl.setGravity(Gravity.CENTER);
-        ctrl.addView(cbtn(R.drawable.ic_prev, KeyEvent.KEYCODE_MEDIA_PREVIOUS), new LinearLayout.LayoutParams(0, dp(40), 1f));
-        mediaPlay.setImageResource(R.drawable.ic_play);
+        ctrl.addView(cbtn(Icons.PREV, KeyEvent.KEYCODE_MEDIA_PREVIOUS), new LinearLayout.LayoutParams(0, dp(40), 1f));
+        mediaPlay.setImageDrawable(Icons.get(Icons.PLAY));
         mediaPlay.setImageTintList(tint(cText));
         mediaPlay.setPadding(dp(8), dp(8), dp(8), dp(8));
         mediaPlay.setOnClickListener(x -> mediaKey(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE));
         ctrl.addView(free(mediaPlay), new LinearLayout.LayoutParams(0, dp(40), 1f));
-        ctrl.addView(cbtn(R.drawable.ic_next, KeyEvent.KEYCODE_MEDIA_NEXT), new LinearLayout.LayoutParams(0, dp(40), 1f));
+        ctrl.addView(cbtn(Icons.NEXT, KeyEvent.KEYCODE_MEDIA_NEXT), new LinearLayout.LayoutParams(0, dp(40), 1f));
         box.addView(ctrl, new LinearLayout.LayoutParams(MP, WC));
         return box;
     }
@@ -1252,7 +1252,7 @@ public class PanelView extends FrameLayout {
         if (d != null) {
             Drawable.ConstantState cs = d.getConstantState();
             img.setImageDrawable(cs != null ? cs.newDrawable() : d);
-        } else img.setImageResource(t.icon);
+        } else img.setImageDrawable(Icons.get(t.icon));
     }
 
     /** 0 = cerrado, 1 = hoja con notificaciones, 2 = accesos expandidos (empujan las notificaciones hacia abajo). */
@@ -1969,10 +1969,10 @@ public class PanelView extends FrameLayout {
         page1 = vcol();
         page1.setPadding(padH, dp(8), padH, dp(8));
         if (sk.sliderStyle == 0) {
-            page1.addView(sliderRow(R.drawable.ic_brightness, 255,
+            page1.addView(sliderRow(Icons.BRIGHTNESS, 255,
                 () -> Settings.System.getInt(ctx.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128), v -> setBrightness(v)));
             int maxVol = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-            page1.addView(sliderRow(R.drawable.ic_volume, maxVol, () -> audio.getStreamVolume(AudioManager.STREAM_MUSIC), v ->
+            page1.addView(sliderRow(Icons.VOLUME, maxVol, () -> audio.getStreamVolume(AudioManager.STREAM_MUSIC), v ->
                 audio.setStreamVolume(AudioManager.STREAM_MUSIC, v, 0)));
             if (sk.showMedia) {
                 LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(MP, dp(sk.mediaH));

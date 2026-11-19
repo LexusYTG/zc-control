@@ -428,7 +428,7 @@ public class LayoutEditorActivity extends Activity {
                     f.addView(g, new FrameLayout.LayoutParams(MPB, MPB));
                 } else {
                     ImageView iv = new ImageView(this);
-                    iv.setImageResource(PanelView.TILE_ICONS[idx]);
+                    iv.setImageDrawable(Icons.get(PanelView.TILE_ICONS[idx]));
                     iv.setImageTintList(android.content.res.ColorStateList.valueOf(txt));
                     iv.setPadding(dp(8), dp(8), dp(8), dp(8));
                     f.addView(iv, new FrameLayout.LayoutParams(MPB, MPB));
@@ -484,7 +484,7 @@ public class LayoutEditorActivity extends Activity {
     private void updateProps() {
         btnRow.removeAllViews();
         if (sel == null) {
-            info.setText("Tocá un elemento para editarlo. Arrastralo para moverlo y usá el cuadrito de la esquina para cambiar su tamaño.");
+            info.setText(Lang.t(926));
             return;
         }
         final Elem e = sel;
@@ -576,7 +576,7 @@ public class LayoutEditorActivity extends Activity {
         if (type.equals("clock") || type.equals("media") || type.equals("notifs")) {
             for (Elem o : elems) {
                 if (o.type.equals(type)) {
-                    Toast.makeText(this, "Ya hay uno; solo puede haber uno", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, Lang.t(927), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }

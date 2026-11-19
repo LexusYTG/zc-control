@@ -92,7 +92,7 @@ public final class GameSession implements Runnable {
             work();
         } catch (Throwable e) {
             GameWatchdog.restore(ctx);
-            end(false, "Error inesperado; se restauró el estado original.");
+            end(false, Lang.t(924));
         }
     }
 
@@ -105,7 +105,7 @@ public final class GameSession implements Runnable {
         step(S_STATE, RUNNING, "");
         if (!GameWatchdog.begin(ctx, pkg)) {
             step(S_STATE, FAILED, Lang.t(314));
-            end(false, "No se pudo registrar el estado original; no se modificó nada.");
+            end(false, Lang.t(925));
             return;
         }
         step(S_STATE, DONE, "");

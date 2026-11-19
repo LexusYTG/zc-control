@@ -28,11 +28,7 @@ final class SetupHelper {
         final Context app = c.getApplicationContext();
         Privileged.grantAll(app, () -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
             granting = false;
-            SharedPreferences prefs = app.getSharedPreferences("cc", Context.MODE_PRIVATE);
-            if (ControlService.instance != null && !prefs.contains("lock")) {
-                Privileged.run("cmd statusbar send-disable-flag statusbar-expansion");
-                prefs.edit().putBoolean("lock", true).apply();
-            }
+            Features.finishPending(app);
             if (done != null) done.run();
         }, 1500));
     }

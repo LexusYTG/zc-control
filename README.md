@@ -9,6 +9,18 @@
 
 No pretende ser un tema ni un widget más. La idea es que, con el tiempo, la capa del fabricante deje de ser necesaria y toda la experiencia diaria pase por ZC Control, con un nivel de personalización mucho mayor que el que ofrece cualquier sistema de serie.
 
+## Estructura de la app (una sola app, cuatro módulos)
+
+Al abrir la app se ve la pantalla principal con cuatro módulos y, abajo, permisos y ajustes del sistema:
+
+- **ZC Control Center**: panel de ajustes rápidos y notificaciones propio.
+- **ZC Action Hub**: burbuja flotante (o gesto de borde, experimental).
+- **ZC Game Center**: modo juego con perfiles.
+- **ZC Launcher**: pantalla de inicio propia.
+- **ZC Permission Control**: permisos, Shizuku y estado de los servicios.
+
+La primera vez, después del consentimiento, un asistente pregunta el idioma (se lee de `res/raw/lengua.md`, agregar un idioma ahí lo suma solo) y si se quiere el paquete completo o elegir módulo por módulo.
+
 ## ¿Qué hace hoy?
 
 Estas son las piezas que **ya existen y funcionan**:

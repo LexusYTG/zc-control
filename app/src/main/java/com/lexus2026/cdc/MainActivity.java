@@ -221,7 +221,7 @@ public class MainActivity extends Activity {
         root.addView(lockRow);
 
         section(Lang.t(464));
-        TextView help = text("Uso: arrastrá hacia abajo desde la barrita blanca del borde superior. Primera bajada: notificaciones; bajá de nuevo para expandir los accesos. Deslizá a los costados para cambiar de pestaña. Mantené apretado un acceso para abrir sus ajustes; para agregar, quitar u ordenar accesos usá el botón ✎ o el botón de la pestaña de controles.", 13f, SUB, false);
+        TextView help = text(Lang.t(928), 13f, SUB, false);
         help.setLineSpacing(0f, 1.2f);
         help.setPadding(dp(18), dp(16), dp(18), dp(16));
         help.setBackground(shape(CARD, 20));

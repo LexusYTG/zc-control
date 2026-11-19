@@ -43,7 +43,7 @@ public class VSlider extends View {
         this.iconOnFill = iconOnFill;
         this.iconOffFill = iconOffFill;
         this.value = get.getAsInt();
-        Drawable d = ctx.getDrawable(icon);
+        Drawable d = Icons.get(icon);
         this.ico = d != null ? d.mutate() : null;
     }
 
