@@ -82,6 +82,12 @@ public class LauncherEngine {
     private int taps;
     private long lastTap;
     private final Runnable showRadial = this::startRadial;
+    private ScriptRuntime sr;
+    private FreeLayer freeLayer;
+    private android.appwidget.AppWidgetHost widgetHost;
+    private int pvT = -1, pvB = -1;
+    private View codeBtn;
+    private final Runnable tapFire = () -> { if (sr != null && taps > 0 && taps < 5) sr.fire("tap_center", null, taps); };
     private final BroadcastReceiver pkgRx = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) {
             Uri u = i.getData();
@@ -93,10 +99,24 @@ public class LauncherEngine {
                 for (int k = 0; k < 4; k++) if (pkg.equals(st.getDock(k))) st.setDock(k, null);
             }
             am.refreshAsync(LauncherEngine.this::onAppsChanged);
+            if (sr != null && pkg != null && !i.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
+                if (Intent.ACTION_PACKAGE_REMOVED.equals(i.getAction())) sr.fire("app_removed", pkg, 0);
+                else sr.fire("app_installed", pkg, 0);
+            }
         }
     };
 
-    public LauncherEngine(Activity a) {
+    private final boolean preview;
+    private float previewScale = 1f;
+
+    /** Vista previa escalada: corrige las coordenadas en pantalla que usa el radial. */
+    void setPreviewScale(float s) { previewScale = s <= 0 ? 1f : s; }
+
+    public LauncherEngine(Activity a) { this(a, false); }
+
+    /** Con {@code preview} el motor solo dibuja: no ejecuta scripts ni escucha instalaciones (lo usa el constructor visual). */
+    public LauncherEngine(Activity a, boolean preview) {
+        this.preview = preview;
         act = a;
         d = a.getResources().getDisplayMetrics().density;
         st = new LauncherSettings(a);
@@ -113,6 +133,11 @@ public class LauncherEngine {
         desk.setPadding(0, 0, 0, dp(300));
         desk.setAdapter(deskAdapter);
         root.addView(desk, new FrameLayout.LayoutParams(-1, -1));
+
+        // ---- elementos libres colocados a mano (editor visual): entre el escritorio y el cajón ----
+        try { widgetHost = new android.appwidget.AppWidgetHost(a.getApplicationContext(), FreeLayer.WIDGET_HOST_ID); } catch (Throwable ignored) { }
+        freeLayer = new FreeLayer(a, !preview, widgetHost, this::runAction);
+        root.addView(freeLayer, new FrameLayout.LayoutParams(-1, -1));
 
         scrim = new View(a);
         scrim.setVisibility(View.GONE);
@@ -135,6 +160,15 @@ public class LauncherEngine {
         gear.setPadding(dp(12), dp(4), dp(12), dp(4));
         gear.setOnClickListener(v -> act.startActivity(new Intent(act, LauncherSettingsActivity.class)));
         head.addView(gear);
+        TextView code = tv("</>", 15, Color.WHITE);
+        code.setPadding(dp(8), dp(4), dp(8), dp(4));
+        code.setOnClickListener(v -> act.startActivity(new Intent(act, ScriptEditorActivity.class)));
+        head.addView(code, head.indexOfChild(gear));
+        codeBtn = code;
+        TextView build = tv("✎", 18, Color.WHITE);
+        build.setPadding(dp(8), dp(4), dp(8), dp(4));
+        build.setOnClickListener(v -> act.startActivity(new Intent(act, LauncherCanvasActivity.class)));
+        head.addView(build, head.indexOfChild(code));
         TextView close = tv("✕", 20, Color.WHITE);
         close.setPadding(dp(12), dp(4), dp(4), dp(4));
         close.setOnClickListener(v -> closeDrawer(true));
@@ -190,9 +224,10 @@ public class LauncherEngine {
         root.addView(radial, new FrameLayout.LayoutParams(-1, -1));
 
         root.setOnApplyWindowInsetsListener((v, in) -> {
-            insetTop = in.getSystemWindowInsetTop();
-            insetBottom = in.getSystemWindowInsetBottom();
+            insetTop = preview && pvT >= 0 ? pvT : in.getSystemWindowInsetTop();
+            insetBottom = preview && pvB >= 0 ? pvB : in.getSystemWindowInsetBottom();
             layoutChrome();
+            if (sr != null) sr.relayout();
             return in;
         });
 
@@ -200,39 +235,213 @@ public class LauncherEngine {
         f.addAction(Intent.ACTION_PACKAGE_ADDED);
         f.addAction(Intent.ACTION_PACKAGE_REMOVED);
         f.addDataScheme("package");
-        if (Build.VERSION.SDK_INT >= 33) a.registerReceiver(pkgRx, f, Context.RECEIVER_EXPORTED);
-        else a.registerReceiver(pkgRx, f);
+        if (!preview) {
+            if (Build.VERSION.SDK_INT >= 33) a.registerReceiver(pkgRx, f, Context.RECEIVER_EXPORTED);
+            else a.registerReceiver(pkgRx, f);
+        }
         buildDock();
         applyBackground();
+        applyExtras();
+        reloadFree();
+        if (!preview) {
+            sr = new ScriptRuntime(this);
+            sr.attach();
+        }
+    }
+
+    // ---------- editor visual ----------
+    /** Vista previa: fija los márgenes del sistema (la vista escalada no los recibe de la ventana). */
+    void setPreviewInsets(int top, int bottom) { pvT = top; pvB = bottom; insetTop = top; insetBottom = bottom; layoutChrome(); }
+
+    /** Vuelve a dibujar los elementos libres desde lo guardado. */
+    void reloadFree() { if (freeLayer != null) freeLayer.load(VisualModel.load(act).free); }
+
+    /** Vista previa: dibuja esta lista tal cual, sin guardar (así el editor se ve en vivo mientras arrastras). */
+    void showFree(List<VisualModel.Free> list) { if (freeLayer != null) freeLayer.load(list); }
+
+    android.appwidget.AppWidgetHost widgetHost() { return widgetHost; }
+
+    /** Vista previa: recoloca solo el elemento libre {@code i} (más barato que redibujar todo mientras se arrastra). */
+    void placeFree(int i, VisualModel.Free f) { if (freeLayer != null) freeLayer.place(i, f); }
+
+    /** Vista previa: reaplica el tamaño del dock, el escritorio y el cajón sin reconstruir listas. */
+    void relayout() { applyDockSize(); }
+
+    private int rootW() { return root.getWidth() > 0 ? root.getWidth() : act.getResources().getDisplayMetrics().widthPixels; }
+    private int rootH() { return root.getHeight() > 0 ? root.getHeight() : act.getResources().getDisplayMetrics().heightPixels; }
+
+    private int dockLeft(int W, int w) {
+        int pos = st.get(LauncherSettings.DOCK_POS), dx = dp(st.get(LauncherSettings.DOCK_X));
+        return (pos == 1 ? dp(8) : pos == 2 ? W - dp(8) - w : (W - w) / 2) + dx;
+    }
+
+    /** Rectángulos en píxeles del motor: {izquierda, arriba, ancho, alto}. Los usa el editor visual para dibujar sus manijas. */
+    int[] dockRect() {
+        int W = rootW(), H = rootH(), w = cellW * 5, h = dp(st.get(LauncherSettings.DOCK_H));
+        return new int[]{dockLeft(W, w), H - insetBottom - dp(8) - dp(st.get(LauncherSettings.DOCK_Y)) - h, w, h};
+    }
+
+    int[] homeRect() {
+        int[] k = dockRect();
+        int hs = Math.min(dp(st.get(LauncherSettings.HOME_SIZE)), Math.min(dp(st.get(LauncherSettings.DOCK_H)) - dp(6), cellW));
+        return new int[]{k[0] + cellW * 5 / 2 - hs / 2, k[1] + k[3] / 2 - hs / 2, hs, hs};
+    }
+
+    int[] drawerRect() {
+        int W = rootW(), H = rootH();
+        int avail = W - dp(24), w = (int) (avail * Math.max(20, st.get(LauncherSettings.DRAWER_W)) / 100f);
+        int h = (int) (H * st.get(LauncherSettings.DRAWER_H) / 100f);
+        int bottom = H - insetBottom - dp(8 + st.get(LauncherSettings.DOCK_H) + 10) - dp(st.get(LauncherSettings.DRAWER_Y));
+        return new int[]{dp(12) + (avail - w) / 2 + dp(st.get(LauncherSettings.DRAWER_X)), bottom - h, w, h};
+    }
+
+    int[] deskRect() {
+        int W = rootW(), H = rootH();
+        int l = dp(8) + dp(st.get(LauncherSettings.DESK_L)), t = insetTop + dp(8) + dp(st.get(LauncherSettings.DESK_T));
+        int r = W - dp(8) - dp(st.get(LauncherSettings.DESK_R));
+        int b = H - insetBottom - dp(8 + st.get(LauncherSettings.DOCK_H) + 10) - dp(st.get(LauncherSettings.DESK_B));
+        return new int[]{l, t, Math.max(1, r - l), Math.max(1, b - t)};
+    }
+
+    /** Punto desde donde nace el radial, en píxeles del motor. */
+    int[] radialPoint() {
+        int[] k = homeRect();
+        return new int[]{k[0] + k[2] / 2 + dp(st.get(LauncherSettings.RAD_X)), k[1] + k[3] / 2 - dp(7) - dp(st.get(LauncherSettings.RAD_Y))};
+    }
+
+    /** Acción de un elemento libre: «macro:Nombre», «app:paquete», «drawer:id», «panel:Nombre», «shell:comando», «home». */
+    void runAction(String a) {
+        if (a == null || a.isEmpty()) return;
+        int i = a.indexOf(':');
+        String k = i < 0 ? a : a.substring(0, i), v = i < 0 ? "" : a.substring(i + 1);
+        switch (k) {
+            case "macro": if (sr != null) sr.runMacro(v); break;
+            case "app": launch(v); break;
+            case "drawer": openDrawer(v.isEmpty() ? "*" : v); break;
+            case "panel": if (sr != null) sr.openPanel(v, null, null, null, null); break;
+            case "shell": if (sr != null) sr.shell(v); break;
+            case "home": closeMenu(); if (openId != null) closeDrawer(true); break;
+            default: break;
+        }
+    }
+
+    /** Vista previa: abre el cajón de apps general. */
+    void previewDrawer(boolean open) { if (open) openD("*"); else closeD(); }
+
+    /** Vista previa: muestra el radial desde el botón central. */
+    void previewRadial(boolean on) {
+        if (!on) { if (radialOn) { radial.hide(); radialOn = false; home.setActive(false); } return; }
+        if (!radialOn) startRadial();
     }
 
     public View view() { return root; }
+
+    // ---------- acceso para ScriptRuntime ----------
+    Activity act() { return act; }
+    LauncherSettings sets() { return st; }
+    float dens() { return d; }
+    GridView deskV() { return desk; }
+    FrameLayout rootV() { return root; }
+    View radialV() { return radial; }
+    int insT() { return insetTop; }
+    int insB() { return insetBottom; }
+    ApplicationManager apps() { return am; }
+    CategoryManager cats() { return cm; }
+    String drawerId() { return openId; }
+    void openD(String id) { openDrawer(id); }
+    void closeD() { if (openId != null) closeDrawer(true); }
+
+    void launchApp(String pkg) {
+        if (am.launch(pkg)) closeDrawer(false);
+        else Toast.makeText(act, Lang.t(354), Toast.LENGTH_SHORT).show();
+    }
+
+    /** Reaplica todos los ajustes (los llama el motor de scripts tras cambiar algo). */
+    void applyAll() {
+        applyDockSize();
+        applyBackground();
+        applyExtras();
+        buildDock();
+        layoutChrome();
+        desk.setAdapter(deskAdapter);
+        grid.setAdapter(adapter);
+        refreshDesk();
+        if (openId != null) populate();
+        if (!preview) reloadFree();
+    }
+
+    private void applyExtras() {
+        desk.setNumColumns(Math.max(1, st.get(LauncherSettings.DESK_COLS)));
+        desk.setVerticalSpacing(dp(st.get(LauncherSettings.DESK_GAP)));
+        grid.setNumColumns(Math.max(1, st.get(LauncherSettings.DRAWER_COLS)));
+        drawer.setBackground(round(st.get(LauncherSettings.DRAWER_COLOR), st.get(LauncherSettings.DRAWER_RADIUS), Color.argb(40, 255, 255, 255)));
+        dockBg.setBackground(round(st.get(LauncherSettings.DOCK_COLOR), st.get(LauncherSettings.DOCK_RADIUS), Color.argb(36, 255, 255, 255)));
+        boolean show = st.get(LauncherSettings.DOCK_SHOW) == 1;
+        dockBg.setVisibility(show ? View.VISIBLE : View.GONE);
+        for (int c = 0; c < 5; c++) if (c != 2) cells[c].setVisibility(show ? View.VISIBLE : View.GONE);
+        title.setTextColor(st.get(LauncherSettings.TEXT_COLOR));
+    }
+
+    private void drawerPre() {
+        int m = st.get(LauncherSettings.DRAWER_FROM);
+        float W = act.getResources().getDisplayMetrics().widthPixels, H = act.getResources().getDisplayMetrics().heightPixels;
+        drawer.setScaleX(1f); drawer.setScaleY(1f); drawer.setTranslationX(0f); drawer.setTranslationY(0f); drawer.setAlpha(1f);
+        if (m == 0) { drawer.setAlpha(0f); drawer.setScaleX(0.6f); drawer.setScaleY(0.6f); drawer.setTranslationY(dp(30)); }
+        else if (m == 1) drawer.setTranslationX(-W);
+        else if (m == 2) drawer.setTranslationX(W);
+        else if (m == 3) drawer.setTranslationY(-H);
+        else drawer.setAlpha(0f);
+    }
+
+    private android.view.ViewPropertyAnimator drawerOut() {
+        int m = st.get(LauncherSettings.DRAWER_FROM);
+        float W = act.getResources().getDisplayMetrics().widthPixels, H = act.getResources().getDisplayMetrics().heightPixels;
+        android.view.ViewPropertyAnimator a = drawer.animate();
+        if (m == 1) return a.translationX(-W);
+        if (m == 2) return a.translationX(W);
+        if (m == 3) return a.translationY(-H);
+        if (m == 4) return a.alpha(0f);
+        return a.alpha(0f).scaleX(0.6f).scaleY(0.6f).translationY(dp(30));
+    }
 
     // ---------- ciclo de vida ----------
     public void onResume() {
         applyDockSize();
         applyBackground();
+        applyExtras();
+        desk.setAdapter(deskAdapter);
+        grid.setAdapter(adapter);
         buildDock();
         layoutChrome();
         root.requestApplyInsets();
         if (am.all().isEmpty()) am.refreshAsync(this::onAppsChanged);
         refreshDesk();
         if (openId != null) populate();
+        reloadFree();
+        if (!preview && widgetHost != null) { try { widgetHost.startListening(); } catch (Throwable ignored) { } }
+        if (sr != null) sr.onResume();
+    }
+
+    public void onPause() {
+        if (!preview && widgetHost != null) { try { widgetHost.stopListening(); } catch (Throwable ignored) { } }
+        if (sr != null) sr.onPause();
     }
 
     public void onHome() {
         closeMenu();
         if (radialOn) { radial.hide(); radialOn = false; home.setActive(false); }
         if (openId != null) closeDrawer(true);
+        if (sr != null) { sr.fire("home", null, 0); }
     }
 
     public boolean onBack() {
         if (menu != null && menu.isShowing()) { closeMenu(); return true; }
+        if (sr != null && sr.closeTopPanel()) return true;
         if (openId != null) { closeDrawer(true); return true; }
         return false;
     }
 
-    public void onDestroy() { try { act.unregisterReceiver(pkgRx); } catch (Throwable ignored) { } }
+    public void onDestroy() { if (sr != null) sr.stop(); try { act.unregisterReceiver(pkgRx); } catch (Throwable ignored) { } }
 
     private void onAppsChanged() {
         if (!am.all().isEmpty())
@@ -251,21 +460,25 @@ public class LauncherEngine {
     }
 
     private void layoutChrome() {
+        int W = rootW();
         FrameLayout.LayoutParams dp1 = (FrameLayout.LayoutParams) dock.getLayoutParams();
         dp1.width = cellW * 5;
         dp1.height = dp(st.get(LauncherSettings.DOCK_H));
-        int pos = st.get(LauncherSettings.DOCK_POS);
-        dp1.gravity = Gravity.BOTTOM | (pos == 1 ? Gravity.START : pos == 2 ? Gravity.END : Gravity.CENTER_HORIZONTAL);
-        dp1.setMargins(pos == 1 ? dp(8) : 0, 0, pos == 2 ? dp(8) : 0, insetBottom + dp(8) + dp(st.get(LauncherSettings.DOCK_Y)));
+        dp1.gravity = Gravity.BOTTOM | Gravity.START;
+        dp1.setMargins(dockLeft(W, dp1.width), 0, 0, insetBottom + dp(8) + dp(st.get(LauncherSettings.DOCK_Y)));
         dock.setLayoutParams(dp1);
         FrameLayout.LayoutParams dk = (FrameLayout.LayoutParams) desk.getLayoutParams();
-        dk.setMargins(dp(8), insetTop + dp(8), dp(8), insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10));
+        dk.setMargins(dp(8 + st.get(LauncherSettings.DESK_L)), insetTop + dp(8 + st.get(LauncherSettings.DESK_T)),
+            dp(8 + st.get(LauncherSettings.DESK_R)), insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10 + st.get(LauncherSettings.DESK_B)));
         desk.setLayoutParams(dk);
-        int rh = root.getHeight() > 0 ? root.getHeight() : act.getResources().getDisplayMetrics().heightPixels;
+        int rh = rootH();
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) drawer.getLayoutParams();
-        lp.height = (int) (rh * 0.58f);
-        lp.gravity = Gravity.BOTTOM;
-        lp.setMargins(dp(12), insetTop + dp(8), dp(12), insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10));
+        int avail = W - dp(24);
+        lp.width = (int) (avail * Math.max(20, st.get(LauncherSettings.DRAWER_W)) / 100f);
+        lp.height = (int) (rh * st.get(LauncherSettings.DRAWER_H) / 100f);
+        lp.gravity = Gravity.BOTTOM | Gravity.START;
+        lp.setMargins(dp(12) + (avail - lp.width) / 2 + dp(st.get(LauncherSettings.DRAWER_X)), 0, 0,
+            insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10 + st.get(LauncherSettings.DRAWER_Y)));
         drawer.setLayoutParams(lp);
     }
 
@@ -288,7 +501,7 @@ public class LauncherEngine {
         for (int c = 0; c < 5; c++) {
             cells[c].removeAllViews();
             if (c == 2) {
-                int hs = Math.min(dp(56), Math.min(dp(st.get(LauncherSettings.DOCK_H)) - dp(6), cellW));
+                int hs = Math.min(dp(st.get(LauncherSettings.HOME_SIZE)), Math.min(dp(st.get(LauncherSettings.DOCK_H)) - dp(6), cellW));
                 cells[c].addView(home, new FrameLayout.LayoutParams(hs, hs, Gravity.CENTER));
             }
             else slot(cells[c], c < 2 ? c : c - 1);
@@ -440,6 +653,12 @@ public class LauncherEngine {
                 downX = e.getRawX(); downY = e.getRawY(); moved = false; radialOn = false;
                 home.setActive(true);
                 h.postDelayed(showRadial, st.get(LauncherSettings.HOLD));
+                if (sr != null) sr.holdStart(() -> {
+                    h.removeCallbacks(showRadial);
+                    if (radialOn) { radial.hide(); radialOn = false; }
+                    moved = true;
+                    home.setActive(false);
+                });
                 return true;
             case MotionEvent.ACTION_MOVE:
                 if (!radialOn && Math.hypot(e.getRawX() - downX, e.getRawY() - downY) > slop * 2) {
@@ -451,6 +670,7 @@ public class LauncherEngine {
                 return true;
             case MotionEvent.ACTION_UP:
                 h.removeCallbacks(showRadial);
+                if (sr != null) sr.cancelHold();
                 home.setActive(false);
                 if (radialOn) {
                     int idx = radial.hide();
@@ -460,6 +680,8 @@ public class LauncherEngine {
                     long now = android.os.SystemClock.uptimeMillis();
                     taps = (now - lastTap < 700) ? taps + 1 : 1;
                     lastTap = now;
+                    h.removeCallbacks(tapFire);
+                    h.postDelayed(tapFire, 380);
                     if (taps >= 5) {   // menú de emergencia: todas las apps (incluidas las ocultas)
                         taps = 0;
                         home.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
@@ -469,6 +691,7 @@ public class LauncherEngine {
                 return true;
             case MotionEvent.ACTION_CANCEL:
                 h.removeCallbacks(showRadial);
+                if (sr != null) sr.cancelHold();
                 home.setActive(false);
                 if (radialOn) { radial.hide(); radialOn = false; }
                 return true;
@@ -490,8 +713,8 @@ public class LauncherEngine {
         int[] r = new int[2], hh = new int[2];
         root.getLocationOnScreen(r);
         home.getLocationOnScreen(hh);
-        radial.show(hh[0] - r[0] + home.getWidth() / 2f + dp(st.get(LauncherSettings.RAD_X)),
-            hh[1] - r[1] + home.getHeight() / 2f - dp(7) - dp(st.get(LauncherSettings.RAD_Y)), cm.list(), insetTop); // 7 dp más arriba
+        radial.show((hh[0] - r[0]) / previewScale + home.getWidth() / 2f + dp(st.get(LauncherSettings.RAD_X)),
+            (hh[1] - r[1]) / previewScale + home.getHeight() / 2f - dp(7) - dp(st.get(LauncherSettings.RAD_Y)), cm.list(), insetTop); // 7 dp más arriba
         home.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
     }
 
@@ -506,12 +729,12 @@ public class LauncherEngine {
             scrim.setVisibility(View.VISIBLE);
             scrim.setAlpha(0f);
             scrim.animate().alpha(1f).setDuration(dur).start();
-            drawer.setAlpha(0f); drawer.setScaleX(0.6f); drawer.setScaleY(0.6f); drawer.setTranslationY(dp(30));
+            drawerPre();
             drawer.setVisibility(View.VISIBLE);
             drawer.post(() -> {
                 drawer.setPivotX(drawer.getWidth() / 2f);
                 drawer.setPivotY(drawer.getHeight());
-                drawer.animate().alpha(1f).scaleX(1f).scaleY(1f).translationY(0f).setDuration(dur)
+                drawer.animate().alpha(1f).scaleX(1f).scaleY(1f).translationX(0f).translationY(0f).setDuration(dur)
                     .setInterpolator(new DecelerateInterpolator(1.6f)).withEndAction(null).start();
             });
         } else { // cambio de categoría con el cajón abierto
@@ -519,10 +742,13 @@ public class LauncherEngine {
             grid.setTranslationY(dp(16));
             grid.animate().alpha(1f).translationY(0f).setDuration(dur).start();
         }
+        if (!was && sr != null) sr.fire("drawer_open", id, 0);
     }
 
     private void closeDrawer(boolean animate) {
+        final String prev = openId;
         openId = null;
+        if (prev != null && sr != null) sr.fire("drawer_close", prev, 0);
         closeMenu();
         scrim.animate().cancel();
         if (!animate) {
@@ -534,7 +760,7 @@ public class LauncherEngine {
         scrim.animate().alpha(0f).setDuration(st.get(LauncherSettings.ANIM)).start();
         drawer.setPivotX(drawer.getWidth() / 2f);
         drawer.setPivotY(drawer.getHeight());
-        drawer.animate().alpha(0f).scaleX(0.6f).scaleY(0.6f).translationY(dp(30))
+        drawerOut()
             .setDuration(st.get(LauncherSettings.ANIM) * 3 / 4).withEndAction(() -> {
                 if (openId == null) { drawer.setVisibility(View.GONE); scrim.setVisibility(View.GONE); }
             }).start();
@@ -561,6 +787,7 @@ public class LauncherEngine {
             empty.setText(Lang.t(353));
         }
         chips.setVisibility(View.GONE);
+        if (codeBtn != null) codeBtn.setVisibility(gear.getVisibility());
         empty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.items = items;
         adapter.notifyDataSetChanged();
@@ -582,8 +809,8 @@ public class LauncherEngine {
     }
 
     private void launch(String pkg) {
-        if (am.launch(pkg)) closeDrawer(false);
-        else Toast.makeText(act, Lang.t(354), Toast.LENGTH_SHORT).show();
+        if (sr != null && sr.fire("app_open", pkg, 0)) return;
+        launchApp(pkg);
     }
 
     private class AppAdapter extends BaseAdapter {
@@ -608,6 +835,7 @@ public class LauncherEngine {
             } else cell = (LinearLayout) cv;
             final ApplicationManager.App a = items.get(pos);
             ((ImageView) cell.getChildAt(0)).setImageDrawable(a.icon);
+            styleLabel((TextView) cell.getChildAt(1));
             ((TextView) cell.getChildAt(1)).setText((am.isHidden(a.pkg) ? "\uD83D\uDEAB " : cm.hasAny(a.pkg) ? "" : "• ") + a.label);
             gestures(cell, a, openId, -1);
             return cell;
@@ -638,6 +866,7 @@ public class LauncherEngine {
             Object o = items.get(pos);
             ImageView iv = (ImageView) cell.getChildAt(0);
             TextView t = (TextView) cell.getChildAt(1);
+            styleLabel(t);
             if (o instanceof ApplicationManager.App) {
                 ApplicationManager.App a = (ApplicationManager.App) o;
                 iv.setImageDrawable(a.icon);
@@ -774,6 +1003,12 @@ public class LauncherEngine {
     // ---------- utilidades ----------
     private AlertDialog.Builder dlg() { return new AlertDialog.Builder(act, android.R.style.Theme_Material_Dialog_Alert); }
     private int dp(float v) { return (int) (v * d + 0.5f); }
+
+    private void styleLabel(TextView t) {
+        t.setTextSize(st.get(LauncherSettings.LABEL_SIZE));
+        t.setTextColor(st.get(LauncherSettings.TEXT_COLOR));
+        t.setVisibility(st.get(LauncherSettings.LABELS) == 1 ? View.VISIBLE : View.GONE);
+    }
 
     private TextView tv(String s, float sp, int color) {
         TextView t = new TextView(act);

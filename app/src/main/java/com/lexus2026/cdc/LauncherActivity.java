@@ -40,6 +40,11 @@ public class LauncherActivity extends Activity {
         engine.onResume();
     }
 
+    @Override protected void onPause() {
+        super.onPause();
+        if (engine != null) engine.onPause();
+    }
+
     @Override protected void onNewIntent(Intent i) {
         super.onNewIntent(i);
         if (engine == null) return;

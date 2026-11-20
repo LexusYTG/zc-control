@@ -79,6 +79,13 @@ public class LauncherCenterActivity extends Activity {
                 render();
             });
 
+        // ---- constructor visual
+        page.section(SL.t(a, "Constructor visual", "Visual builder"));
+        LinearLayout vb = page.card();
+        page.nav(vb, SL.t(a, "Personalizar todo el launcher", "Customize the whole launcher"),
+            SL.t(a, "Vista previa en vivo, paneles, botones, reglas y macros", "Live preview, panels, buttons, rules and macros"),
+            () -> startActivity(new Intent(a, LauncherBuilderActivity.class)));
+
         // ---- avanzado
         page.section(Lang.t(S.F_ADV));
         LinearLayout adv = page.card();

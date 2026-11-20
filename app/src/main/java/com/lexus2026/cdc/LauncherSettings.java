@@ -13,7 +13,11 @@ public class LauncherSettings {
         STAGE2 = "stage2", SENS = "sens", HOLD = "hold", ANIM = "anim", SHAPE = "shape",
         DOCK_ICON = "dockIcon", APP_ICON = "appIcon", BG = "bg", DIM = "dim", BG_COLOR = "bgColor", ACCENT = "accent", NEW_MODE = "newMode", DOCK_H = "dockH", DOCK_W = "dockW",
         R1 = "r1", R2GAP = "r2gap", TRACK = "track", ROT = "rot", FIT = "fit",
-        RAD_X = "radX", RAD_Y = "radY", DOCK_POS = "dockPos", DOCK_X = "dockX", DOCK_Y = "dockY", DESKTOP = "desktop";
+        RAD_X = "radX", RAD_Y = "radY", DOCK_POS = "dockPos", DOCK_X = "dockX", DOCK_Y = "dockY", DESKTOP = "desktop",
+        DESK_COLS = "deskCols", DRAWER_COLS = "drawerCols", DRAWER_H = "drawerH", DRAWER_COLOR = "drawerColor", DRAWER_RADIUS = "drawerRadius",
+        DOCK_COLOR = "dockColor", DOCK_RADIUS = "dockRadius", LABELS = "labels", LABEL_SIZE = "labelSize", HOME_SIZE = "homeSize",
+        DOCK_SHOW = "dockShow", TEXT_COLOR = "textColor", DESK_GAP = "deskGap", DRAWER_FROM = "drawerFrom",
+        DRAWER_W = "drawerW", DRAWER_X = "drawerX", DRAWER_Y = "drawerY", DESK_L = "deskL", DESK_T = "deskT", DESK_R = "deskR", DESK_B = "deskB";
 
     private final SharedPreferences sp;
 
@@ -42,6 +46,21 @@ public class LauncherSettings {
             case DOCK_H: return 76;      // altura de la barra (dp)
             case DOCK_W: return 100;     // ancho de la barra (% del ancho disponible)
             case NEW_MODE: return 0;     // 0 apps nuevas sueltas en el escritorio, 1 dentro de la carpeta «Nuevas»
+            case DESK_COLS: return 4;
+            case DRAWER_COLS: return 4;
+            case DRAWER_H: return 58;
+            case DRAWER_COLOR: return 0xEE121228;
+            case DRAWER_RADIUS: return 26;
+            case DOCK_COLOR: return 0x780C0C1E;
+            case DOCK_RADIUS: return 30;
+            case LABELS: return 1;
+            case LABEL_SIZE: return 11;
+            case HOME_SIZE: return 56;
+            case DOCK_SHOW: return 1;
+            case TEXT_COLOR: return 0xFFFFFFFF;
+            case DESK_GAP: return 10;
+            case DRAWER_FROM: return 0;
+            case DRAWER_W: return 100;   // ancho del cajón (% del ancho disponible)
             case TRACK: return 14;       // grosor del arco de fondo (dp), 0 = sin arco
             default: return 0;           // R1, R2GAP: 0 = automático; ROT: 0°; FIT: 0 = respetar los ajustes tal cual
         }
@@ -61,6 +80,8 @@ public class LauncherSettings {
 
     public int get(String k) { return sp.getInt(k, def(k)); }
     public void set(String k, int v) { sp.edit().putInt(k, v).apply(); }
+    public void reset(String k) { sp.edit().remove(k).apply(); }
+    public void resetAll() { java.util.Set<String> keep = new java.util.HashSet<>(java.util.Arrays.asList("hidden", "pinned", "dock0", "dock1", "dock2", "dock3")); SharedPreferences.Editor e = sp.edit(); for (String k : sp.getAll().keySet()) if (!keep.contains(k)) e.remove(k); e.apply(); }
 
     /** Posiciones del dock: 0,1 a la izquierda del botón central; 2,3 a la derecha. */
     public String getDock(int i) { return sp.getString("dock" + i, null); }

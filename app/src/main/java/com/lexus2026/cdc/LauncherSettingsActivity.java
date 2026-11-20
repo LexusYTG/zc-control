@@ -94,6 +94,37 @@ public class LauncherSettingsActivity extends Activity {
         button(Lang.t(396)).setOnClickListener(v -> colorDialog(LauncherSettings.BG_COLOR));
         button(Lang.t(397)).setOnClickListener(v -> colorDialog(LauncherSettings.ACCENT));
 
+        head(SL.t(this, "Escritorio y cajón", "Desktop and drawer"));
+        seek(SL.t(this, "Columnas del escritorio", "Desktop columns"), LauncherSettings.DESK_COLS, 2, 8, "");
+        seek(SL.t(this, "Espaciado de filas", "Row spacing"), LauncherSettings.DESK_GAP, 0, 40, " dp");
+        seek(SL.t(this, "Columnas del cajón", "Drawer columns"), LauncherSettings.DRAWER_COLS, 2, 8, "");
+        seek(SL.t(this, "Alto del cajón", "Drawer height"), LauncherSettings.DRAWER_H, 30, 90, " %");
+        seek(SL.t(this, "Redondeo del cajón", "Drawer corner"), LauncherSettings.DRAWER_RADIUS, 0, 60, " dp");
+        seek(SL.t(this, "Redondeo del dock", "Dock corner"), LauncherSettings.DOCK_RADIUS, 0, 60, " dp");
+        seek(SL.t(this, "Tamaño del botón central", "Center button size"), LauncherSettings.HOME_SIZE, 40, 72, " dp");
+        seek(SL.t(this, "Tamaño de etiquetas", "Label size"), LauncherSettings.LABEL_SIZE, 8, 16, " sp");
+        toggle("Etiquetas de apps", "App labels", LauncherSettings.LABELS);
+        toggle("Mostrar dock", "Show dock", LauncherSettings.DOCK_SHOW);
+        final String[] dfEs = {"zoom", "izquierda", "derecha", "arriba", "fundido"}, dfEn = {"zoom", "left", "right", "top", "fade"};
+        final TextView df = button("");
+        df.setText(SL.t(this, "Cajón entra desde: ", "Drawer enters from: ") + SL.t(this, dfEs, dfEn)[st.get(LauncherSettings.DRAWER_FROM) % 5]);
+        df.setOnClickListener(v -> {
+            int n = (st.get(LauncherSettings.DRAWER_FROM) + 1) % 5;
+            st.set(LauncherSettings.DRAWER_FROM, n);
+            df.setText(SL.t(this, "Cajón entra desde: ", "Drawer enters from: ") + SL.t(this, dfEs, dfEn)[n]);
+        });
+        button(SL.t(this, "Color del cajón (con transparencia)", "Drawer color (with alpha)")).setOnClickListener(v -> colorDialogA(LauncherSettings.DRAWER_COLOR));
+        button(SL.t(this, "Color del dock (con transparencia)", "Dock color (with alpha)")).setOnClickListener(v -> colorDialogA(LauncherSettings.DOCK_COLOR));
+        button(SL.t(this, "Color del texto", "Text color")).setOnClickListener(v -> colorDialogA(LauncherSettings.TEXT_COLOR));
+
+        head(SL.t(this, "Automatización", "Automation"));
+        button("🧩  " + SL.t(this, "Constructor visual", "Visual builder"))
+            .setOnClickListener(v -> startActivity(new Intent(this, LauncherBuilderActivity.class)));
+        button("</>  " + SL.t(this, "Editor de scripts y macros", "Script and macro editor"))
+            .setOnClickListener(v -> startActivity(new Intent(this, ScriptEditorActivity.class)));
+        add(text(SL.t(this, "Con scripts podés cambiar cualquier ajuste, crear paneles y botones flotantes, y reaccionar a toques, horas, apps y más.",
+            "With scripts you can change any setting, create panels and floating buttons, and react to taps, times, apps and more."), 12, 0xFF8A8FA8));
+
         head(Lang.t(398));
         catBox = new LinearLayout(this);
         catBox.setOrientation(LinearLayout.VERTICAL);
@@ -190,6 +221,28 @@ public class LauncherSettingsActivity extends Activity {
     }
 
     private String shapeLabel(int s) { return Lang.t(409) + (s < 0 ? Lang.t(410) : SHAPES[s]); }
+
+    private void toggle(final String es, final String en, final String key) {
+        final TextView t = button("");
+        t.setText(toggleText(es, en, key));
+        t.setOnClickListener(v -> { st.set(key, 1 - st.get(key)); t.setText(toggleText(es, en, key)); });
+    }
+
+    private String toggleText(String es, String en, String key) {
+        return SL.t(this, es, en) + ": " + (st.get(key) == 1 ? Lang.t(627) : Lang.t(917));
+    }
+
+    /** Color con transparencia: AARRGGBB (también acepta RRGGBB). */
+    private void colorDialogA(final String key) {
+        final EditText hex = new EditText(this);
+        hex.setHint("AARRGGBB");
+        hex.setText(String.format("%08X", st.get(key)));
+        hex.setTextColor(Color.WHITE);
+        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert).setTitle("AARRGGBB").setView(hex)
+            .setPositiveButton(Lang.t(413), (x, w) -> {
+                try { st.set(key, Color.parseColor("#" + hex.getText().toString().trim())); } catch (Exception ignored) { }
+            }).setNegativeButton(Lang.t(24), null).show();
+    }
 
     private void colorDialog(final String key) {
         final EditText hex = new EditText(this);
