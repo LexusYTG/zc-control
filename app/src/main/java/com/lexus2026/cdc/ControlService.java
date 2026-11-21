@@ -230,11 +230,10 @@ public class ControlService extends AccessibilityService {
         else if (attempt < 8) ui.postDelayed(() -> reapplyLock(attempt + 1), 15000);
     }
 
-    /** Repone la zona táctil si falta o si el sistema la sacó de pantalla sin avisar. */
+    /** Repone la zona táctil si falta. */
     private void ensureHandle() {
         if (wm == null || !started || locked() || screenOff() || !Features.controlCenter(this)) return;
-        if (handle != null && SystemClock.uptimeMillis() - handleAddedAt > 800 && !handle.isAttachedToWindow()) removeHandle();
-        if (handle == null) addHandle();
+        if (handle == null) addHandle();   // solo repone si falta; nunca saca una barrita que ya está
     }
 
     private final Runnable handleCheck = new Runnable() {
