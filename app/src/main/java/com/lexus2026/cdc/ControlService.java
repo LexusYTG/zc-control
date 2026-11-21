@@ -15,6 +15,7 @@ import android.graphics.ColorSpace;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -38,6 +39,9 @@ public class ControlService extends AccessibilityService {
     private PanelView warm = null;
     private WindowManager.LayoutParams panelLp = null;
     private View pillView = null;
+    /** Momento en que se agregaron las ventanas (una ventana recién agregada tarda un cuadro en figurar como "attached"). */
+    private long handleAddedAt = 0L;
+    private long panelAddedAt = 0L;
 
     /** Paneles que ya se mandaron a cerrar pero siguen en pantalla hasta terminar la animación. */
     private final Set<PanelView> closing = new LinkedHashSet<>();
@@ -177,7 +181,9 @@ public class ControlService extends AccessibilityService {
     /** Abre el panel en la vista acotada (lo usa también el botón "Probar" de la app). */
     public void open() {
         ui.post(() -> {
+            if (panel != null && panelIsDead()) forceCloseAll();
             if (panel == null) showPanel(false);
+            ensureHandle();
         });
     }
 
@@ -206,6 +212,8 @@ public class ControlService extends AccessibilityService {
         if (Features.controlCenter(this)) reapplyLock(0);
         Skin.prefs(this).registerOnSharedPreferenceChangeListener(prefListener);
         prewarm();
+        ui.removeCallbacks(handleCheck);
+        ui.postDelayed(handleCheck, 3000);
         // Interfaz lateral: se inicia sola (si está bloqueada la pantalla queda en pausa hasta desbloquear)
         side = new SideHub(this, wm);
         if (!locked() && !screenOff()) side.start();
@@ -221,6 +229,21 @@ public class ControlService extends AccessibilityService {
         if (Privileged.available()) Privileged.run("cmd statusbar send-disable-flag statusbar-expansion");
         else if (attempt < 8) ui.postDelayed(() -> reapplyLock(attempt + 1), 15000);
     }
+
+    /** Repone la zona táctil si falta o si el sistema la sacó de pantalla sin avisar. */
+    private void ensureHandle() {
+        if (wm == null || !started || locked() || screenOff() || !Features.controlCenter(this)) return;
+        if (handle != null && SystemClock.uptimeMillis() - handleAddedAt > 800 && !handle.isAttachedToWindow()) removeHandle();
+        if (handle == null) addHandle();
+    }
+
+    private final Runnable handleCheck = new Runnable() {
+        @Override
+        public void run() {
+            try { ensureHandle(); } catch (Exception e) { /* se reintenta en el próximo ciclo */ }
+            if (started) ui.postDelayed(this, 3000);
+        }
+    };
 
     private void addHandle() {
         if (handle != null) return;
@@ -255,6 +278,17 @@ public class ControlService extends AccessibilityService {
 
             @Override
             public boolean onTouch(View view, MotionEvent e) {
+                try {
+                    return handleTouch(e);
+                } catch (Exception ex) {
+                    // Un fallo en el gesto nunca debe tumbar el servicio (si cae, la barrita desaparece y no abre más).
+                    dragging = false;
+                    ui.removeCallbacks(longR);
+                    return true;
+                }
+            }
+
+            private boolean handleTouch(MotionEvent e) {
                 switch (e.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         y0 = e.getRawY(); dragging = false;
@@ -287,9 +321,14 @@ public class ControlService extends AccessibilityService {
                         }
                         if (dragging) {
                             float vy = 0f;
-                            if (vt != null) {
+                            if (e.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+                                // Algunos sistemas (ColorOS, MIUI...) cancelan el toque apenas aparece el panel.
+                                // Ya se superó la distancia de apertura: se interpreta como "abrir", no como "soltar sin velocidad",
+                                // que cerraba el panel y parecía que la barrita "intentaba desplegarse pero fallaba".
+                                vy = 1500f;
+                            } else if (vt != null) {
                                 vt.computeCurrentVelocity(1000);
-                                if (e.getActionMasked() == MotionEvent.ACTION_UP) vy = vt.getYVelocity();
+                                vy = vt.getYVelocity();
                             }
                             if (panel != null) panel.release(vy);
                         }
@@ -319,6 +358,7 @@ public class ControlService extends AccessibilityService {
         try {
             wm.addView(v, lp);
             handle = v;
+            handleAddedAt = SystemClock.uptimeMillis();
             applyPillAlpha();
         } catch (Exception e) { handle = null; pillView = null; }
     }
@@ -393,9 +433,25 @@ public class ControlService extends AccessibilityService {
 
     // ---------------- panel ----------------
 
+    /** El panel figura abierto pero ya no sirve: sin ventana, o vacío y sin actividad. */
+    private boolean panelIsDead() {
+        PanelView p = panel;
+        if (p == null) return false;
+        if (SystemClock.uptimeMillis() - panelAddedAt > 800 && !p.isAttachedToWindow()) return true;
+        return SystemClock.uptimeMillis() - panelAddedAt > 800 && p.isStuck();
+    }
+
     private void showPanel(boolean interactive) {
-        if (panel != null) return;
-        PanelView p = warm != null ? warm : new PanelView(this, this::hidePanel);
+        // Antes un panel huérfano (que el sistema sacó, o que quedó vacío) dejaba panel != null para siempre:
+        // la barrita y el botón Probar no abrían nada hasta reiniciar el servicio.
+        if (panel != null) {
+            if (panelIsDead()) forceCloseAll();
+            else return;
+        }
+        PanelView p;
+        try {
+            p = warm != null ? warm : new PanelView(this, this::hidePanel);
+        } catch (Exception e) { warm = null; return; }
         warm = null;
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
@@ -407,8 +463,8 @@ public class ControlService extends AccessibilityService {
         lp.gravity = Gravity.TOP | Gravity.START;
         lp.x = 0; lp.y = 0;
         noInsets(lp);   // sin esto quedaba una franja arriba (muesca / barra de estado) donde no llegaba el fondo
-        try { wm.addView(p, lp); } catch (Exception e) { return; }
-        panel = p; panelLp = lp;
+        try { wm.addView(p, lp); } catch (Exception e) { warm = null; return; }
+        panel = p; panelLp = lp; panelAddedAt = SystemClock.uptimeMillis();
         p.postDelayed(() -> p.refresh(), 120);
         applyBackdrop(p);
         if (!interactive) p.animateTo(Skin.get(this, "startStage") == 0 ? 1f : 2f);
@@ -439,10 +495,13 @@ public class ControlService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (!started) return; // sin consentimiento no se lee ningún evento
-        if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.getPackageName() != null) GameWatchdog.onForeground(this, event.getPackageName().toString(), event.getClassName() != null ? event.getClassName().toString() : "");
+        try {
+            if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.getPackageName() != null) GameWatchdog.onForeground(this, event.getPackageName().toString(), event.getClassName() != null ? event.getClassName().toString() : "");
+        } catch (Exception e) { /* un fallo del modo juego no debe tumbar el servicio */ }
         // Autocuración: si por algún motivo la zona táctil no está y el dispositivo está en uso, se repone.
-        if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
-            wm != null && handle == null && !locked() && !screenOff()) addHandle();
+        if (event != null && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            try { ensureHandle(); } catch (Exception e) { /* se reintenta */ }
+        }
     }
 
     @Override
@@ -460,6 +519,7 @@ public class ControlService extends AccessibilityService {
         ui.removeCallbacks(prewarmR);
         Skin.prefs(this).unregisterOnSharedPreferenceChangeListener(prefListener);
         ui.removeCallbacks(watchdog);
+        ui.removeCallbacks(handleCheck);
         if (receiverOn) { try { unregisterReceiver(screenReceiver); } catch (Exception e) {} receiverOn = false; }
         if (wm != null) { forceCloseAll(); removeHandle(); }
         super.onDestroy();

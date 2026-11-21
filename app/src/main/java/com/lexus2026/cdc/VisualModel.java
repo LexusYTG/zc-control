@@ -54,32 +54,9 @@ final class VisualModel {
         boolean visible = true;
     }
 
-    /**
-     * Elemento libre del escritorio, colocado a mano en el editor visual. Posición y tamaño en milésimas del ancho (x, w)
-     * y del alto (y, h) de la pantalla, así se adapta a cualquier resolución. Los gestos guardan una acción «tipo:destino»:
-     * macro:Nombre · app:paquete · drawer:* | id de categoría · panel:Nombre · shell:comando · home · radial · (vacío = nada).
-     */
-    static final class Free {
-        String id = Elem.newId(), type = "text";   // app | text | clock | image | widget | category | action | shape
-        String a = "", icon = "";
-        int x = 100, y = 300, w = 300, h = 120;
-        int bg = 0, tcolor = 0xFFFFFFFF, radius = 16, tsize = 18, opacity = 100, fmt = 0;
-        boolean visible = true, bold, label = true;
-        String tap = "", hold = "", dbl = "", sup = "", sdn = "", slf = "", srt = "";
-
-        Free copy() {
-            Free f = new Free();
-            f.type = type; f.a = a; f.icon = icon; f.x = x; f.y = y; f.w = w; f.h = h; f.bg = bg; f.tcolor = tcolor;
-            f.radius = radius; f.tsize = tsize; f.opacity = opacity; f.fmt = fmt; f.visible = visible; f.bold = bold;
-            f.label = label; f.tap = tap; f.hold = hold; f.dbl = dbl; f.sup = sup; f.sdn = sdn; f.slf = slf; f.srt = srt;
-            return f;
-        }
-    }
-
     final List<Rule> rules = new ArrayList<>();
     final List<Panel> panels = new ArrayList<>();
     final List<Btn> buttons = new ArrayList<>();
-    final List<Free> free = new ArrayList<>();
 
     // ---------------------------------------------------------------- persistencia
 
@@ -97,8 +74,6 @@ final class VisualModel {
             if (pa != null) for (int i = 0; i < pa.length(); i++) m.panels.add(panelFrom(pa.getJSONObject(i)));
             JSONArray ba = o.optJSONArray("buttons");
             if (ba != null) for (int i = 0; i < ba.length(); i++) m.buttons.add(btnFrom(ba.getJSONObject(i)));
-            JSONArray fa = o.optJSONArray("free");
-            if (fa != null) for (int i = 0; i < fa.length(); i++) m.free.add(freeFrom(fa.getJSONObject(i)));
         } catch (Throwable ignored) { }
         return m;
     }
@@ -116,9 +91,6 @@ final class VisualModel {
             JSONArray ba = new JSONArray();
             for (Btn b : buttons) ba.put(btnTo(b));
             o.put("buttons", ba);
-            JSONArray fa = new JSONArray();
-            for (Free f : free) fa.put(freeTo(f));
-            o.put("free", fa);
             sp(c).edit().putString("model", o.toString()).apply();
         } catch (Throwable ignored) { }
         ScriptStore.Item it = ScriptStore.get(c, SCRIPT_ID);
@@ -242,28 +214,6 @@ final class VisualModel {
         return new JSONObject().put("name", b.name).put("icon", b.icon).put("label", b.label).put("app", b.app)
             .put("shape", b.shape).put("v", b.v).put("hz", b.hz).put("x", b.x).put("y", b.y).put("size", b.size)
             .put("bg", b.bg).put("opacity", b.opacity).put("tcolor", b.tcolor).put("visible", b.visible);
-    }
-
-    static Free freeFrom(JSONObject o) {
-        Free f = new Free();
-        f.id = o.optString("id", f.id);
-        f.type = o.optString("type", "text");
-        f.a = o.optString("a");
-        f.icon = o.optString("icon");
-        f.x = o.optInt("x", 100); f.y = o.optInt("y", 300); f.w = o.optInt("w", 300); f.h = o.optInt("h", 120);
-        f.bg = o.optInt("bg", 0); f.tcolor = o.optInt("tc", 0xFFFFFFFF); f.radius = o.optInt("r", 16);
-        f.tsize = o.optInt("ts", 18); f.opacity = o.optInt("op", 100); f.fmt = o.optInt("fmt", 0);
-        f.visible = o.optBoolean("vis", true); f.bold = o.optBoolean("bold"); f.label = o.optBoolean("lbl", true);
-        f.tap = o.optString("tap"); f.hold = o.optString("hold"); f.dbl = o.optString("dbl");
-        f.sup = o.optString("sup"); f.sdn = o.optString("sdn"); f.slf = o.optString("slf"); f.srt = o.optString("srt");
-        return f;
-    }
-
-    static JSONObject freeTo(Free f) throws Exception {
-        return new JSONObject().put("id", f.id).put("type", f.type).put("a", f.a).put("icon", f.icon)
-            .put("x", f.x).put("y", f.y).put("w", f.w).put("h", f.h).put("bg", f.bg).put("tc", f.tcolor).put("r", f.radius)
-            .put("ts", f.tsize).put("op", f.opacity).put("fmt", f.fmt).put("vis", f.visible).put("bold", f.bold).put("lbl", f.label)
-            .put("tap", f.tap).put("hold", f.hold).put("dbl", f.dbl).put("sup", f.sup).put("sdn", f.sdn).put("slf", f.slf).put("srt", f.srt);
     }
 
     // ---------------------------------------------------------------- generador de script

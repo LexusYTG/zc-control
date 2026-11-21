@@ -16,8 +16,7 @@ public class LauncherSettings {
         RAD_X = "radX", RAD_Y = "radY", DOCK_POS = "dockPos", DOCK_X = "dockX", DOCK_Y = "dockY", DESKTOP = "desktop",
         DESK_COLS = "deskCols", DRAWER_COLS = "drawerCols", DRAWER_H = "drawerH", DRAWER_COLOR = "drawerColor", DRAWER_RADIUS = "drawerRadius",
         DOCK_COLOR = "dockColor", DOCK_RADIUS = "dockRadius", LABELS = "labels", LABEL_SIZE = "labelSize", HOME_SIZE = "homeSize",
-        DOCK_SHOW = "dockShow", TEXT_COLOR = "textColor", DESK_GAP = "deskGap", DRAWER_FROM = "drawerFrom",
-        DRAWER_W = "drawerW", DRAWER_X = "drawerX", DRAWER_Y = "drawerY", DESK_L = "deskL", DESK_T = "deskT", DESK_R = "deskR", DESK_B = "deskB";
+        DOCK_SHOW = "dockShow", TEXT_COLOR = "textColor", DESK_GAP = "deskGap", DRAWER_FROM = "drawerFrom";
 
     private final SharedPreferences sp;
 
@@ -60,7 +59,6 @@ public class LauncherSettings {
             case TEXT_COLOR: return 0xFFFFFFFF;
             case DESK_GAP: return 10;
             case DRAWER_FROM: return 0;
-            case DRAWER_W: return 100;   // ancho del cajón (% del ancho disponible)
             case TRACK: return 14;       // grosor del arco de fondo (dp), 0 = sin arco
             default: return 0;           // R1, R2GAP: 0 = automático; ROT: 0°; FIT: 0 = respetar los ajustes tal cual
         }

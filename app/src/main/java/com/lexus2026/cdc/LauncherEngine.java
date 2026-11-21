@@ -83,9 +83,8 @@ public class LauncherEngine {
     private long lastTap;
     private final Runnable showRadial = this::startRadial;
     private ScriptRuntime sr;
-    private FreeLayer freeLayer;
-    private android.appwidget.AppWidgetHost widgetHost;
-    private int pvT = -1, pvB = -1;
+    private UiLayout ui;
+    private boolean uiHidDesk, uiHidDock;
     private View codeBtn;
     private final Runnable tapFire = () -> { if (sr != null && taps > 0 && taps < 5) sr.fire("tap_center", null, taps); };
     private final BroadcastReceiver pkgRx = new BroadcastReceiver() {
@@ -134,11 +133,6 @@ public class LauncherEngine {
         desk.setAdapter(deskAdapter);
         root.addView(desk, new FrameLayout.LayoutParams(-1, -1));
 
-        // ---- elementos libres colocados a mano (editor visual): entre el escritorio y el cajón ----
-        try { widgetHost = new android.appwidget.AppWidgetHost(a.getApplicationContext(), FreeLayer.WIDGET_HOST_ID); } catch (Throwable ignored) { }
-        freeLayer = new FreeLayer(a, !preview, widgetHost, this::runAction);
-        root.addView(freeLayer, new FrameLayout.LayoutParams(-1, -1));
-
         scrim = new View(a);
         scrim.setVisibility(View.GONE);
         scrim.setOnClickListener(v -> closeDrawer(true));
@@ -167,7 +161,7 @@ public class LauncherEngine {
         codeBtn = code;
         TextView build = tv("✎", 18, Color.WHITE);
         build.setPadding(dp(8), dp(4), dp(8), dp(4));
-        build.setOnClickListener(v -> act.startActivity(new Intent(act, LauncherCanvasActivity.class)));
+        build.setOnClickListener(v -> act.startActivity(new Intent(act, LauncherBuilderActivity.class)));
         head.addView(build, head.indexOfChild(code));
         TextView close = tv("✕", 20, Color.WHITE);
         close.setPadding(dp(12), dp(4), dp(4), dp(4));
@@ -224,10 +218,11 @@ public class LauncherEngine {
         root.addView(radial, new FrameLayout.LayoutParams(-1, -1));
 
         root.setOnApplyWindowInsetsListener((v, in) -> {
-            insetTop = preview && pvT >= 0 ? pvT : in.getSystemWindowInsetTop();
-            insetBottom = preview && pvB >= 0 ? pvB : in.getSystemWindowInsetBottom();
+            insetTop = in.getSystemWindowInsetTop();
+            insetBottom = in.getSystemWindowInsetBottom();
             layoutChrome();
             if (sr != null) sr.relayout();
+            if (ui != null) ui.relayout();
             return in;
         });
 
@@ -242,87 +237,25 @@ public class LauncherEngine {
         buildDock();
         applyBackground();
         applyExtras();
-        reloadFree();
         if (!preview) {
             sr = new ScriptRuntime(this);
             sr.attach();
         }
+        ui = new UiLayout(this);
+        root.addView(ui.layer(), 1, new FrameLayout.LayoutParams(-1, -1));
     }
 
-    // ---------- editor visual ----------
-    /** Vista previa: fija los márgenes del sistema (la vista escalada no los recibe de la ventana). */
-    void setPreviewInsets(int top, int bottom) { pvT = top; pvB = bottom; insetTop = top; insetBottom = bottom; layoutChrome(); }
+    // ---------- acceso para el launcher descrito en script (UiLayout) ----------
+    void runUiMacro(String name) { if (sr != null) sr.runMacro(name); }
 
-    /** Vuelve a dibujar los elementos libres desde lo guardado. */
-    void reloadFree() { if (freeLayer != null) freeLayer.load(VisualModel.load(act).free); }
+    void uiCommand(String macro) { if (ui != null) ui.command(macro); }
 
-    /** Vista previa: dibuja esta lista tal cual, sin guardar (así el editor se ve en vivo mientras arrastras). */
-    void showFree(List<VisualModel.Free> list) { if (freeLayer != null) freeLayer.load(list); }
-
-    android.appwidget.AppWidgetHost widgetHost() { return widgetHost; }
-
-    /** Vista previa: recoloca solo el elemento libre {@code i} (más barato que redibujar todo mientras se arrastra). */
-    void placeFree(int i, VisualModel.Free f) { if (freeLayer != null) freeLayer.place(i, f); }
-
-    /** Vista previa: reaplica el tamaño del dock, el escritorio y el cajón sin reconstruir listas. */
-    void relayout() { applyDockSize(); }
-
-    private int rootW() { return root.getWidth() > 0 ? root.getWidth() : act.getResources().getDisplayMetrics().widthPixels; }
-    private int rootH() { return root.getHeight() > 0 ? root.getHeight() : act.getResources().getDisplayMetrics().heightPixels; }
-
-    private int dockLeft(int W, int w) {
-        int pos = st.get(LauncherSettings.DOCK_POS), dx = dp(st.get(LauncherSettings.DOCK_X));
-        return (pos == 1 ? dp(8) : pos == 2 ? W - dp(8) - w : (W - w) / 2) + dx;
-    }
-
-    /** Rectángulos en píxeles del motor: {izquierda, arriba, ancho, alto}. Los usa el editor visual para dibujar sus manijas. */
-    int[] dockRect() {
-        int W = rootW(), H = rootH(), w = cellW * 5, h = dp(st.get(LauncherSettings.DOCK_H));
-        return new int[]{dockLeft(W, w), H - insetBottom - dp(8) - dp(st.get(LauncherSettings.DOCK_Y)) - h, w, h};
-    }
-
-    int[] homeRect() {
-        int[] k = dockRect();
-        int hs = Math.min(dp(st.get(LauncherSettings.HOME_SIZE)), Math.min(dp(st.get(LauncherSettings.DOCK_H)) - dp(6), cellW));
-        return new int[]{k[0] + cellW * 5 / 2 - hs / 2, k[1] + k[3] / 2 - hs / 2, hs, hs};
-    }
-
-    int[] drawerRect() {
-        int W = rootW(), H = rootH();
-        int avail = W - dp(24), w = (int) (avail * Math.max(20, st.get(LauncherSettings.DRAWER_W)) / 100f);
-        int h = (int) (H * st.get(LauncherSettings.DRAWER_H) / 100f);
-        int bottom = H - insetBottom - dp(8 + st.get(LauncherSettings.DOCK_H) + 10) - dp(st.get(LauncherSettings.DRAWER_Y));
-        return new int[]{dp(12) + (avail - w) / 2 + dp(st.get(LauncherSettings.DRAWER_X)), bottom - h, w, h};
-    }
-
-    int[] deskRect() {
-        int W = rootW(), H = rootH();
-        int l = dp(8) + dp(st.get(LauncherSettings.DESK_L)), t = insetTop + dp(8) + dp(st.get(LauncherSettings.DESK_T));
-        int r = W - dp(8) - dp(st.get(LauncherSettings.DESK_R));
-        int b = H - insetBottom - dp(8 + st.get(LauncherSettings.DOCK_H) + 10) - dp(st.get(LauncherSettings.DESK_B));
-        return new int[]{l, t, Math.max(1, r - l), Math.max(1, b - t)};
-    }
-
-    /** Punto desde donde nace el radial, en píxeles del motor. */
-    int[] radialPoint() {
-        int[] k = homeRect();
-        return new int[]{k[0] + k[2] / 2 + dp(st.get(LauncherSettings.RAD_X)), k[1] + k[3] / 2 - dp(7) - dp(st.get(LauncherSettings.RAD_Y))};
-    }
-
-    /** Acción de un elemento libre: «macro:Nombre», «app:paquete», «drawer:id», «panel:Nombre», «shell:comando», «home». */
-    void runAction(String a) {
-        if (a == null || a.isEmpty()) return;
-        int i = a.indexOf(':');
-        String k = i < 0 ? a : a.substring(0, i), v = i < 0 ? "" : a.substring(i + 1);
-        switch (k) {
-            case "macro": if (sr != null) sr.runMacro(v); break;
-            case "app": launch(v); break;
-            case "drawer": openDrawer(v.isEmpty() ? "*" : v); break;
-            case "panel": if (sr != null) sr.openPanel(v, null, null, null, null); break;
-            case "shell": if (sr != null) sr.shell(v); break;
-            case "home": closeMenu(); if (openId != null) closeDrawer(true); break;
-            default: break;
-        }
+    /** El script puede ocultar el escritorio y el dock originales para reemplazarlos por los suyos. */
+    void uiHide(boolean hideDesk, boolean hideDock) {
+        if (hideDesk) { desk.setVisibility(View.GONE); uiHidDesk = true; }
+        else if (uiHidDesk) { desk.setVisibility(View.VISIBLE); uiHidDesk = false; }
+        if (hideDock) { dock.setVisibility(View.GONE); uiHidDock = true; }
+        else if (uiHidDock) { uiHidDock = false; applyExtras(); layoutChrome(); }
     }
 
     /** Vista previa: abre el cajón de apps general. */
@@ -367,7 +300,7 @@ public class LauncherEngine {
         grid.setAdapter(adapter);
         refreshDesk();
         if (openId != null) populate();
-        if (!preview) reloadFree();
+        if (ui != null) ui.afterApply();
     }
 
     private void applyExtras() {
@@ -417,15 +350,11 @@ public class LauncherEngine {
         if (am.all().isEmpty()) am.refreshAsync(this::onAppsChanged);
         refreshDesk();
         if (openId != null) populate();
-        reloadFree();
-        if (!preview && widgetHost != null) { try { widgetHost.startListening(); } catch (Throwable ignored) { } }
         if (sr != null) sr.onResume();
+        if (ui != null) ui.onResume();
     }
 
-    public void onPause() {
-        if (!preview && widgetHost != null) { try { widgetHost.stopListening(); } catch (Throwable ignored) { } }
-        if (sr != null) sr.onPause();
-    }
+    public void onPause() { if (sr != null) sr.onPause(); if (ui != null) ui.onPause(); }
 
     public void onHome() {
         closeMenu();
@@ -441,7 +370,7 @@ public class LauncherEngine {
         return false;
     }
 
-    public void onDestroy() { if (sr != null) sr.stop(); try { act.unregisterReceiver(pkgRx); } catch (Throwable ignored) { } }
+    public void onDestroy() { if (sr != null) sr.stop(); if (ui != null) ui.destroy(); try { act.unregisterReceiver(pkgRx); } catch (Throwable ignored) { } }
 
     private void onAppsChanged() {
         if (!am.all().isEmpty())
@@ -450,6 +379,7 @@ public class LauncherEngine {
         buildDock();
         refreshDesk();
         if (openId != null) populate();
+        if (ui != null) ui.afterApply();
     }
 
     private void applyBackground() {
@@ -460,25 +390,21 @@ public class LauncherEngine {
     }
 
     private void layoutChrome() {
-        int W = rootW();
         FrameLayout.LayoutParams dp1 = (FrameLayout.LayoutParams) dock.getLayoutParams();
         dp1.width = cellW * 5;
         dp1.height = dp(st.get(LauncherSettings.DOCK_H));
-        dp1.gravity = Gravity.BOTTOM | Gravity.START;
-        dp1.setMargins(dockLeft(W, dp1.width), 0, 0, insetBottom + dp(8) + dp(st.get(LauncherSettings.DOCK_Y)));
+        int pos = st.get(LauncherSettings.DOCK_POS);
+        dp1.gravity = Gravity.BOTTOM | (pos == 1 ? Gravity.START : pos == 2 ? Gravity.END : Gravity.CENTER_HORIZONTAL);
+        dp1.setMargins(pos == 1 ? dp(8) : 0, 0, pos == 2 ? dp(8) : 0, insetBottom + dp(8) + dp(st.get(LauncherSettings.DOCK_Y)));
         dock.setLayoutParams(dp1);
         FrameLayout.LayoutParams dk = (FrameLayout.LayoutParams) desk.getLayoutParams();
-        dk.setMargins(dp(8 + st.get(LauncherSettings.DESK_L)), insetTop + dp(8 + st.get(LauncherSettings.DESK_T)),
-            dp(8 + st.get(LauncherSettings.DESK_R)), insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10 + st.get(LauncherSettings.DESK_B)));
+        dk.setMargins(dp(8), insetTop + dp(8), dp(8), insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10));
         desk.setLayoutParams(dk);
-        int rh = rootH();
+        int rh = root.getHeight() > 0 ? root.getHeight() : act.getResources().getDisplayMetrics().heightPixels;
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) drawer.getLayoutParams();
-        int avail = W - dp(24);
-        lp.width = (int) (avail * Math.max(20, st.get(LauncherSettings.DRAWER_W)) / 100f);
         lp.height = (int) (rh * st.get(LauncherSettings.DRAWER_H) / 100f);
-        lp.gravity = Gravity.BOTTOM | Gravity.START;
-        lp.setMargins(dp(12) + (avail - lp.width) / 2 + dp(st.get(LauncherSettings.DRAWER_X)), 0, 0,
-            insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10 + st.get(LauncherSettings.DRAWER_Y)));
+        lp.gravity = Gravity.BOTTOM;
+        lp.setMargins(dp(12), insetTop + dp(8), dp(12), insetBottom + dp(8 + st.get(LauncherSettings.DOCK_H) + 10));
         drawer.setLayoutParams(lp);
     }
 

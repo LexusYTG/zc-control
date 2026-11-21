@@ -85,6 +85,9 @@ public class LauncherCenterActivity extends Activity {
         page.nav(vb, SL.t(a, "Personalizar todo el launcher", "Customize the whole launcher"),
             SL.t(a, "Vista previa en vivo, paneles, botones, reglas y macros", "Live preview, panels, buttons, rules and macros"),
             () -> startActivity(new Intent(a, LauncherBuilderActivity.class)));
+        page.nav(vb, SL.t(a, "Mi launcher en código", "My launcher as code"),
+            SL.t(a, "Escribí el launcher entero con el lenguaje de scripting", "Write the whole launcher with the scripting language"),
+            () -> startActivity(new Intent(a, UiEditorActivity.class)));
 
         // ---- avanzado
         page.section(Lang.t(S.F_ADV));

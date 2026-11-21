@@ -51,8 +51,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".LauncherSettingsActivity" android:exported="false" />
+        <activity android:name=".UiEditorActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LauncherBuilderActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".LauncherCanvasActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ScriptEditorActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".InvisibleFreeformActivity" android:exported="false" android:excludeFromRecents="true"
             android:taskAffinity="" android:resizeableActivity="true"

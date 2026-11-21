@@ -320,6 +320,7 @@ final class ScriptRuntime {
                         break;
                     }
                     case ScriptLang.A_CALL: {
+                        if (((String) in.a).startsWith("__uicmd_")) { en.uiCommand((String) in.a); break; }
                         List<Ins> mc = pg.macros.get((String) in.a);
                         if (mc != null && r.stack.size() < 20) r.stack.add(new Frame(mc));
                         break;
@@ -542,9 +543,6 @@ final class ScriptRuntime {
     }
 
     private interface ShellDone { void done(String out); }
-
-    /** Ejecuta un comando de shell sin esperar resultado (lo usan los elementos libres del escritorio). */
-    void shell(String cmd) { runShell(cmd, out -> { }); }
 
     private void runShell(final String cmd, final ShellDone cb) {
         new Thread(() -> {

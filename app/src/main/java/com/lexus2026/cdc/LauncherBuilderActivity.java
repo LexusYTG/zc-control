@@ -96,10 +96,6 @@ public class LauncherBuilderActivity extends Activity {
         back.setOnClickListener(v -> goBack());
         head.addView(back);
         head.addView(ZUi.text(this, T("Constructor del launcher", "Launcher builder"), 19, TXT, true), new LinearLayout.LayoutParams(0, -2, 1));
-        TextView canvasBtn = ZUi.text(this, "✥", 18, TXT, false);
-        canvasBtn.setPadding(dp(12), dp(4), dp(12), dp(4));
-        canvasBtn.setOnClickListener(v -> { flush(); startActivity(new Intent(this, LauncherCanvasActivity.class)); });
-        head.addView(canvasBtn);
         TextView eye = ZUi.text(this, "👁", 18, TXT, false);
         eye.setPadding(dp(12), dp(4), dp(12), dp(4));
         eye.setOnClickListener(v -> {
@@ -1055,6 +1051,8 @@ public class LauncherBuilderActivity extends Activity {
         toggleRow(c, T("Scripts y reglas activos", "Scripts and rules enabled"), ScriptStore.master(this), v -> ScriptStore.setMaster(this, v));
         note(c, T("Es el interruptor general: apaga todas las reglas, macros, paneles y botones de una vez.", "The master switch: turns every rule, macro, panel and button off at once."), SUB);
         c.addView(ZUi.divider(this), new LinearLayout.LayoutParams(-1, 1));
+        navRow(c, "🧬 " + T("Mi launcher en código", "My launcher as code"), T("Escribí el launcher entero: elementos, gestos, animaciones", "Write the whole launcher: elements, gestures, animations"),
+            () -> { flush(); startActivity(new Intent(this, UiEditorActivity.class)); });
         navRow(c, T("Ver / editar el script generado", "View / edit the generated script"), T("Texto legible en español o inglés", "Readable text in Spanish or English"),
             () -> { flush(); startActivity(new Intent(this, ScriptEditorActivity.class)); });
         navRow(c, T("Copiar el script generado", "Copy the generated script"), null, () -> {

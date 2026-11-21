@@ -120,6 +120,8 @@ public class LauncherSettingsActivity extends Activity {
         head(SL.t(this, "Automatización", "Automation"));
         button("🧩  " + SL.t(this, "Constructor visual", "Visual builder"))
             .setOnClickListener(v -> startActivity(new Intent(this, LauncherBuilderActivity.class)));
+        button("🧬  " + SL.t(this, "Mi launcher en código", "My launcher as code"))
+            .setOnClickListener(v -> startActivity(new Intent(this, UiEditorActivity.class)));
         button("</>  " + SL.t(this, "Editor de scripts y macros", "Script and macro editor"))
             .setOnClickListener(v -> startActivity(new Intent(this, ScriptEditorActivity.class)));
         add(text(SL.t(this, "Con scripts podés cambiar cualquier ajuste, crear paneles y botones flotantes, y reaccionar a toques, horas, apps y más.",
